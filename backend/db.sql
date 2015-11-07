@@ -1,7 +1,7 @@
 -- Сущность 'Физические лица'
 -- Created
 CREATE TABLE e_persons (
-  iin VARCHAR(12) NOT NULL, -- Необходимо реализовать проверку ИИН по маске на стороне бакэнда и фронтэнда (Внимание: ИИН представлен в формате VARCHAR)
+  iin CHAR(12) NOT NULL, -- Необходимо реализовать проверку ИИН по маске на стороне бакэнда и фронтэнда (Внимание: ИИН представлен в формате VARCHAR)
   last_name VARCHAR(300) NOT NULL,
   first_name VARCHAR(300) NOT NULL,
   middle_name VARCHAR(300),
