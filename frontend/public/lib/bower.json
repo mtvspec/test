@@ -1,0 +1,29 @@
+{
+  "name": "ts",
+  "homepage": "https://github.com/mtvspec/test",
+  "authors": [
+    "mtvspec <mtv.spec@gmail.com>"
+  ],
+  "description": "test",
+  "main": "app.js",
+  "moduleType": [
+    "es6",
+    "globals"
+  ],
+  "keywords": [
+    "test"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.7",
+    "angular-ui-router": "~0.2.15"
+  }
+}
