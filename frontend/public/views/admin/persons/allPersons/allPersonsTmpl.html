@@ -1,0 +1,10 @@
+<ul class="collapsible" data-collapsible="accordion">
+  <li ng-repeat='person in vm.persons'>
+    <div class="collapsible-header">
+      <span ng-bind='person.firstName'></span>
+    </div>
+    <div class='collapsible-body' class="collapsible-body" ng-repeat='personInfo in vm.personsInfo'>
+      <span ng-bind='personInfo.iin'></span>
+    </div>
+  </li>
+</ul>

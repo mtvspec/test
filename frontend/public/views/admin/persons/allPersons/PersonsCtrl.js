@@ -7,6 +7,14 @@
     vm.persons = [
       {
         firstName: 'Куралай'
+      },
+      {
+        firstName: 'Тимур'
+      }
+    ]
+    vm.personsInfo = [
+      {
+        iin: '871215301496'
       }
     ]
   });

@@ -1,6 +1,12 @@
 (function () {
   'use strict';
   
+  $(document).ready(function(){
+      $('.collapsible').collapsible({
+        accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+      });
+    });
+  
   angular.module('app', ['ui.router'])
   .run(function ($rootScope) {
     $rootScope.$on('$stateChangeSuccess', function (evt, toState) {
@@ -15,14 +21,45 @@
     $urlRouterProvider.otherwise('/');
     
     $stateProvider
-    .state('persons', {
+    
+    .state('admin', {
+      abstract: true,
+      templateUrl: 'views/root.html'
+    })
+    
+    .state('admin.layout', {
+      views: {
+        header: {
+          templateUrl: 'views/admin/header.html'
+        },
+        content: {
+          templateUrl: 'views/admin/content.html'
+        }
+      },
+      data: {
+        title: 'Телефонный справочник'
+      }
+    })
+    
+    .state('admin.layout.persons', {
       url: '/persons',
-      templateUrl: 'views/persons/allPersons/AllPersonsTmpl.html',
+      templateUrl: 'views/admin/persons/allPersons/AllPersonsTmpl.html',
       controller: 'PersonsCtrl',
       controllerAs: 'vm',
       data: {
         title: 'Физические лица'
       }
     })
-  })
+    
+    .state('admin.layout.companies', {
+      url: '/companies',
+      templateUrl: 'views/admin/companies/allCompanies/AllCompaniesTmpl.html',
+      controller: 'CompaniesCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Юридические лица'
+      }
+    })
+    
+  });
 })();
