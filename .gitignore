@@ -1,4 +1,7 @@
 /backend/node_modules/body-parser/
 /backend/node_modules/express/
 /backend/node_nodules/morgan/
-/backend/node_modules/pg
+/backend/node_modules/pg/
+/backend/node_modules/cookie-parser/
+/backend/node_modules/body-parser/
+/backend/node_modules/debug/
