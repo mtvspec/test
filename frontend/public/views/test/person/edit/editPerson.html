@@ -1,0 +1,18 @@
+<form>
+  
+  <label>ИИН:</label>
+  <input type='number' ng-model='vm.person.iin'>
+  <label>Фамилия:</label>
+  <input type='text' ng-model='vm.person.lastName'>
+  <label>Имя:</label>
+  <input type='text' ng-model='vm.person.firstName'>
+  <label>Отчество:</label>
+  <input type='text' ng-model='vm.person.middleName'>
+  <label>Дата рождения:</label>
+  <input type='text' ng-model='vm.person.dob'>
+  <label>Пол:</label>
+  <input type='number' ng-model='vm.person.genderID'>
+
+  <button type='submit' ng-click='vm.submit(vm.person)'>Сохранить</button>
+  
+</form>

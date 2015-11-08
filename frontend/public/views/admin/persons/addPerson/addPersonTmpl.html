@@ -1,0 +1,73 @@
+<md-dialog aria-label='addPerson'>
+  <md-toolbar>
+    <div class='md-toolbar-tools'>
+      <h2>Добавление ФЛ</h2>
+      <span flex></span>
+      <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
+        <md-icon class='fa fa-times fa-lg' aria-label='Закрыть окно'></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <div class='md-container'>
+      <form name='vm.personAddForm'>
+        <!-- person iin -->
+        <md-input-container>
+          <label>ИИН</label>
+    			<input
+    				type='text'
+    				ng-model='vm.personToAdd.iin'
+            required name='iin'>
+        </md-input-container>
+        <!-- person last name -->
+        <md-input-container>
+          <label>Фамилия</label>
+          <input
+            type='text'
+            ng-model='vm.personToAdd.lastName'
+            required name='lastName'>
+        </md-input-container>
+        <!-- person first name -->
+        <md-input-container>
+          <label>Имя</label>
+          <input
+            type='text'
+            ng-model='vm.personToAdd.firstName'
+            required name='firstName'>
+        </md-input-container>
+        <!-- person middle name -->
+        <md-input-container>
+          <label>Отчество</label>
+          <input
+            type='text'
+            ng-model='vm.personToAdd.middleName'>
+        </md-input-container>
+        <!-- person dob -->
+        <md-datepicker
+          ng-model='vm.personToAdd.dob'
+          md-placeholder='Дата рождения'
+          required name='dob'>
+        </md-datepicker>
+        <!-- person gender -->
+        <md-input-container>
+            <label>Пол</label>
+            <md-select
+              ng-model="vm.personToAdd.genderID"
+              required name='genderID'>
+              <md-option ng-repeat="gender in vm.genders" value="{{gender.id}}">
+                {{gender.genderName}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+    	</form>
+    </div>
+  </md-dialog-content>
+  <div class='md-actions'>
+  	<button class='btn waves-effect waves-light btn-blue' type='submit' ng-click='vm.submit()'>
+      Добавить ФЛ
+    </button>
+  	<button class='btn waves-effect waves-light btn-blue' type='button' ng-click='vm.closeDialog()'>
+      Отмена
+    </button>
+  </div>
+</md-dialog>

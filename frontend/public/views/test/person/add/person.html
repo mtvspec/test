@@ -1,0 +1,29 @@
+<form>
+  
+  <label>ИИН:</label>
+  <input type='text' ng-model='vm.person.iin'>
+  <label>Фамилия:</label>
+  <input type='text' ng-model='vm.person.lastName'>
+  <label>Имя:</label>
+  <input type='text' ng-model='vm.person.firstName'>
+  <label>Отчество:</label>
+  <input type='text' ng-model='vm.person.middleName'>
+  <label>Дата рождения:</label>
+  <input type='text' ng-model='vm.person.dob'>
+  <label>Пол:</label>
+  <input type='text' ng-model='vm.person.genderID'>
+
+  <button type='submit' ng-click='vm.submit(vm.person)'>Тест</button>
+  
+</form>
+<ul>
+  <li ng-repeat='person in vm.persons'>
+    <span ng-bind='person.iin'></span>
+    <span ng-bind='person.lastName'></span>
+    <span ng-bind='person.firstName'></span>
+    <span ng-bind='person.middleName'></span>
+    <span ng-bind='person.dob | date:"dd-MM-yyyy"'></span>
+    <span ng-bind='person.genderID'></span>
+    <span ng-bind='person.isDeleted'></span>
+  </li>
+</ul>

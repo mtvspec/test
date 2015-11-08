@@ -1,0 +1,11 @@
+<ul>
+  <li ng-repeat='person in vm.persons'>
+    <span ng-bind='person.iin'></span>
+    <span ng-bind='person.lastName'></span>
+    <span ng-bind='person.firstName'></span>
+    <span ng-bind='person.middleName'></span>
+    <span ng-bind='person.dob | date:"dd-MM-yyyy"'></span>
+    <span ng-bind='person.genderID'></span>
+    <span ng-bind='person.isDeleted'></span>
+  </li>
+</ul>

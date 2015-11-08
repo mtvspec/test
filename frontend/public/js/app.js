@@ -1,13 +1,7 @@
 (function () {
   'use strict';
   
-  $(document).ready(function(){
-      $('.collapsible').collapsible({
-        accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
-      });
-    });
-  
-  angular.module('app', ['ui.router'])
+  angular.module('app', ['ui.router', 'ngMaterial'])
   .run(function ($rootScope) {
     $rootScope.$on('$stateChangeSuccess', function (evt, toState) {
       if (toState.data && toState.data.title) {
@@ -41,8 +35,8 @@
       }
     })
     
-    .state('admin.layout.persons', {
-      url: '/persons',
+    .state('admin.layout.pers', {
+      url: '/pers',
       templateUrl: 'views/admin/persons/allPersons/AllPersonsTmpl.html',
       controller: 'PersonsCtrl',
       controllerAs: 'vm',
@@ -58,6 +52,26 @@
       controllerAs: 'vm',
       data: {
         title: 'Юридические лица'
+      }
+    })
+    
+    .state('admin.layout.person', {
+      url: '/person',
+      templateUrl: 'views/test/person/add/person.html',
+      controller: 'PersonCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Физическое лицо'
+      }
+    })
+    
+    .state('admin.layout.persons', {
+      url: '/persons',
+      templateUrl: 'views/test/person/all/persons.html',
+      controller: 'PersonsCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Физические лица'
       }
     })
     
