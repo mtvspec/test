@@ -33,29 +33,33 @@ UPDATE e_persons SET iin = {iin}, last_name = {lastName}, first_name = {firstNam
 UPDATE e_persons SET is_deleted = 1 WHERE iin = {iin} RETURNING iin; 
 -- Журнал истории изменения сущности 'Физическое лицо'
 CREATE TABLE log.e_persons (
-  id SERIAL,
+  id SERIAL NOT NULL,
   session_id INTEGER NOT NULL,
   man_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
   type_id INTEGER NOT NULL,
-  iin VARCHAR(12) NOT NULL,
+  iin CHAR(12) NOT NULL,
   last_name VARCHAR(300) NOT NULL,
   first_name VARCHAR(300) NOT NULL,
   middle_name VARCHAR(300),
   gender_id CHAR(1) NOT NULL,
   is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (id),
-  FOREIGN KEY (session_id) REFERENCES e_sessions(id),
+  FOREIGN KEY (session_id) REFERENCES meta.e_sessions(id),
   FOREIGN KEY (type_id) REFERENCES dict.manipulation_type(id),
   FOREIGN KEY (iin) REFERENCES e_persons(iin),
   FOREIGN KEY (gender_id) REFERENCES dict.d_genders(id),
   FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
-  CHECK (gender_id IN (1,2)),
-  CHECK (is_deleted IN (0,1))
+  CHECK (gender_id IN ('M','F')),
+  CHECK (is_deleted IN ('N','Y'))
 );
+-- Извлечь историю изменения сущности 'Физическое лицо'
+SELECT id, session_id AS "sessionID", man_date AS "manDate", type_id AS "typeID", iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", gender_id AS "genderID", is_deleted AS "isDeleted" FROM log.e_persons ORDER BY id ASC;
+-- Вставить изменение в журнал истории изменения сущности 'Физическое лицо'
+INSERT INTO log.e_persons (session_id, man_date, type_id, iin, last_name, first_name, middle_name, gender_id, is_deleted) values ({sessionID}, {manDate}, {typeID}, {iin}, {lastName}, {firstName}, {middleName}, {genderID}, {isDeleted}) RETURNING id;
 -- Сущность 'Юридические лица'
 -- Created
 CREATE TABLE e_companies (
-  bin NUMERIC(12,0) NOT NULL, -- Необходимо реализовать проверку БИН по маске на стороне бакэнда и фронтэнда
+  bin CHAR(12) NOT NULL, -- Необходимо реализовать проверку БИН по маске на стороне бакэнда и фронтэнда
   company_name VARCHAR(500) NOT NULL,
   is_deleted SMALLINT NOT NULL DEFAULT 0,
   PRIMARY KEY (bin),
@@ -82,43 +86,46 @@ UPDATE e_companies SET bin = {bin}, company_name = {companyName} WHERE bin = {bi
 UPDATE e_companies SET is_deleted = 1 WHERE bin = {bin} RETURNING bin;
 -- Журнал истории изменения сущности 'Юридическое лицо'
 CREATE TABLE log.e_companies (
-  id SERIAL,
+  id SERIAL NOT NULL,
   session_id INTEGER NOT NULL,
   man_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
   type_id INTEGER NOT NULL,
-  bin NUMERIC[12,0] NOT NULL,
+  bin CHAR(12) NOT NULL,
   company_name VARCHAR(500) NOT NULL,
-  is_deleted INTEGER(1) NOT NULL DEFAULT 0 CHECK (is_deleted in (0,1)),
+  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (id),
-  FOREIGN KEY (session_id) REFERENCES e_sessions(id),
+  FOREIGN KEY (session_id) REFERENCES meta.e_sessions(id),
   FOREIGN KEY (type_id) REFERENCES dict.manipulation_type(id),
-  FOREIGN KEY (bin) REFERENCES e_companies(bin)
+  FOREIGN KEY (bin) REFERENCES e_companies(bin),
+  CHECK (is_deleted IN ('N','Y'))
 );
 -- Сущность 'Должность'
 CREATE TABLE e_positions (
-  id SERIAL,
+  id SERIAL NOT NULL,
   position_name VARCHAR(500) NOT NULL,
-  is_deleted INTEGER(1) NOT NULL DEFAULT 0 CHECK (is_deleted in (0,1)),
+  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (id),
-  UNIQUE (position_name)
+  UNIQUE (position_name),
+  CHECK (is_deleted IN ('N','Y'))
 );
 -- Журнал истории изменения сущности 'Должность'
 CREATE TABLE log.e_positions (
-  id SERIAL,
+  id SERIAL NOT NULL,
   session_id INTEGER NOT NULL,
   man_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
   type_id INTEGER NOT NULL,
   position_id INTEGER NOT NULL,
   position_name VARCHAR(500) NOT NULL,
-  is_deleted INTEGER(1) NOT NULL DEFAULT 0 CHECK (is_deleted in (0,1)),
+  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (id),
   FOREIGN KEY (session_id) REFERENCES e_sessions(id),
   FOREIGN KEY (type_id) REFERENCES dict.manipulation_type(id),
-  FOREIGN KEY (position_id) REFERENCES e_positions(id)
+  FOREIGN KEY (position_id) REFERENCES e_positions(id),
+  CHECK (is_deleted IN ('N','Y'))
 );
 -- Сущность 'Подразделения юридических лиц'
 CREATE TABLE e_divisions (
-  id SERIAL,
+  id SERIAL NOT NULL,
   parent_division_id INTEGER,
   division_name VARCHAR(400) NOT NULL,
   PRIMARY KEY (id),
@@ -149,11 +156,11 @@ CREATE TABLE dict.is_deleted (
 -- Связь 'Компании - Подразделения'
 CREATE TABLE r_e_companies_e_divisions (
   id SERIAL NOT NULL,
-  company_id NUMERIC[12,0] NOT NULL,
+  company_id CHAR(12) NOT NULL,
   division_id INTEGER NOT NULL,
   PRIMARY KEY (company_id, division_id),
   UNIQUE (id),
-  FOREIGN KEY (company_id) REFERENCES e_companies(id),
+  FOREIGN KEY (company_id) REFERENCES e_companies(bin),
   FOREIGN KEY (division_id) REFERENCES e_divisions(id)
 );
 -- Связь 'Подразделения - Должности'
@@ -171,37 +178,40 @@ CREATE TABLE r_positions_e_persons (
   id SERIAL NOT NULL,
   session_id INTEGER NOT NULL,
   position_id INTEGER NOT NULL,
-  person_id NUMERIC[12,0] NOT NULL,
+  person_id CHAR(12) NOT NULL,
   create_date DATE NOT NULL,
-  is_deleted INTEGER(1) NOT NULL DEFAULT 0 CHECK (is_deleted in (0,1)),
+  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (position_id, person_id),
   UNIQUE (id),
   FOREIGN KEY (position_id) REFERENCES e_positions(id),
-  FOREIGN KEY (person_id) REFERENCES e_persons(id),
-  FOREIGN KEY (serssion_id) REFERENCES e_sessions(id) 
+  FOREIGN KEY (person_id) REFERENCES e_persons(iin),
+  FOREIGN KEY (serssion_id) REFERENCES e_sessions(id),
+  CHECK (is_deleted IN ('N','Y')) 
 );
 -- Сущность 'Сессии'
-CREATE TABLE e_sessions (
+CREATE TABLE meta.e_sessions (
   id SERIAL NOT NULL,
   user_id INTEGER NOT NULL,
   role_id INTEGER NOT NULL,
   open_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
   close_date TIMESTAMP WITH TIME ZONE,
-  status INTEGER(1) NOT NULL DEFAULT 0 CHECK (status in (0,1))
+  status CHAR(1) NOT NULL DEFAULT 'O',
   PRIMARY KEY (id),
-  FOREIGN KEY (user_id) REFERENCES e_users(id),
-  FOREIGN KEY (role_id) REFERENCES e_roles(id)
+  FOREIGN KEY (user_id) REFERENCES meta.e_users(id),
+  FOREIGN KEY (role_id) REFERENCES meta.e_roles(id),
+  CHECK (status IN ('O','C'))
 );
 -- Сущность 'Пользователи'
-CREATE TABLE e_users (
+CREATE TABLE meta.e_users (
   id SERIAL NOT NULL,
-  person_id NUMERIC[12,0] NOT NULL,
+  person_id CHAR(12) NOT NULL,
   u_username VARCHAR(20) NOT NULL,
   u_password VARCHAR(20) NOT NULL,
-  status_id INTEGER NOT NULL DEFAULT 0,
+  status CHAR(1) NOT NULL DEFAULT 'E',
   PRIMARY KEY (u_username, u_password),
   UNIQUE (id),
-  FOREIGN KEY (person_id) REFERENCES e_persons(iin)
+  FOREIGN KEY (person_id) REFERENCES e_persons(iin),
+  CHECK (status IN ('E', 'B'))
 );
 -- Сущность 'Роли'
 CREATE TABLE e_roles (
