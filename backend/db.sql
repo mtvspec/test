@@ -32,11 +32,12 @@ UPDATE e_persons SET iin = {iin}, last_name = {lastName}, first_name = {firstNam
 -- Удалить физическо лицо
 UPDATE e_persons SET is_deleted = 1 WHERE iin = {iin} RETURNING iin; 
 -- Журнал истории изменения сущности 'Физическое лицо'
+-- Created
 CREATE TABLE log.e_persons (
   id SERIAL NOT NULL,
   session_id INTEGER NOT NULL,
-  man_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
-  type_id INTEGER NOT NULL,
+  manipulation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
+  manipulation_type_id CHAR(1) NOT NULL,
   iin CHAR(12) NOT NULL,
   last_name VARCHAR(300) NOT NULL,
   first_name VARCHAR(300) NOT NULL,
@@ -45,7 +46,7 @@ CREATE TABLE log.e_persons (
   is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (id),
   FOREIGN KEY (session_id) REFERENCES meta.e_sessions(id),
-  FOREIGN KEY (type_id) REFERENCES dict.manipulation_type(id),
+  FOREIGN KEY (manipulation_type_id) REFERENCES dict.manipulation_type(id),
   FOREIGN KEY (iin) REFERENCES e_persons(iin),
   FOREIGN KEY (gender_id) REFERENCES dict.d_genders(id),
   FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
@@ -55,7 +56,7 @@ CREATE TABLE log.e_persons (
 -- Извлечь историю изменения сущности 'Физическое лицо'
 SELECT id, session_id AS "sessionID", man_date AS "manDate", type_id AS "typeID", iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", gender_id AS "genderID", is_deleted AS "isDeleted" FROM log.e_persons ORDER BY id ASC;
 -- Вставить изменение в журнал истории изменения сущности 'Физическое лицо'
-INSERT INTO log.e_persons (session_id, man_date, type_id, iin, last_name, first_name, middle_name, gender_id, is_deleted) values ({sessionID}, {manDate}, {typeID}, {iin}, {lastName}, {firstName}, {middleName}, {genderID}, {isDeleted}) RETURNING id;
+INSERT INTO log.e_persons (session_id, manipulation_type_id, iin, last_name, first_name, middle_name, gender_id, is_deleted) values ({sessionID}, {manipulationTypeID}, {iin}, {lastName}, {firstName}, {middleName}, {genderID}, {isDeleted}) RETURNING id;
 -- Сущность 'Юридические лица'
 -- Created
 CREATE TABLE e_companies (
@@ -132,7 +133,20 @@ CREATE TABLE e_divisions (
   UNIQUE (division_name),
   FOREIGN KEY (parent_division_id) REFERENCES e_divisions(id)
 );
+-- Справочник 'Тип манипуляции над данными'
+-- Created
+CREATE TABLE dict.manipulation_type (
+  id CHAR(1) NOT NULL,
+  manipulation_type_name VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (manipulation_type_name)
+);
+-- Извлечь все подразделения юридических лиц
+SELECT id, parent_division_id AS "parentDivisionID", division_name AS "divisionName" FROM e_divisions ORDER BY id ASC;
+-- Извлечь подразделение 
+-- ==========================================================================================================================================================================================================================--
 -- Справочники
+-- ==========================================================================================================================================================================================================================--
 -- Created
 CREATE SCHEMA dict;
 -- Справочник 'Пол физического лица (Мужской/Женский)'
@@ -144,6 +158,10 @@ CREATE TABLE dict.d_genders (
   UNIQUE (gender_name),
   CHECK (id IN ('M','F'))
 );
+-- Извлечь значения справочника 'Пол физического лица'
+SELECT id, gender_name AS "genderName" FROM dict.d_genders ORDER BY id ASC;
+-- Извлечь значение справоничка по идентификатору справочного значения
+SELECT id, gender_name AS "genderName" FROM dict.d_genders WHERE id = {id};
 -- Справочник 'Удален? (Нет/Да)'
 -- Created
 CREATE TABLE dict.is_deleted (
@@ -153,6 +171,86 @@ CREATE TABLE dict.is_deleted (
   UNIQUE (condition_name),
   CHECK (id IN ('N', 'Y'))
 );
+-- Извлечь состояния
+SELECT id, condition_name AS "conditionName" FROM dict.is_deleted ORDER BY id ASC;
+-- Извлечь состояние по идентификатору состояния
+SELECT id, condition_name AS "conditionName" FROM dict.is_deleted WHERE id = {id};
+-- ==========================================================================================================================================================================================================================--
+-- Метаданные
+-- ==========================================================================================================================================================================================================================--
+-- Created
+CREATE SCHEMA meta;
+-- Сущность 'Сессии'
+CREATE TABLE meta.e_sessions (
+  id SERIAL NOT NULL,
+  user_id INTEGER NOT NULL,
+  role_id INTEGER NOT NULL,
+  open_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
+  close_date TIMESTAMP WITH TIME ZONE,
+  status CHAR(1) NOT NULL DEFAULT 'O',
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES meta.e_users(id),
+  FOREIGN KEY (role_id) REFERENCES meta.e_roles(id),
+  CHECK (status IN ('O','C'))
+);
+-- Извлечь сессию по идентификатору пользователя
+SELECT id, role_id AS "roleID", open_date AS "openDate", close_date AS "closeDate" status FROM meta.e_sessions WHERE user_id = {userID};
+-- Вставить сессию
+INSERT INTO meta.e_sessions (user_id, role_id) VALUES ({userID}, {roleID}) RETIRNING id;
+-- Сущность 'Пользователи'
+CREATE TABLE meta.e_users (
+  id SERIAL NOT NULL,
+  person_id CHAR(12) NOT NULL,
+  u_username VARCHAR(20) NOT NULL,
+  u_password VARCHAR(20) NOT NULL,
+  is_blocked CHAR(1) NOT NULL DEFAULT 'N',
+  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (u_username, u_password),
+  UNIQUE (id),
+  FOREIGN KEY (person_id) REFERENCES e_persons(iin),
+  CHECK (is_blocked IN ('N', 'Y')),
+  CHECK (is_deleted IN ('N', 'Y'))
+);
+-- Извлечь пользователя по имени пользователя
+SELECT id, person_id AS "personID", status FROM meta.e_users WHERE u_username = {username}; 
+-- Вставить пользователя
+INSERT INTO meta.e_users (person_id, u_username, u_password) VALUES ({personID}, {username}, {password}) RETURNING id;
+-- Изменить пароль пользователя по идентификатору пользователя
+UPDATE meta.e_users SET u_password = {password} WHERE id = {id};
+-- Удалить пользователя по идентификатору пользователя
+UPDATE meta.e_users SET is_deleted = 'Y' WHERE id = {id};
+-- Восстановить пользователя по идентификатору пользователя
+UPDATE meta.e_users SET is_deleted = 'N' WHERE id = {id};
+-- Заблокировать пользователя по идентификатору пользователя
+UPDATE meta.e_users SET is_blocked = 'Y' WHERE id = {id};
+-- Разблокировать пользователя по идентификатору пользователя
+UPDATE meta.e_users SET is_blocked = 'N' WHERE id = {id};
+-- Сущность 'Роли'
+CREATE TABLE meta.e_roles (
+  id SERIAL NOT NULL,
+  role_name VARCHAR(200) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (role_name)
+);
+-- Извлечь все роли
+SELECT id, role_name FROM meta.e_roles ORDER BY id ASC;
+-- Вставить роль
+INSERT INTO meta.e_roles (role_name) VALUES ({roleName});
+-- Связь 'Роли - Пользователи'
+CREATE TABLE meta.r_e_roles_e_users (
+  id SERIAL NOT NULL,
+  role_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  PRIMARY KEY (role_id, user_id),
+  UNIQUE (id)
+  FOREIGN KEY (role_id) REFERENCES meta.e_roles(id),
+  FOREIGN KEY (user_id) REFERENCES meta.e_users(id)
+);
+-- Извлечь все связи 'Роли - Пользователи'
+SELECT id, role_id AS "roleID", user_id AS "userID" FROM meta.r_e_roles_e_users ORDER BY id ASC;
+-- Вставить связь 'Роли - Пользователи'
+INSERT INTO meta.r_e_roles_e_users (role_id, user_id) VALUES ({roleID}, {userID}) RETURNING id;
+-- ==========================================================================================================================================================================================================================--
 -- Связь 'Компании - Подразделения'
 CREATE TABLE r_e_companies_e_divisions (
   id SERIAL NOT NULL,
@@ -185,48 +283,6 @@ CREATE TABLE r_positions_e_persons (
   UNIQUE (id),
   FOREIGN KEY (position_id) REFERENCES e_positions(id),
   FOREIGN KEY (person_id) REFERENCES e_persons(iin),
-  FOREIGN KEY (serssion_id) REFERENCES e_sessions(id),
+  FOREIGN KEY (serssion_id) REFERENCES meta.e_sessions(id),
   CHECK (is_deleted IN ('N','Y')) 
-);
--- Сущность 'Сессии'
-CREATE TABLE meta.e_sessions (
-  id SERIAL NOT NULL,
-  user_id INTEGER NOT NULL,
-  role_id INTEGER NOT NULL,
-  open_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
-  close_date TIMESTAMP WITH TIME ZONE,
-  status CHAR(1) NOT NULL DEFAULT 'O',
-  PRIMARY KEY (id),
-  FOREIGN KEY (user_id) REFERENCES meta.e_users(id),
-  FOREIGN KEY (role_id) REFERENCES meta.e_roles(id),
-  CHECK (status IN ('O','C'))
-);
--- Сущность 'Пользователи'
-CREATE TABLE meta.e_users (
-  id SERIAL NOT NULL,
-  person_id CHAR(12) NOT NULL,
-  u_username VARCHAR(20) NOT NULL,
-  u_password VARCHAR(20) NOT NULL,
-  status CHAR(1) NOT NULL DEFAULT 'E',
-  PRIMARY KEY (u_username, u_password),
-  UNIQUE (id),
-  FOREIGN KEY (person_id) REFERENCES e_persons(iin),
-  CHECK (status IN ('E', 'B'))
-);
--- Сущность 'Роли'
-CREATE TABLE e_roles (
-  id SERIAL NOT NULL,
-  role_name VARCHAR(200) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE (role_name)
-);
--- Связь 'Роли - Пользователи'
-CREATE TABLE e_roles_e_users (
-  id SERIAL NOT NULL,
-  role_id INTEGER NOT NULL,
-  user_id INTEGER NOT NULL,
-  PRIMARY KEY (role_id, user_id),
-  UNIQUE (id)
-  FOREIGN KEY (role_id) REFERENCES e_roles(id),
-  FOREIGN KEY (user_id) REFERENCES e_users(id)
 );
