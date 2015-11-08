@@ -21,7 +21,7 @@
           return persons;
         }
       }, function (response) {
-        console.log(response.statusCode.statusText);
+        console.log(response.status.statusText);
       });
     };
     
