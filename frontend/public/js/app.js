@@ -35,8 +35,8 @@
       }
     })
     
-    .state('admin.layout.persons', {
-      url: '/persons',
+    .state('admin.layout.pers', {
+      url: '/pers',
       templateUrl: 'views/admin/persons/allPersons/AllPersonsTmpl.html',
       controller: 'PersonsCtrl',
       controllerAs: 'vm',
@@ -57,11 +57,21 @@
     
     .state('admin.layout.person', {
       url: '/person',
-      templateUrl: 'views/person.html',
+      templateUrl: 'views/test/person/add/person.html',
       controller: 'PersonCtrl',
       controllerAs: 'vm',
       data: {
         title: 'Физическое лицо'
+      }
+    })
+    
+    .state('admin.layout.persons', {
+      url: '/persons',
+      templateUrl: 'views/test/person/all/persons.html',
+      controller: 'PersonsCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Физические лица'
       }
     })
     

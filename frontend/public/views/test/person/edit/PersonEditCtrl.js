@@ -2,7 +2,7 @@
   'use strict';
   
   angular.module('app')
-  .controller('PersonCtrl', function ($http) {
+  .controller('PersonEditCtrl', function ($http) {
     
     var vm = this;
     
@@ -14,7 +14,7 @@
     function submit(data) {
       console.log(data);
       $http({
-        method: 'POST',
+        method: 'PUT',
         url: '/api/persons',
         data: data
       }).then(function (response) {

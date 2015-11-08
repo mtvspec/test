@@ -6,28 +6,29 @@ CREATE TABLE e_persons (
   first_name VARCHAR(300) NOT NULL,
   middle_name VARCHAR(300),
   dob DATE NOT NULL,
-  gender_id INTEGER NOT NULL,
-  is_deleted SMALLINT NOT NULL DEFAULT 0,
+  gender_id CHAR(1) NOT NULL,
+  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (iin),
   FOREIGN KEY (gender_id) REFERENCES dict.d_genders(id),
-  CHECK (is_deleted IN (0,1))
+  CHECK (gender_id IN ('M','F')),
+  CHECK (is_deleted IN ('N','Y'))
 );
 -- Извлечь всех физических лиц
 SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons ORDER BY iin ASC;
 -- Извлечь физическое лицо по ИИН
 SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons WHERE iin = {iin};
 -- Извлечь всех существующих физических лиц
-SELECT iin, last_name, first_name, middle_name, dob, gender_id FROM e_persons WHERE is_deleted = 0 ORDER BY iin ASC;
+SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 0 ORDER BY iin ASC;
 -- Извлечь существующие физическое лицо по ИИН
-SELECT iin, last_name, first_name, middle_name, dob, gender_id FROM e_persons WHERE is_deleted = 0 AND iin = {iin};
+SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 0 AND iin = {iin};
 -- Извлечь всех несуществующих физических лиц
-SELECT iin, last_name, first_name, middle_name, dob, gender_id FROM e_persons WHERE is_deleted = 1 ORDER BY iin ASC;
--- Извлечь несуществующие физическое лицо по ИИН
-SELECT iin, last_name, first_name, middle_name, dob, gender_id FROM e_persons WHERE is_deleted = 1 AND iin = {iin};
+SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 1 ORDER BY iin ASC;
+-- Извлечь несуществующее физическое лицо по ИИН
+SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 1 AND iin = {iin};
 -- Вставить физическое лицо
 INSERT INTO e_persons (iin, last_name, first_name, middle_name, dob, gender_id) VALUES ({iin}, {lastName}, {firstName}, {middleName}, {dob}, {genderID}) RETURNING iin;
 -- Обновить физическое лицо
-UPDATE e_persons SET iin = {iin}, last_name = {lastName}, middle_name = {middleName}, dob = {dob}, gender_id = {genderID} WHERE iin = {iin} RETURNING iin;
+UPDATE e_persons SET iin = {iin}, last_name = {lastName}, first_name = {firstName} middle_name = {middleName}, dob = {dob}, gender_id = {genderID} WHERE iin = {iin} RETURNING iin;
 -- Удалить физическо лицо
 UPDATE e_persons SET is_deleted = 1 WHERE iin = {iin} RETURNING iin; 
 -- Журнал истории изменения сущности 'Физическое лицо'
@@ -40,12 +41,15 @@ CREATE TABLE log.e_persons (
   last_name VARCHAR(300) NOT NULL,
   first_name VARCHAR(300) NOT NULL,
   middle_name VARCHAR(300),
-  gender_id INTEGER NOT NULL,
-  is_deleted INTEGER(1) NOT NULL DEFAULT 0,
+  gender_id CHAR(1) NOT NULL,
+  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (id),
   FOREIGN KEY (session_id) REFERENCES e_sessions(id),
   FOREIGN KEY (type_id) REFERENCES dict.manipulation_type(id),
   FOREIGN KEY (iin) REFERENCES e_persons(iin),
+  FOREIGN KEY (gender_id) REFERENCES dict.d_genders(id),
+  FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
+  CHECK (gender_id IN (1,2)),
   CHECK (is_deleted IN (0,1))
 );
 -- Сущность 'Юридические лица'
@@ -53,9 +57,29 @@ CREATE TABLE log.e_persons (
 CREATE TABLE e_companies (
   bin NUMERIC(12,0) NOT NULL, -- Необходимо реализовать проверку БИН по маске на стороне бакэнда и фронтэнда
   company_name VARCHAR(500) NOT NULL,
+  is_deleted SMALLINT NOT NULL DEFAULT 0,
   PRIMARY KEY (bin),
-  UNIQUE (company_name)
+  UNIQUE (company_name),
+  FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
+-- Извлечь все юридические лица
+SELECT bin, company_name AS "companyName", is_deleted AS "isDeleted" FROM e_companies ORDER BY bin ASC;
+-- Извлечь юридическое лицо по БИН
+SELECT bin, company_name AS "companyName", is_deleted AS "isDeleted" FROM e_companies WHERE bin = {bin};
+-- Извлечь все существующее юридические лица
+SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 0 ORDER BY bin ASC;
+-- Извлечь существующее юридическое лицо по БИН
+SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 0 AND bin = {bin};
+-- Извлечь все не существующие юридические лица
+SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 1 ORDER BY bin ASC;
+-- Извлечь не существующее юридическое лицо по БИН
+SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 1 AND bin = {bin};
+-- Вставить юридическое лицо
+INSERT INTO e_companies (bin, company_name) VALUES ({bin}, {companyName}) RETURNING bin;
+-- Обновить юридическое лицо
+UPDATE e_companies SET bin = {bin}, company_name = {companyName} WHERE bin = {bin} RETURNING bin;
+-- Удалить юридическое лицо
+UPDATE e_companies SET is_deleted = 1 WHERE bin = {bin} RETURNING bin;
 -- Журнал истории изменения сущности 'Юридическое лицо'
 CREATE TABLE log.e_companies (
   id SERIAL,
@@ -104,14 +128,23 @@ CREATE TABLE e_divisions (
 -- Справочники
 -- Created
 CREATE SCHEMA dict;
--- Справочник 'Пол физического лица'
+-- Справочник 'Пол физического лица (Мужской/Женский)'
 -- Created
 CREATE TABLE dict.d_genders (
-  id SERIAL,
+  id CHAR(1),
   gender_name VARCHAR(100) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (gender_name),
-  CHECK (id IN (1,2))
+  CHECK (id IN ('M','F'))
+);
+-- Справочник 'Удален? (Нет/Да)'
+-- Created
+CREATE TABLE dict.is_deleted (
+  id CHAR(1),
+  condition_name VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (condition_name),
+  CHECK (id IN ('N', 'Y'))
 );
 -- Связь 'Компании - Подразделения'
 CREATE TABLE r_e_companies_e_divisions (
