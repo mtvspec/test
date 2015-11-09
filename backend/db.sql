@@ -311,6 +311,16 @@ CREATE TABLE r_e_companies_e_divisions (
   FOREIGN KEY (division_id) REFERENCES e_divisions(id),
   CHECK (is_deleted IN ('N', 'Y'))
 );
+-- Извлечь все связи 'Компании - Подразделения'
+SELECT id, company_id AS "companyID", division_id AS "divisionID", is_deleted AS "isDeleted" FROM r_e_companies_e_divisions ORDER BY id ASC;
+-- Извлечь все связи 'Компания - Подразделения' по идентификатору компании
+SELECT id, company_id AS "companyID", division_id AS "divisionID", is_deleted AS "isDeleted" FROM r_e_companies_e_divisions WHERE company_id = {companyID};
+-- Вставить связь 'Компания - Подразделение'
+INSERT INTO r_e_companies_e_divisions (company_id, division_id) VALUES ({companyID}, {division_ID}) RETURNING id;
+-- Обновить связь 'Компания - Подразделение' по идентификатору связи
+UPDATE r_e_companies_e_divisions SET company_id = {companyID}, division_id = {divisionID} WHERE id = {id};
+-- Удалить связь 'Компания - Подразделение' по идентификатору связи
+UPDATE r_e_companies_e_divisions SET is_deleted = 'Y' WHERE id = {id};
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Связь 'Подразделения - Должности'
 CREATE TABLE r_e_divisions_e_positions (
@@ -322,22 +332,45 @@ CREATE TABLE r_e_divisions_e_positions (
   UNIQUE (id),
   FOREIGN KEY (division_id) REFERENCES e_divisions(id),
   FOREIGN KEY (position_id) REFERENCES e_positions(id),
+  FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
   CHECK (is_deleted IN ('N', 'Y'))
 );
+-- Извлечь все связи 'Подразделения - Должности'
+SELECT id, division_id AS "divisionID", position_id AS "positionID", is_deleted AS "isDeleted" FROM r_e_divisions_e_positions ORDER BY id ASC;
+-- Извлечь все существующие связи 'Подразделения - Должности'
+SELECT id, division_id AS "divisionID", position_id AS "positionID" FROM r_e_divisions_e_positions WHERE is_deleted = 'N' AND id = {id};
+-- Извлечь все несуществующие связи 'Подразделения - Должности'
+SELECT id, division_id AS "divisionID", position_id AS "positionID" FROM r_e_divisions_e_positions WHERE is_deleted = 'Y' AND id = {id};
+-- Извлечь связь 'Подразделение - Должность' по индетификатору связи
+SELECT id, division_id AS "divisionID", position_id AS "positionID", is_deleted AS "isDeleted" FROM r_e_divisions_e_positions WHERE id = {id};
+-- Извлечь существующую связь 'Подразделение - Должность' по идентификатору связи
+SELECT id, division_id AS "divisionID", position_id AS "positionID" FROM r_e_divisions_e_positions WHERE is_deleted = 'N' AND id = {id};
+-- Извлечь несуществующую связь 'Подразделение - Должность' по идентификатору связи
+SELECT id, division_id AS "divisionID", position_id AS "positionID" FROM r_e_divisions_e_positions WHERE id_deleted = 'Y' AND id = {id};
+-- Извлечь все связи 'Подразделение - Должности' по идентификатору подразделения
+SELECT id, division_id AS "divisionID", position_id AS "positionID", is_deleted = AS "isDeleted" FROM r_e_divisions_e_positions WHERE division_id = {divisionID} ORDER BY id ASC;
+-- Извлечь все существующие связи 'Подразделение - Должности' по идентификатору подразделения
+SELECT id, division_id AS "divisionID", position_id AS "positionID" FROM r_e_divisions_e_positions WHERE is_deleted = 'N' AND division_id = {divisionID} ORDER BY id ASC;
+-- Извлечь все несуществующие связи 'Подразделение - Должности' по идентификатору подразделения
+SELECT id, division_id AS "divisionID", position_id AS "positionID" FROM r_e_divisions_e_positions WHERE is_deleted = 'Y' AND division_id = {divisionID} ORDER BY id ASC;
+-- Вставить связь 'Подразделение - Должность'
+INSERT INTO r_e_division_e_positions (division_id, position_id) VALUES ({divisionID}, {positionID}) RETURNING id;
+-- Обновить связь 'Подразделение - Должность' по идентификатору связи
+UPDATE r_e_divisions_e_positions SET division_id = {divisionID}, position_id = {positionID} WHERE id = {id};
+-- Удалить связь 'Подразделение - Должность' по идентификатору связи
+UPDATE r_e_divisions_e_positions SET is_deleted = 'Y' WHERE id = {id};
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Связь 'Должности - Физические лица'
-CREATE TABLE r_positions_e_persons (
+CREATE TABLE r_e_positions_e_persons (
   id SERIAL NOT NULL,
-  session_id INTEGER NOT NULL,
   position_id INTEGER NOT NULL,
   person_id CHAR(12) NOT NULL,
-  create_date DATE NOT NULL,
   is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (position_id, person_id),
   UNIQUE (id),
   FOREIGN KEY (position_id) REFERENCES e_positions(id),
   FOREIGN KEY (person_id) REFERENCES e_persons(iin),
-  FOREIGN KEY (serssion_id) REFERENCES meta.e_sessions(id),
+  FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
   CHECK (is_deleted IN ('N','Y')) 
 );
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
