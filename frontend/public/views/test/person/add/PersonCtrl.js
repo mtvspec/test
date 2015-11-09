@@ -40,7 +40,7 @@
       }).then(function (response) {
         console.log(response.data);
         if (response.data.iin == data.iin) {
-          console.log('Created');
+          console.log('Updated');
         }
       }, function (response) {
         console.log(response);

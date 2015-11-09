@@ -10,6 +10,7 @@ CREATE TABLE e_persons (
   is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (iin),
   FOREIGN KEY (gender_id) REFERENCES dict.d_genders(id),
+  CHECK (iin >= 12 AND iin <= 12),
   CHECK (gender_id IN ('M','F')),
   CHECK (is_deleted IN ('N','Y'))
 );
@@ -42,6 +43,7 @@ CREATE TABLE log.e_persons (
   last_name VARCHAR(300) NOT NULL,
   first_name VARCHAR(300) NOT NULL,
   middle_name VARCHAR(300),
+  dob DATE NOT NULL,
   gender_id CHAR(1) NOT NULL,
   is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (id),
@@ -133,14 +135,6 @@ CREATE TABLE e_divisions (
   UNIQUE (division_name),
   FOREIGN KEY (parent_division_id) REFERENCES e_divisions(id)
 );
--- Справочник 'Тип манипуляции над данными'
--- Created
-CREATE TABLE dict.manipulation_type (
-  id CHAR(1) NOT NULL,
-  manipulation_type_name VARCHAR(100) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE (manipulation_type_name)
-);
 -- Извлечь все подразделения юридических лиц
 SELECT id, parent_division_id AS "parentDivisionID", division_name AS "divisionName" FROM e_divisions ORDER BY id ASC;
 -- Извлечь подразделение 
@@ -171,6 +165,14 @@ CREATE TABLE dict.is_deleted (
   UNIQUE (condition_name),
   CHECK (id IN ('N', 'Y'))
 );
+-- Справочник 'Тип манипуляции над данными'
+-- Created
+CREATE TABLE dict.manipulation_type (
+  id CHAR(1) NOT NULL,
+  manipulation_type_name VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (manipulation_type_name)
+);
 -- Извлечь состояния
 SELECT id, condition_name AS "conditionName" FROM dict.is_deleted ORDER BY id ASC;
 -- Извлечь состояние по идентификатору состояния
@@ -181,6 +183,7 @@ SELECT id, condition_name AS "conditionName" FROM dict.is_deleted WHERE id = {id
 -- Created
 CREATE SCHEMA meta;
 -- Сущность 'Сессии'
+-- Created
 CREATE TABLE meta.e_sessions (
   id SERIAL NOT NULL,
   user_id INTEGER NOT NULL,
@@ -198,6 +201,7 @@ SELECT id, role_id AS "roleID", open_date AS "openDate", close_date AS "closeDat
 -- Вставить сессию
 INSERT INTO meta.e_sessions (user_id, role_id) VALUES ({userID}, {roleID}) RETIRNING id;
 -- Сущность 'Пользователи'
+-- Created
 CREATE TABLE meta.e_users (
   id SERIAL NOT NULL,
   person_id CHAR(12) NOT NULL,
@@ -226,6 +230,7 @@ UPDATE meta.e_users SET is_blocked = 'Y' WHERE id = {id};
 -- Разблокировать пользователя по идентификатору пользователя
 UPDATE meta.e_users SET is_blocked = 'N' WHERE id = {id};
 -- Сущность 'Роли'
+-- Created
 CREATE TABLE meta.e_roles (
   id SERIAL NOT NULL,
   role_name VARCHAR(200) NOT NULL,
