@@ -85,6 +85,7 @@ SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'Y
 -- Извлечь не существующее юридическое лицо по БИН
 SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'Y' AND bin = {bin};
 -- Вставить юридическое лицо
+-- Tested: OK
 INSERT INTO e_companies (bin, company_name) VALUES ({bin}, {companyName}) RETURNING bin;
 -- Обновить юридическое лицо
 UPDATE e_companies SET bin = {bin}, company_name = {companyName} WHERE bin = {bin} RETURNING bin;
