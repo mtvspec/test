@@ -315,7 +315,11 @@ CREATE TABLE r_e_companies_e_divisions (
 -- Извлечь все связи 'Компании - Подразделения'
 SELECT id, company_id AS "companyID", division_id AS "divisionID", is_deleted AS "isDeleted" FROM r_e_companies_e_divisions ORDER BY id ASC;
 -- Извлечь все связи 'Компания - Подразделения' по идентификатору компании
-SELECT id, company_id AS "companyID", division_id AS "divisionID", is_deleted AS "isDeleted" FROM r_e_companies_e_divisions WHERE company_id = {companyID};
+SELECT id, company_id AS "companyID", division_id AS "divisionID", is_deleted AS "isDeleted" FROM r_e_companies_e_divisions WHERE company_id = {companyID} ORDER BY id ASC;
+-- Извлечь существующие связи 'Компания - Подразделения'
+SELECT id, company_id AS "companyID", division_id AS "divisionID" FROM r_e_companies_e_divisions WHERE is_deleted = 'N' ORDER BY id ASC;
+-- Извлечь несуществующие связи 'Компания - Подразделения'
+SELECT id, company_id AS "companyID", division_id AS "divisionID" FROM r_e_companies_e_divisions WHERE is_deleted = 'Y' ORDER BY id ASC;
 -- Вставить связь 'Компания - Подразделение'
 INSERT INTO r_e_companies_e_divisions (company_id, division_id) VALUES ({companyID}, {division_ID}) RETURNING id;
 -- Обновить связь 'Компания - Подразделение' по идентификатору связи
