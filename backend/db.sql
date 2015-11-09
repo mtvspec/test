@@ -64,10 +64,11 @@ INSERT INTO log.e_persons (session_id, manipulation_type_id, iin, last_name, fir
 CREATE TABLE e_companies (
   bin CHAR(12) NOT NULL, -- Необходимо реализовать проверку БИН по маске на стороне бакэнда и фронтэнда
   company_name VARCHAR(500) NOT NULL,
-  is_deleted SMALLINT NOT NULL DEFAULT 0,
+  is_deleted CHAR NOT NULL DEFAULT 'N',
   PRIMARY KEY (bin),
   UNIQUE (company_name),
-  FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
+  FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
+  CHECK ()
 );
 -- Извлечь все юридические лица
 SELECT bin, company_name AS "companyName", is_deleted AS "isDeleted" FROM e_companies ORDER BY bin ASC;
