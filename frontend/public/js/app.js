@@ -46,8 +46,18 @@
     })
     
     .state('admin.layout.companies', {
-      url: '/companies',
+      url: '/comps',
       templateUrl: 'views/admin/companies/allCompanies/AllCompaniesTmpl.html',
+      controller: 'CompaniesCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Юридические лица'
+      }
+    })
+    
+    .state('companies', {
+      url: '/companies',
+      templateUrl: 'views/test/company/all/companies.html',
       controller: 'CompaniesCtrl',
       controllerAs: 'vm',
       data: {
