@@ -374,4 +374,28 @@ CREATE TABLE r_e_positions_e_persons (
   FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
   CHECK (is_deleted IN ('N','Y')) 
 );
+-- Извлечь все связи 'Должности - Физические лица'
+SELECT id, position_id AS "positionID", person_id AS "personID", is_deleted AS "isDeleted" FROM r_e_positions_e_persons ORDER BY id ASC;
+-- Извлечь все существующие связи 'Должности - Физические лица'
+SELECT id, position_id AS "positionID", person_id AS "personID" FROM r_e_positions_e_persons WHERE is_deleted = 'N' ORDER BY id ASC;
+-- Извлечь все несуществующие связи 'Должности - Физические лица' по идентификатору связи
+SELECT id, position_id AS "positionID", person_id AS "personID" FROM r_e_positions_e_persons WHERE is_deleted = 'Y' AND id = {id};
+-- Извлечь связь 'Должность - Физическое лицо' по идентификатору связи
+SELECT id, position_id AS "positionID", person_id AS "personID", is_deleted AS "isDeleted" FROM r_e_positions_e_persons WHERE id = {id};
+-- Извлечь существующую связь 'Должность - Физическое лицо' по идентификатору связи
+SELECT id, position_id AS "positionID", person_id AS "personID" FROM r_e_positions_e_persons WHERE is_deleted = 'N' AND id = {id};
+-- Извлечь несуществующую связь 'Должность - Физическое лицо' по идентификатору связи
+SELECT id, position_id AS "positionID", person_id AS "personID" FROM r_e_positions_e_persons WHERE is_deleted = 'Y' AND id = {id};
+-- Извлечь все связи 'Должность - Физические лица' по идентификатору должности
+SELECT id, position_id AS "positionID", person_id AS "personID", is_deleted AS "isDeleted" FROM r_e_positions_e_persons WHERE position_id = {positionID} ORDER BY id ASC;
+-- Извлечь все существующие связи 'Должность - Физические лица' по идентификатору должности
+SELECT id, position_id AS "positionID", person_id AS "personID" FROM r_e_positions_e_persons WHERE is_deleted = 'N' AND position_id = {positionID} ORDER BY id ASC;
+-- Извлечь все несуществующие связи 'Должность - Физические лица' по идентификатору должности
+SELECT id, position_id AS "positionID", person_id AS "personID" FROM r_e_positions_e_persons WHERE is_deleted = 'Y' AND position_id = {positionID} ORDER BY id ASC;
+-- Вставить связь 'Должность - Физическое лицо'
+INSERT INTO r_e_positions_e_persons (position_id, person_id) VALUES ({positionID}, {personID}) RETURNING id;
+-- Обновить связь 'Должность - Физическое лицо' по идентификатору связи
+UPDATE r_e_positions_e_persons SET position_id = {positionID}, person_id = {personID} WHERE id = {id};
+-- Удалить связь 'Должность - Физические лицо' по идентификатору связи
+UPDATE r_e_positions_e_persons SET is_deleted = 'Y' WHERE id = {id};
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
