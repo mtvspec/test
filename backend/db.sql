@@ -96,17 +96,19 @@ UPDATE e_companies SET is_deleted = 'Y' WHERE bin = {bin} RETURNING bin;
 CREATE TABLE log.e_companies (
   id SERIAL NOT NULL,
   session_id INTEGER NOT NULL,
-  man_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
-  type_id INTEGER NOT NULL,
+  manipulation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
+  manipulation_type_id INTEGER NOT NULL,
   bin CHAR(12) NOT NULL,
   company_name VARCHAR(500) NOT NULL,
   is_deleted CHAR(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (id),
   FOREIGN KEY (session_id) REFERENCES meta.e_sessions(id),
-  FOREIGN KEY (type_id) REFERENCES dict.manipulation_type(id),
+  FOREIGN KEY (manipulation_type_id) REFERENCES dict.manipulation_type(id),
   FOREIGN KEY (bin) REFERENCES e_companies(bin),
   CHECK (is_deleted IN ('N','Y'))
 );
+-- Извлечь все записи истории изменения сущности 'Юридическое лицо'
+SELECT id, session_id AS "sessionID", manipulation_date AS "manipulationDate", manipulation_type_id AS "manipulationTypeID", bin, company_name AS "companyName", is_deleted AS 'isDeleted' FROM log.e_companies ORDER BY id ASC;
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Должность'
 CREATE TABLE e_positions (
