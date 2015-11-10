@@ -1,17 +1,28 @@
-<form>
-  
-  <label>ИИН:</label>
-  <input type='text' ng-model='vm.person.iin'>
-  <label>Фамилия:</label>
-  <input type='text' ng-model='vm.person.lastName'>
-  <label>Имя:</label>
-  <input type='text' ng-model='vm.person.firstName'>
-  <label>Отчество:</label>
-  <input type='text' ng-model='vm.person.middleName'>
-  <label>Дата рождения:</label>
-  <input type='text' ng-model='vm.person.dob'>
-  <label>Пол:</label>
-  <input type='text' ng-model='vm.person.genderID'>
+<form class='col s12'>
+  <div class='input-field'>
+    <label for='iin'>ИИН:</label>
+    <input id='iin' type='text' ng-model='vm.person.iin' class='validate'>  
+  </div>
+  <div class='input-field'>
+    <label for='lastName'>Фамилия:</label>
+    <input id='lastName' type='text' ng-model='vm.person.lastName' class='validate'>
+  </div>
+  <div class='input-field'>
+    <label for='firstName'>Имя:</label>
+    <input id='firstName' type='text' ng-model='vm.person.firstName' class='validate'>
+  </div>
+  <div class='input-field'>
+    <label for='middleName'>Отчество:</label>
+    <input id='middleName' type='text' ng-model='vm.person.middleName'>
+  </div>
+  <div class='input-field'>
+    <label for='dob'>Дата рождения:</label>
+    <input id='dob' type='text' ng-model='vm.person.dob' class='validate'>
+  </div>
+  <div class='input-field'>
+    <label for='genderID'>Пол:</label>
+    <input id='genderID' type='text' ng-model='vm.person.genderID' class='validate'>
+  </div>
 
   <button type='submit' class='btn waves-effect' ng-click='vm.submit(vm.person)'>Тест</button>
   
