@@ -2,21 +2,22 @@
 	'use strict';
 
 	angular.module('app')
-	.controller('PersonAddCtrl', function ($mdDialog, PersonsModel) {
+	.controller('PersonAddCtrl', function ($mdDialog, Model) {
 
-		var vm = this;
+		var vm = this,
+    personAddForm = {},
+    person = {},
+    PersonsModel = new Model,
+    config = {
+      method: 'POST',
+      url: '/api/persons',
+      data: vm.person
+    };
 
-		var personAddForm = {};
+    vm.personAddForm = personAddForm,
+    vm.person = person;
 
-		vm.personAddForm = personAddForm;
-
-		var personToAdd = {};
-
-		vm.personToAdd = personToAdd;
-
-		vm.hasError = hasError;
-		vm.submit = submit;
-
+    vm.hasError = hasError;
 		function hasError(fieldName){
 			var field = personAddForm[fieldName];
 			if(field){
@@ -24,21 +25,31 @@
 			}
 		};
 
+    vm.submit = submit;
 		function submit(){
 			vm.personAddForm.$setSubmitted();
 			if(vm.personAddForm.$valid){
-				console.log(vm.personToAdd);
-				PersonsModel.createPerson(vm.personToAdd).then(function(response){
-					closeDialog();
+				console.log(vm.person);
+        console.log(config);
+				PersonsModel.createObject({
+          method: 'POST',
+          url: '/api/persons',
+          data: vm.person
+        })
+        .then(function(response){
+          closeDialog();
+				}, function (response) {
+				  console.error(response.status.statusText);
+          // TODO Show message
+          closeDialog();
 				});
 			}
 		};
 
+    vm.closeDialog = closeDialog;
     function closeDialog() {
       $mdDialog.cancel();
     };
-
-    vm.closeDialog = closeDialog;
 
 	});
 })();

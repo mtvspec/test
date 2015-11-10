@@ -1,13 +1,18 @@
 <div>
   <button class='waves-effect waves-light btn btn-blue' ng-click='vm.addPerson($event)'>Добавить ФЛ</button>
 </div>
-<ul class="collapsible" data-collapsible="accordion">
+<ul>
   <li ng-repeat='person in vm.persons'>
-    <div class="collapsible-header">
-      <span ng-bind='person.firstName'></span>
-    </div>
-    <div class='collapsible-body' class="collapsible-body" ng-repeat='personInfo in vm.personsInfo'>
-      <span ng-bind='personInfo.iin'></span>
+    <div class='personsList'>
+      <div>
+        <span ng-bind='person.lastName'></span>
+        <span ng-bind='person.firstName'></span>
+        <span ng-bind='person.middleName'></span>
+      </div>
+      <div>
+        <span ng-bind='person.iin'></span>
+        <span ng-bind='person.dob | date:"dd-MM-yyyy"'></span>
+      </div>
     </div>
   </li>
 </ul>

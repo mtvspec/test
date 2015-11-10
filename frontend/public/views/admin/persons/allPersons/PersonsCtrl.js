@@ -20,7 +20,7 @@
 	});
 
 
-  var showPersonDetails = function(ev, person) {
+  function showPersonDetails(ev, person) {
     console.debug(person);
     $mdDialog.show({
       controller: 'PersonInfoCtrl',
@@ -39,7 +39,7 @@
 
   vm.showPersonDetails = showPersonDetails;
 
-	var addPerson = function (ev) {
+	function addPerson(ev) {
 		$mdDialog.show({
 			templateUrl: 'views/admin/persons/addPerson/addPersonTmpl.html',
 			controller: 'PersonAddCtrl',

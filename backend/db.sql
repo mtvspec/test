@@ -4,7 +4,7 @@
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Физическое лицо' (entity person)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created
+-- Created (work-dev)
 CREATE TABLE e_persons (
   iin CHAR(12) NOT NULL, -- Необходимо реализовать проверку ИИН по маске на стороне бакэнда и фронтэнда (Внимание: ИИН представлен в формате VARCHAR)
   last_name VARCHAR(200) NOT NULL,
@@ -18,6 +18,7 @@ CREATE TABLE e_persons (
       CHECK (gender_id IN ('M','F')),
       CHECK (is_deleted IN ('N','Y'))
 );
+-- Tested
 COMMENT ON TABLE e_persons IS 'Сущность - Физическое лицо';
 COMMENT ON COLUMN e_persons.iin IS 'ИИН ФЛ';
 COMMENT ON COLUMN e_persons.last_name IS 'Фамилия ФЛ';
@@ -25,6 +26,7 @@ COMMENT ON COLUMN e_persons.first_name IS 'Имя ФЛ';
 COMMENT ON COLUMN e_persons.middle_name IS 'Отчество ФЛ';
 COMMENT ON COLUMN e_persons.dob IS 'Дата рождения ФЛ';
 COMMENT ON COLUMN e_persons.gender_id IS 'Пол ФЛ';
+-- Tested
 -- Извлечь всех физических лиц
 SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons ORDER BY iin ASC;
 -- Извлечь физическое лицо по ИИН
@@ -46,7 +48,7 @@ UPDATE e_persons SET is_deleted = 1 WHERE iin = {iin} RETURNING iin;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Журнал истории изменения сущности 'Физическое лицо' (log person)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created
+-- Created (work-dev)
 CREATE TABLE log.e_persons (
   id SERIAL NOT NULL,
   session_id INTEGER NOT NULL,
@@ -68,6 +70,18 @@ CREATE TABLE log.e_persons (
         CHECK (gender_id IN ('M','F')),
         CHECK (is_deleted IN ('N','Y'))
 );
+COMMENT ON TABLE log.e_persons IS 'Журнал - Физическое лицо';
+COMMENT ON COLUMN log.e_persons.id IS 'Идентификатор записи журнала';
+COMMENT ON COLUMN log.e_persons.session_id IS 'Идентификатор сессии';
+COMMENT ON COLUMN log.e_persons.manipulation_date IS 'Дата изменения сущности';
+COMMENT ON COLUMN log.e_persons.manipulation_type_id IS 'Тип изменения сущности';
+COMMENT ON COLUMN log.e_persons.iin IS 'ИИН ФЛ';
+COMMENT ON COLUMN log.e_persons.last_name IS 'Фамилия ФЛ';
+COMMENT ON COLUMN log.e_persons.first_name IS 'Имя ФЛ';
+COMMENT ON COLUMN log.e_persons.middle_name IS 'Отчество ФЛ';
+COMMENT ON COLUMN log.e_persons.dob IS 'Дата рождения ФЛ';
+COMMENT ON COLUMN log.e_persons.gender_id IS 'Пол ФЛ';
+COMMENT ON COLUMN log.e_persons.is_deleted IS 'Состояние записи';
 -- Извлечь историю изменения сущности 'Физическое лицо'
 SELECT id, session_id AS "sessionID", man_date AS "manDate", type_id AS "typeID", iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", gender_id AS "genderID", is_deleted AS "isDeleted" FROM log.e_persons ORDER BY id ASC;
 -- Вставить изменение в журнал истории изменения сущности 'Физическое лицо'
@@ -372,6 +386,12 @@ CREATE TABLE dict.d_genders (
 SELECT id, gender_name AS "genderName" FROM dict.d_genders ORDER BY id ASC;
 -- Извлечь значение справоничка 'Пол физического лица' по идентификатору значения справочника
 SELECT id, gender_name AS "genderName" FROM dict.d_genders WHERE id = {id};
+-- Вставить справочное значение 'Мужской'
+-- Tested
+INSERT INTO dict.d_genders (id, gender_name) VALUES ('M', 'Мужской') RETURNING id;
+-- Вставить справочное значение 'Женский'
+-- Tested
+INSERT INTO dict.d_genders (id, gender_name) VALUES ('F', 'Женский') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Справочник 'Удален? (Нет/Да)' (dictionary is_deleted)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -387,6 +407,12 @@ CREATE TABLE dict.is_deleted (
 SELECT id, condition_name AS "conditionName" FROM dict.is_deleted ORDER BY id ASC;
 -- Извлечь значение справочника 'Удален (Нет/Да)' по идентификатору значения справочника
 SELECT id, condition_name AS "conditionName" FROM dict.is_deleted WHERE id = {id};
+-- Вставить справочное значение 'Нет'
+-- Tested
+INSERT INTO dict.is_deleted (id, condition_name) VALUES ('N', 'Нет') RETURNING id;
+-- Вставить справочное значение 'Да'
+-- Tested
+INSERT INTO dict.is_deleted (id, condition_name) VALUES ('Y', 'Да') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Справочник 'Тип манипуляции над данными' (dictionary manipulation_type)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

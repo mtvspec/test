@@ -1,0 +1,7 @@
+.personsList {
+  padding: 10px;
+}
+.personsList:hover {
+  background-color: rgba(146, 172, 203, 0.15);
+  border-radius: 3px;
+}

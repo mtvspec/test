@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  
+
   angular.module('app', ['ui.router', 'ngMaterial'])
   .run(function ($rootScope) {
     $rootScope.$on('$stateChangeSuccess', function (evt, toState) {
@@ -13,14 +13,14 @@
   })
   .config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
-    
+
     $stateProvider
-    
+
     .state('admin', {
       abstract: true,
       templateUrl: 'views/root.html'
     })
-    
+
     .state('admin.layout', {
       views: {
         header: {
@@ -34,9 +34,9 @@
         title: 'Телефонный справочник'
       }
     })
-    
-    .state('admin.layout.pers', {
-      url: '/pers',
+
+    .state('admin.layout.persons', {
+      url: '/persons',
       templateUrl: 'views/admin/persons/allPersons/AllPersonsTmpl.html',
       controller: 'PersonsCtrl',
       controllerAs: 'vm',
@@ -44,7 +44,7 @@
         title: 'Физические лица'
       }
     })
-    
+
     .state('admin.layout.companies', {
       url: '/comps',
       templateUrl: 'views/admin/companies/allCompanies/AllCompaniesTmpl.html',
@@ -54,7 +54,7 @@
         title: 'Юридические лица'
       }
     })
-    
+
     .state('companies', {
       url: '/companies',
       templateUrl: 'views/test/company/all/companies.html',
@@ -64,7 +64,7 @@
         title: 'Юридические лица'
       }
     })
-    
+
     .state('admin.layout.person', {
       url: '/person',
       templateUrl: 'views/test/person/add/person.html',
@@ -74,9 +74,9 @@
         title: 'Физическое лицо'
       }
     })
-    
-    .state('admin.layout.persons', {
-      url: '/persons',
+
+    .state('admin.layout.pers', {
+      url: '/pers',
       templateUrl: 'views/test/person/all/persons.html',
       controller: 'PersonsCtrl',
       controllerAs: 'vm',
@@ -84,6 +84,6 @@
         title: 'Физические лица'
       }
     })
-    
+
   });
 })();
