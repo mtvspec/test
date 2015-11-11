@@ -5,14 +5,10 @@
 	.controller('PersonAddCtrl', function ($mdDialog, Model) {
 
 		var vm = this,
+    _url = '/api/person/',
     personAddForm = {},
     person = {},
-    PersonsModel = new Model,
-    config = {
-      method: 'POST',
-      url: '/api/persons',
-      data: vm.person
-    };
+    PersonsModel = new Model();
 
     vm.personAddForm = personAddForm,
     vm.person = person;
@@ -25,15 +21,21 @@
 			}
 		};
 
+    person = PersonsModel.getObject({
+      url: _url,
+      params: {
+        id: '871215301496'
+      }
+    });
+
+    console.log(person);
+
     vm.submit = submit;
 		function submit(){
 			vm.personAddForm.$setSubmitted();
 			if(vm.personAddForm.$valid){
-				console.log(vm.person);
-        console.log(config);
 				PersonsModel.createObject({
-          method: 'POST',
-          url: '/api/persons',
+          url: _url,
           data: vm.person
         })
         .then(function(response){

@@ -2,9 +2,8 @@
 -- General
 --=======================================================================================================================================================================================================================================================================--
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Сущность 'Физическое лицо' (entity person)
+-- Сущность 'Физическое лицо' (entity person) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created (work-dev)
 CREATE TABLE e_persons (
   id CHAR(12) NOT NULL, -- Необходимо реализовать проверку ИИН по маске на стороне бакэнда и фронтэнда (Внимание: ИИН представлен в формате VARCHAR)
   last_name VARCHAR(200) NOT NULL,
@@ -18,42 +17,43 @@ CREATE TABLE e_persons (
       CHECK (gender_id IN ('M','F')),
       CHECK (is_deleted IN ('N','Y'))
 );
--- Tested
+-- # tested # created: work-dev
 COMMENT ON TABLE e_persons IS 'Сущность - Физическое лицо';
-COMMENT ON COLUMN e_persons.iin IS 'ИИН ФЛ';
+COMMENT ON COLUMN e_persons.id IS 'ИИН ФЛ';
 COMMENT ON COLUMN e_persons.last_name IS 'Фамилия ФЛ';
 COMMENT ON COLUMN e_persons.first_name IS 'Имя ФЛ';
 COMMENT ON COLUMN e_persons.middle_name IS 'Отчество ФЛ';
 COMMENT ON COLUMN e_persons.dob IS 'Дата рождения ФЛ';
 COMMENT ON COLUMN e_persons.gender_id IS 'Пол ФЛ';
--- Tested
--- Извлечь всех физических лиц
+COMMENT ON COLUMN e_persons.gender_id IS 'Пол ФЛ';
+-- Извлечь всех физических лиц # tested
 SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons ORDER BY id ASC;
--- Извлечь физическое лицо по ИИН
+-- Извлечь физическое лицо по ИИН # tested
 SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons WHERE id = {id};
--- Извлечь всех существующих физических лиц
+-- Извлечь всех существующих физических лиц # tested
 SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'N' ORDER BY id ASC;
--- Извлечь существующие физическое лицо по ИИН
+-- Извлечь существующие физическое лицо по ИИН # tested
 SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'N' AND id = {id};
--- Извлечь всех несуществующих физических лиц
+-- Извлечь всех несуществующих физических лиц # tested
 SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'Y' ORDER BY id ASC;
--- Извлечь несуществующее физическое лицо по ИИН
+-- Извлечь несуществующее физическое лицо по ИИН # tested
 SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'Y' AND id = {id};
 -- Вставить физическое лицо
 INSERT INTO e_persons (id, last_name, first_name, middle_name, dob, gender_id) VALUES ({id}, {lastName}, {firstName}, {middleName}, {dob}, {genderID}) RETURNING id;
--- Обновить физическое лицо
+-- Обновить физическое лицо по идентификатору физического лица
 UPDATE e_persons SET id = {id}, last_name = {lastName}, first_name = {firstName} middle_name = {middleName}, dob = {dob}, gender_id = {genderID} WHERE id = {id} RETURNING id;
--- Удалить физическо лицо
-UPDATE e_persons SET is_deleted = 1 WHERE id = {id} RETURNING id;
+-- Удалить физическое лицо по идентификатору физического лица
+UPDATE e_persons SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
+-- Восстановить физическое лицо по идентификатору физического лица
+UPDATE e_persons SET is_deleted = 'N' WHERE id = {id} RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Журнал истории изменения сущности 'Физическое лицо' (log person)
+-- Журнал истории изменения сущности 'Физическое лицо' (log person) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created (work-dev)
 CREATE TABLE log.e_persons (
   id SERIAL NOT NULL,
   session_id INTEGER NOT NULL,
   manipulation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
-  manipulation_type_id CHAR(1) NOT NULL,
+  manipulation_type_id CHAR(6) NOT NULL,
     -- Физическое лицо
     iin CHAR(12) NOT NULL,
     last_name VARCHAR(300) NOT NULL,
@@ -71,6 +71,7 @@ CREATE TABLE log.e_persons (
       CHECK (gender_id IN ('M','F')),
       CHECK (is_deleted IN ('N','Y'))
 );
+-- # tested # created: work-dev
 COMMENT ON TABLE log.e_persons IS 'Журнал - Физическое лицо';
 COMMENT ON COLUMN log.e_persons.id IS 'Идентификатор записи журнала';
 COMMENT ON COLUMN log.e_persons.session_id IS 'Идентификатор сессии';
@@ -83,43 +84,12 @@ COMMENT ON COLUMN log.e_persons.middle_name IS 'Отчество ФЛ';
 COMMENT ON COLUMN log.e_persons.dob IS 'Дата рождения ФЛ';
 COMMENT ON COLUMN log.e_persons.gender_id IS 'Пол ФЛ';
 COMMENT ON COLUMN log.e_persons.is_deleted IS 'Состояние записи';
--- Извлечь историю изменения сущности 'Физическое лицо'
-SELECT
-  id, session_id AS "sessionID",
-  man_date AS "manDate",
-  type_id AS "typeID", iin,
-  last_name AS "lastName",
-  first_name AS "firstName",
-  middle_name AS "middleName",
-  gender_id AS "genderID",
-  is_deleted AS "isDeleted"
-FROM
-  log.e_persons
-ORDER BY
-  id ASC;
+-- Извлечь историю изменения сущности 'Физическое лицо' # tested
+SELECT id, session_id AS "sessionID", manipulation_date AS "manipulationDate", manipulation_type_id AS "manipulationTypeID", iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", gender_id AS "genderID", is_deleted AS "isDeleted" FROM log.e_persons ORDER BY id ASC;
 -- Вставить изменение в журнал истории изменения сущности 'Физическое лицо'
-INSERT INTO
-  log.e_persons (
-    session_id,
-    manipulation_type_id,
-    iin, last_name,
-    first_name,
-    middle_name,
-    gender_id,
-    is_deleted
-  ) VALUES (
-    {sessionID},
-    {manipulationTypeID},
-    {iin},
-    {lastName},
-    {firstName},
-    {middleName},
-    {genderID},
-    {isDeleted})
-    RETURNING
-      id;
+INSERT INTO log.e_persons (session_id, manipulation_type_id, iin, last_name, first_name, middle_name, gender_id, is_deleted) VALUES ({sessionID}, {manipulationTypeID}, {iin}, {lastName}, {firstName}, {middleName}, {genderID}, {isDeleted}) RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Журнал регистрации запросов сущности 'Физическое лицо' (log$ person)
+-- Журнал регистрации запросов сущности 'Физическое лицо' (log$ person) # tested
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE log$.e_persons (
   id SERIAL,
@@ -133,14 +103,13 @@ CREATE TABLE log$.e_persons (
 -- Вставить запись в журнал
 INSERT INTO log$.e_persons (session_id, manipulation_type_id) VALUES ({sessionID}, {manipulationTypeID}) RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Сущность 'Юридическое лицо' (entity company)
+-- Сущность 'Юридическое лицо' (entity company) # tested
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created
 CREATE TABLE e_companies (
-  bin CHAR(12) NOT NULL, -- Необходимо реализовать проверку БИН по маске на стороне бакэнда и фронтэнда
+  id CHAR(12) NOT NULL, -- Необходимо реализовать проверку БИН по маске на стороне бакэнда и фронтэнда
   company_name VARCHAR(500) NOT NULL,
-    is_deleted CHAR NOT NULL DEFAULT 'N',
-      PRIMARY KEY (bin),
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
       UNIQUE (company_name),
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
       CHECK (is_deleted IN ('N','Y'))
@@ -150,38 +119,23 @@ COMMENT ON COLUMN e_persons.bin IS 'БИН ЮЛ';
 COMMENT ON COLUMN e_persons.last_name IS 'Наименование ЮЛ';
 COMMENT ON COLUMN log.e_persons.is_deleted IS 'Состояние записи';
 -- Извлечь все юридические лица
-SELECT bin, company_name AS "companyName", is_deleted AS "isDeleted" FROM e_companies ORDER BY bin ASC;
+SELECT id, company_name AS "companyName", is_deleted AS "isDeleted" FROM e_companies ORDER BY id ASC;
 -- Извлечь юридическое лицо по БИН
-SELECT bin, company_name AS "companyName", is_deleted AS "isDeleted" FROM e_companies WHERE bin = {bin};
+SELECT id, company_name AS "companyName", is_deleted AS "isDeleted" FROM e_companies WHERE id = {id};
 -- Извлечь все существующее юридические лица
-SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'N' ORDER BY bin ASC;
+SELECT id, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'N' ORDER BY id ASC;
 -- Извлечь существующее юридическое лицо по БИН
-SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'N' AND bin = {bin};
+SELECT id, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'N' AND id = {id};
 -- Извлечь все не существующие юридические лица
-SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'Y' ORDER BY bin ASC;
+SELECT id, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'Y' ORDER BY id ASC;
 -- Извлечь не существующее юридическое лицо по БИН
-SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'Y' AND bin = {bin};
+SELECT id, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'Y' AND id = {id};
 -- Вставить юридическое лицо
-INSERT INTO e_companies (bin, company_name) VALUES ({bin}, {companyName}) RETURNING bin;
+INSERT INTO e_companies (id, company_name) VALUES ({id}, {companyName}) RETURNING id;
 -- Обновить юридическое лицо
-UPDATE
-  e_companies
-SET
-  bin = {bin},
-  company_name = {companyName}
-WHERE
-  bin = {bin}
-RETURNING
-  bin;
+UPDATE e_companies SET id = {id}, company_name = {companyName} WHERE id = {id} RETURNING id;
 -- Удалить юридическое лицо
-UPDATE
-  e_companies
-SET
-  is_deleted = 'Y'
-WHERE
-  bin = {bin}
-RETURNING
-  bin;
+UPDATE e_companies SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Журнал истории изменения сущности 'Юридическое лицо' (log company)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -196,7 +150,7 @@ CREATE TABLE log.e_companies (
         PRIMARY KEY (id),
         FOREIGN KEY (session_id) REFERENCES meta.e_sessions(id),
         FOREIGN KEY (manipulation_type_id) REFERENCES dict.manipulation_type(id),
-        FOREIGN KEY (bin) REFERENCES e_companies(bin),
+        FOREIGN KEY (bin) REFERENCES e_companies(id),
         CHECK (is_deleted IN ('N','Y'))
 );
 COMMENT ON TABLE log.e_companies IS 'Журнал - Юридическое лицо';
@@ -434,14 +388,12 @@ UPDATE r_e_positions_e_persons SET position_id = {positionID}, person_id = {pers
 -- Удалить связь 'Должность ФЛ - Физические лицо' по идентификатору связи
 UPDATE r_e_positions_e_persons SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 --=======================================================================================================================================================================================================================================================================--
--- Справочники
+-- Справочники # tested # created: work-dev
 --=======================================================================================================================================================================================================================================================================--
--- Created
 CREATE SCHEMA dict;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Справочник 'Пол физического лица (Мужской/Женский)' (dictionary gender)
+-- Справочник 'Пол физического лица (Мужской/Женский)' (dictionary gender) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created
 CREATE TABLE dict.d_genders (
   id CHAR(1),
   gender_name VARCHAR(100) NOT NULL,
@@ -449,20 +401,21 @@ CREATE TABLE dict.d_genders (
     UNIQUE (gender_name),
     CHECK (id IN ('M','F'))
 );
--- Извлечь значения справочника 'Пол физического лица'
-SELECT id, gender_name AS "genderName" FROM dict.d_genders ORDER BY id ASC;
--- Извлечь значение справоничка 'Пол физического лица' по идентификатору значения справочника
+-- # tested # created: work-dev
+COMMENT ON TABLE dict.d_genders IS 'Справочник - Пол ФЛ';
+COMMENT ON COLUMN dict.d_genders.id IS 'Идентификатор пола ФЛ';
+COMMENT ON COLUMN dict.d_genders.gender_name IS 'Наименование пола ФЛ';
+-- Извлечь значения справочника 'Пол физического лица' # tested # created: work-dev
+SELECT id, gender_name AS "genderName" FROM dict.d_genders ORDER BY id DESC;
+-- Извлечь значение справоничка 'Пол физического лица' по идентификатору значения справочника # tested # created: work-dev
 SELECT id, gender_name AS "genderName" FROM dict.d_genders WHERE id = {id};
--- Вставить справочное значение 'Мужской'
--- Tested
+-- Вставить справочное значение 'Мужской' # tested # created: work-dev
 INSERT INTO dict.d_genders (id, gender_name) VALUES ('M', 'Мужской') RETURNING id;
--- Вставить справочное значение 'Женский'
--- Tested
+-- Вставить справочное значение 'Женский' # tested # created: work-dev
 INSERT INTO dict.d_genders (id, gender_name) VALUES ('F', 'Женский') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Справочник 'Удален? (Нет/Да)' (dictionary is_deleted)
+-- Справочник 'Удален? (Нет/Да)' (dictionary is_deleted) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created
 CREATE TABLE dict.is_deleted (
   id CHAR(1),
   condition_name VARCHAR(100) NOT NULL,
@@ -470,37 +423,49 @@ CREATE TABLE dict.is_deleted (
     UNIQUE (condition_name),
     CHECK (id IN ('N', 'Y'))
 );
--- Извлечь значения справочника 'Удален (Нет/Да)'
+-- # tested # created: work-dev
+COMMENT ON TABLE dict.is_deleted IS 'Справочник - Состояние записи';
+COMMENT ON COLUMN dict.is_deleted.id IS 'Идентификатор состояния записи';
+COMMENT ON COLUMN dict.is_deleted.condition_name IS 'Наименование состояния записи';
+-- Извлечь значения справочника 'Удален (Нет/Да)' # tested
 SELECT id, condition_name AS "conditionName" FROM dict.is_deleted ORDER BY id ASC;
--- Извлечь значение справочника 'Удален (Нет/Да)' по идентификатору значения справочника
+-- Извлечь значение справочника 'Удален (Нет/Да)' по идентификатору значения справочника # tested
 SELECT id, condition_name AS "conditionName" FROM dict.is_deleted WHERE id = {id};
--- Вставить справочное значение 'Нет'
--- Tested
+-- Вставить справочное значение 'Нет' # tested # created: work-dev
 INSERT INTO dict.is_deleted (id, condition_name) VALUES ('N', 'Нет') RETURNING id;
--- Вставить справочное значение 'Да'
--- Tested
+-- Вставить справочное значение 'Да' # tested # created: work-dev
 INSERT INTO dict.is_deleted (id, condition_name) VALUES ('Y', 'Да') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Справочник 'Тип манипуляции над данными' (dictionary manipulation_type)
+-- Справочник 'Тип манипуляции над данными' (dictionary manipulation_type) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created
 CREATE TABLE dict.manipulation_type (
   id CHAR(6) NOT NULL,
   manipulation_type_name VARCHAR(100) NOT NULL,
-  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-    PRIMARY KEY (id),
-    UNIQUE (manipulation_type_name),
-    CHECK (is_deleted IN ('N', 'Y'))
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      UNIQUE (manipulation_type_name),
+      CHECK (is_deleted IN ('N', 'Y'))
 );
+-- # tested # created: work-dev
+COMMENT ON TABLE dict.manipulation_type IS 'Справочник - Состояние записи';
+COMMENT ON COLUMN dict.manipulation_type.id IS 'Идентификатор состояния записи';
+COMMENT ON COLUMN dict.manipulation_type.manipulation_type_name IS 'Наименование состояния записи';
+COMMENT ON COLUMN dict.manipulation_type.is_deleted IS 'Признак удаления значения';
+-- Вставить справочное значение 'SELECT' # tested # work-dev: created
+INSERT INTO dict.manipulation_type (id, manipulation_type_name) VALUES ('SELECT', 'SELECT');
+-- Вставить справочное значение 'INSERT' # tested # work-dev: created
+INSERT INTO dict.manipulation_type (id, manipulation_type_name) VALUES ('INSERT', 'INSERT');
+-- Вставить справочное значение 'UPDATE' # tested # work-dev: created
+INSERT INTO dict.manipulation_type (id, manipulation_type_name) VALUES ('UPDATE', 'UPDATE');
+-- Вставить справочное значение 'DELETE' # tested # work-dev: created
+INSERT INTO dict.manipulation_type (id, manipulation_type_name) VALUES ('DELETE', 'DELETE');
 --=======================================================================================================================================================================================================================================================================--
--- Метаданные
+-- Метаданные # tested # created: work-dev
 --=======================================================================================================================================================================================================================================================================--
--- Created
 CREATE SCHEMA meta;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Сущность 'Сессии' (entity session)
+-- Сущность 'Сессии' (entity session) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created
 CREATE TABLE meta.e_sessions (
   id SERIAL NOT NULL,
   user_id INTEGER NOT NULL,
@@ -513,16 +478,23 @@ CREATE TABLE meta.e_sessions (
     FOREIGN KEY (role_id) REFERENCES meta.e_roles(id),
     CHECK (status IN ('O','C'))
 );
--- Извлечь сессию по идентификатору сессии
-SELECT id, role_id AS "roleID", open_date AS "openDate", close_date AS "closeDate", status FROM meta.e_sessions WHERE id = {id};
--- Извлечь сессии по идентификатору пользователя
-SELECT id, role_id AS "roleID", open_date AS "openDate", close_date AS "closeDate", status FROM meta.e_sessions WHERE user_id = {userID};
--- Вставить сессию
+-- # tested # created: work-dev
+COMMENT ON TABLE meta.e_sessions IS 'Сушность - Сессия';
+COMMENT ON COLUMN meta.e_sessions.id IS 'Идентификатор сессии';
+COMMENT ON COLUMN meta.e_sessions.user_id IS 'Идентификатор пользователя';
+COMMENT ON COLUMN meta.e_sessions.role_id IS 'Идентификатор роли';
+COMMENT ON COLUMN meta.e_sessions.open_date IS 'Дата и время открытия сессии';
+COMMENT ON COLUMN meta.e_sessions.close_date IS 'Дата и время закрытия сессии';
+COMMENT ON COLUMN meta.e_sessions.status IS 'Cтатус сессии';
+-- Извлечь сессию по идентификатору сессии # tested # created: work-dev
+SELECT id, user_id AS "userID", role_id AS "roleID", open_date AS "openDate", close_date AS "closeDate", status FROM meta.e_sessions WHERE id = {id};
+-- Извлечь сессии по идентификатору пользователя # tested # created: work-dev
+SELECT id, user_id AS "userID", role_id AS "roleID", open_date AS "openDate", close_date AS "closeDate", status FROM meta.e_sessions WHERE user_id = {userID};
+-- Вставить сессию # tested # created: work-dev
 INSERT INTO meta.e_sessions (user_id, role_id) VALUES ({userID}, {roleID}) RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Сущность 'Пользователи' (entity user)
+-- Сущность 'Пользователи' (entity user) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created
 CREATE TABLE meta.e_users (
   id SERIAL NOT NULL,
   person_id CHAR(12) NOT NULL,
@@ -536,41 +508,65 @@ CREATE TABLE meta.e_users (
       CHECK (is_blocked IN ('N', 'Y')),
       CHECK (is_deleted IN ('N', 'Y'))
 );
--- Извлечь пользователя (физическое лицо) по имени пользователя
-SELECT id, person_id AS "personID", status FROM meta.e_users WHERE u_username = {username};
--- Вставить пользователя
+-- # tested # created: work-dev
+COMMENT ON TABLE meta.e_users IS 'Сушность - Пользователь';
+COMMENT ON COLUMN meta.e_users.id IS 'Идентификатор учетной записи';
+COMMENT ON COLUMN meta.e_users.person_id IS 'Идентификатор физического лица';
+COMMENT ON COLUMN meta.e_users.u_username IS 'Имя пользователя';
+COMMENT ON COLUMN meta.e_users.u_password IS 'Пароль пользователя';
+COMMENT ON COLUMN meta.e_users.is_blocked IS 'Признак блокирования учетной записи';
+COMMENT ON COLUMN meta.e_users.is_deleted IS 'Признак удаления записи';
+-- Извлечь пользователя (физическое лицо) по имени пользователя # tested
+SELECT id, person_id AS "personID", u_username AS "username", is_blocked AS "isBlocked",  is_deleted AS "isDeleted" FROM meta.e_users WHERE u_username = {username};
+-- Вставить пользователя # tested # created: work-dev
 INSERT INTO meta.e_users (person_id, u_username, u_password) VALUES ({personID}, {username}, {password}) RETURNING id;
 -- Изменить пароль пользователя по идентификатору пользователя
 UPDATE meta.e_users SET u_password = {password} WHERE id = {id} RETURNING id;
--- Удалить пользователя по идентификатору пользователя
+-- Удалить пользователя по идентификатору пользователя # tested
 UPDATE meta.e_users SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
--- Восстановить пользователя по идентификатору пользователя
+-- Восстановить пользователя по идентификатору пользователя # tested
 UPDATE meta.e_users SET is_deleted = 'N' WHERE id = {id} RETURNING id;
--- Заблокировать пользователя по идентификатору пользователя
+-- Заблокировать пользователя по идентификатору пользователя # tested
 UPDATE meta.e_users SET is_blocked = 'Y' WHERE id = {id} RETURNING id;
--- Разблокировать пользователя по идентификатору пользователя
+-- Разблокировать пользователя по идентификатору пользователя # tested
 UPDATE meta.e_users SET is_blocked = 'N' WHERE id = {id} RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Сущность 'Роли' (entity role)
+-- Сущность 'Роли' (entity role) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Created
 CREATE TABLE meta.e_roles (
   id SERIAL NOT NULL,
   role_name VARCHAR(200) NOT NULL,
-  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-    PRIMARY KEY (id),
-    UNIQUE (role_name),
-    FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
-    CHECK (is_deleted IN ('N', 'Y'))
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      UNIQUE (role_name),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
+      CHECK (is_deleted IN ('N', 'Y'))
 );
--- Извлечь все роли
-SELECT id, role_name AS "roleName" FROM meta.e_roles ORDER BY id ASC;
--- Вставить роль
+-- # tested
+COMMENT ON TABLE meta.e_roles IS 'Сущность - Роль пользователя';
+COMMENT ON COLUMN meta.e_roles.id IS 'Идентификатор роли пользователя';
+COMMENT ON COLUMN meta.e_roles.role_name IS 'Наименование роли пользователя';
+COMMENT ON COLUMN meta.e_users.is_deleted IS 'Признак удаления записи';
+-- Извлечь все роли # tested
+SELECT id, role_name AS "roleName", is_deleted AS "isDeleted" FROM meta.e_roles ORDER BY id ASC;
+-- Извлечь существующие роли # tested
+SELECT id, role_name AS "roleName" FROM meta.e_roles  WHERE is_deleted = 'Y' ORDER BY id ASC;
+-- Извлечь несуществующие роли # tested
+SELECT id, role_name AS "roleName" FROM meta.e_roles  WHERE is_deleted = 'N' ORDER BY id ASC;
+-- Извлечь роль # tested
+SELECT id, role_name AS "roleName", is_deleted AS "isDeleted" FROM meta.e_roles  WHERE id = {id};
+-- Извлечь существующую роль # tested
+SELECT id, role_name AS "roleName" FROM meta.e_roles  WHERE is_deleted = 'N' id = {id};
+-- Извлечь несуществующую роль # tested
+SELECT id, role_name AS "roleName" FROM meta.e_roles  WHERE is_deleted = 'Y' id = {id};
+-- Вставить роль # tested # created: work-dev
 INSERT INTO meta.e_roles (role_name) VALUES ({roleName}) RETURNING id;
--- Обновить роль по идентификатору роли
+-- Обновить роль по идентификатору роли # tested # created: work-dev
 UPDATE meta.e_roles SET role_name = {roleName} WHERE id = {id} RETURNING id;
--- Удалить роль по идентификатору роли
+-- Удалить роль по идентификатору роли # tested
 UPDATE meta.e_roles SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
+-- Восстановить роль по идентификатору роли # tested
+UPDATE meta.e_roles SET is_deleted = 'N' WHERE id = {id} RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Связь 'Роли - Пользователи' (relationship role - user)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

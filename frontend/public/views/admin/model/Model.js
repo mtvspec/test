@@ -11,7 +11,8 @@
       return $http({
         method: config.method,
         url: config.url
-      }).then(function (response) {
+      })
+      .then(function (response) {
         if (response.status === 200) {
           return response.data;
         } else if (response.status === 204) {
@@ -23,45 +24,33 @@
         console.error(response.status.statusText);
         return null;
       });
-
     };
 
     LTModel.prototype.getObject = function getObject(config) {
-      return $http({
-        method: config.method,
-        url: config.url,
-        params: config.data.id
-      }).then(function (response) {
-        if (response.status === 200 && config.data.id === Number(response.data.id)) {
-          return response.data;
-        } else if (response.status === 204) {
-          return {};
-        } else if (response.status === 400) {
-          return response.data;
-        } else {
-          return null;
+      console.log(_objects[0].id);
+      console.log(config.params.id);
+      for (var i = 0, len = _objects.length; i < len; i++) {
+        if (_objects[i].id == config.params.id) {
+          config.data = _objects[i];
+          return config;
+          break;
         }
-        return response.data;
-      }, function (response) {
-        console.error(response.status.statusText);
-        return null;
-      });
+      }
     };
 
     LTModel.prototype.createObject = function createObject(config) {
       return $http({
-        method: config.method,
+        method: 'POST',
         url: config.url,
         data: config.data
-      }).then(function (response) {
-        if (response.status === 201 && Number(response.data.id) > 0) {
-          return response;
+      })
+      .then(function(response){
+        if (response.status === 201) {
+          config.data.id = response.data.id;
+          _objects.push(config.data);
         } else {
-          return response;
+          return config.objects;
         }
-      }, function (response) {
-        console.error(response.status.statusText);
-        return null;
       });
     };
 
@@ -71,7 +60,8 @@
         url: config.url,
         params: config.data.id,
         data: config.data
-      }).then(function (response) {
+      })
+      .then(function (response) {
         if (response.status === 200 && config.data.id === Number(response.status.id)) {
           return response.data;
         } else if (response.status === 204) {
@@ -79,7 +69,7 @@
         } else if (response.status === 400) {
           return response.data;
         } else {
-          return null;
+          return response;
         }
       }, function (response) {
         console.error(response.status.statusText);
@@ -92,9 +82,16 @@
         method: config.method,
         url: config.url,
         params: config.data.id
-      }).then(function (response) {
+      })
+      .then(function (response) {
         if (response.status === 200 && config.data.id === Number(response.data.id)) {
-          return response.data;
+          for(var i = 0, len = _objects.length; i < len; i++){
+						if(_objects[i].id === data.id){
+							_objects.splice(i, 1);
+							break;
+						}
+					}
+          return config.objects = _objects;
         } else if (response.status === 204) {
           return {};
         } else if (response.status === 400) {
@@ -106,6 +103,28 @@
         console.error(response.status.statusText);
         return null;
       });
+    };
+
+    LTModel.prototype.getAllObjects = function getAllObjects(config, cb) {
+      if(config.objectsPromise){
+        return config.objectsPromise;
+      } else {
+        config.objectsPromise = $http({
+          method: 'GET',
+          url: config.url
+        })
+        .then(function(response){
+          for (var i = 0, len = response.data.length; i < len; i++){
+            config.data.objects.push(response.data[i]);
+          }
+          return config.objects;
+        }, function(response){
+          if (Number(response.status) === 401) {
+            return _error;
+          }
+        });
+        return cb(config.objectsPromise);
+      }
     };
 
     return LTModel;

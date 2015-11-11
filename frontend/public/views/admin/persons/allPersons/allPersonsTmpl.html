@@ -3,15 +3,15 @@
 </div>
 <ul>
   <li ng-repeat='person in vm.persons'>
-    <div class='personsList'>
+    <div class='personsList' ng-click='vm.showPersonDetails(person)'>
       <div>
         <span>{{person.lastName}}</span>
         <span>{{person.firstName}}</span>
         <span>{{person.middleName}}</span>
       </div>
       <div>
-        <span ng-bind='person.iin'></span>
-        <span ng-bind='person.dob | date:"dd-MM-yyyy"'></span>
+        <span>{{person.id}}</span>
+        <span>{{person.dob | date:"dd-MM-yyyy"}}</span>
       </div>
     </div>
   </li>

@@ -2,41 +2,29 @@
 	'use strict';
 
 	angular.module('app')
-	.controller('PersonsCtrl', function (PersonsModel, $mdDialog) {
+	.controller('PersonsCtrl', function (Model, $mdDialog) {
 
-	var vm = this;
+	var vm = this,
+  _persons = [],
+  _personsPromise = {},
+  genders = [],
+  PersonsModel = new Model(),
+  _url = '/api/persons';
 
-	var persons = [];
-	vm.persons = persons;
-
-  var genders = [];
+	vm.persons = _persons,
   vm.genders = genders;
 
-	PersonsModel.readAllPersons().then(function (persons) {
-		vm.persons = persons;
-    console.debug(vm.persons);
-	}, function (error) {
-		console.log(error);
-	});
+  _personsPromise = PersonsModel.getAllObjects({
+    url: _url,
+    data: {
+      objects: _persons
+    }
+  }, function () {
+  });
 
-
-  function showPersonDetails(ev, person) {
+  function showPersonDetails(person) {
     console.debug(person);
-    $mdDialog.show({
-      controller: 'PersonInfoCtrl',
-      templateUrl: 'views/persons/personInfo/personInfo.html',
-      controllerAs: 'vm',
-      targetEvent: ev,
-      clickOutsideToClose: false,
-      locals: {
-        person: person
-      }
-    })
-    .then(function(answer) {
-    }, function() {
-    });
   };
-
   vm.showPersonDetails = showPersonDetails;
 
 	function addPerson(ev) {
