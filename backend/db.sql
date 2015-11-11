@@ -6,14 +6,14 @@
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Created (work-dev)
 CREATE TABLE e_persons (
-  iin CHAR(12) NOT NULL, -- Необходимо реализовать проверку ИИН по маске на стороне бакэнда и фронтэнда (Внимание: ИИН представлен в формате VARCHAR)
+  id CHAR(12) NOT NULL, -- Необходимо реализовать проверку ИИН по маске на стороне бакэнда и фронтэнда (Внимание: ИИН представлен в формате VARCHAR)
   last_name VARCHAR(200) NOT NULL,
   first_name VARCHAR(200) NOT NULL,
   middle_name VARCHAR(300),
   dob DATE NOT NULL,
   gender_id CHAR(1) NOT NULL,
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-      PRIMARY KEY (iin),
+      PRIMARY KEY (id),
       FOREIGN KEY (gender_id) REFERENCES dict.d_genders(id),
       CHECK (gender_id IN ('M','F')),
       CHECK (is_deleted IN ('N','Y'))
@@ -28,23 +28,23 @@ COMMENT ON COLUMN e_persons.dob IS 'Дата рождения ФЛ';
 COMMENT ON COLUMN e_persons.gender_id IS 'Пол ФЛ';
 -- Tested
 -- Извлечь всех физических лиц
-SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons ORDER BY iin ASC;
+SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons ORDER BY id ASC;
 -- Извлечь физическое лицо по ИИН
-SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons WHERE iin = {iin};
+SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons WHERE id = {id};
 -- Извлечь всех существующих физических лиц
-SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'N' ORDER BY iin ASC;
+SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'N' ORDER BY id ASC;
 -- Извлечь существующие физическое лицо по ИИН
-SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'N' AND iin = {iin};
+SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'N' AND id = {id};
 -- Извлечь всех несуществующих физических лиц
-SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'Y' ORDER BY iin ASC;
+SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'Y' ORDER BY id ASC;
 -- Извлечь несуществующее физическое лицо по ИИН
-SELECT iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'Y' AND iin = {iin};
+SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID" FROM e_persons WHERE is_deleted = 'Y' AND id = {id};
 -- Вставить физическое лицо
-INSERT INTO e_persons (iin, last_name, first_name, middle_name, dob, gender_id) VALUES ({iin}, {lastName}, {firstName}, {middleName}, {dob}, {genderID}) RETURNING iin;
+INSERT INTO e_persons (id, last_name, first_name, middle_name, dob, gender_id) VALUES ({id}, {lastName}, {firstName}, {middleName}, {dob}, {genderID}) RETURNING id;
 -- Обновить физическое лицо
-UPDATE e_persons SET iin = {iin}, last_name = {lastName}, first_name = {firstName} middle_name = {middleName}, dob = {dob}, gender_id = {genderID} WHERE iin = {iin} RETURNING iin;
+UPDATE e_persons SET id = {id}, last_name = {lastName}, first_name = {firstName} middle_name = {middleName}, dob = {dob}, gender_id = {genderID} WHERE id = {id} RETURNING id;
 -- Удалить физическо лицо
-UPDATE e_persons SET is_deleted = 1 WHERE iin = {iin} RETURNING iin;
+UPDATE e_persons SET is_deleted = 1 WHERE id = {id} RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Журнал истории изменения сущности 'Физическое лицо' (log person)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -54,27 +54,28 @@ CREATE TABLE log.e_persons (
   session_id INTEGER NOT NULL,
   manipulation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
   manipulation_type_id CHAR(1) NOT NULL,
+    -- Физическое лицо
     iin CHAR(12) NOT NULL,
     last_name VARCHAR(300) NOT NULL,
     first_name VARCHAR(300) NOT NULL,
     middle_name VARCHAR(300),
     dob DATE NOT NULL,
     gender_id CHAR(1) NOT NULL,
-      is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-        PRIMARY KEY (id),
-        FOREIGN KEY (session_id) REFERENCES meta.e_sessions(id),
-        FOREIGN KEY (manipulation_type_id) REFERENCES dict.manipulation_type(id),
-        FOREIGN KEY (iin) REFERENCES e_persons(iin),
-        FOREIGN KEY (gender_id) REFERENCES dict.d_genders(id),
-        FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
-        CHECK (gender_id IN ('M','F')),
-        CHECK (is_deleted IN ('N','Y'))
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      FOREIGN KEY (session_id) REFERENCES meta.e_sessions(id),
+      FOREIGN KEY (manipulation_type_id) REFERENCES dict.manipulation_type(id),
+      FOREIGN KEY (iin) REFERENCES e_persons(id),
+      FOREIGN KEY (gender_id) REFERENCES dict.d_genders(id),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
+      CHECK (gender_id IN ('M','F')),
+      CHECK (is_deleted IN ('N','Y'))
 );
 COMMENT ON TABLE log.e_persons IS 'Журнал - Физическое лицо';
 COMMENT ON COLUMN log.e_persons.id IS 'Идентификатор записи журнала';
 COMMENT ON COLUMN log.e_persons.session_id IS 'Идентификатор сессии';
 COMMENT ON COLUMN log.e_persons.manipulation_date IS 'Дата изменения сущности';
-COMMENT ON COLUMN log.e_persons.manipulation_type_id IS 'Тип изменения сущности';
+COMMENT ON COLUMN log.e_persons.manipulation_type_id IS 'Идентификатор типа изменения сущности';
 COMMENT ON COLUMN log.e_persons.iin IS 'ИИН ФЛ';
 COMMENT ON COLUMN log.e_persons.last_name IS 'Фамилия ФЛ';
 COMMENT ON COLUMN log.e_persons.first_name IS 'Имя ФЛ';
@@ -83,9 +84,54 @@ COMMENT ON COLUMN log.e_persons.dob IS 'Дата рождения ФЛ';
 COMMENT ON COLUMN log.e_persons.gender_id IS 'Пол ФЛ';
 COMMENT ON COLUMN log.e_persons.is_deleted IS 'Состояние записи';
 -- Извлечь историю изменения сущности 'Физическое лицо'
-SELECT id, session_id AS "sessionID", man_date AS "manDate", type_id AS "typeID", iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", gender_id AS "genderID", is_deleted AS "isDeleted" FROM log.e_persons ORDER BY id ASC;
+SELECT
+  id, session_id AS "sessionID",
+  man_date AS "manDate",
+  type_id AS "typeID", iin,
+  last_name AS "lastName",
+  first_name AS "firstName",
+  middle_name AS "middleName",
+  gender_id AS "genderID",
+  is_deleted AS "isDeleted"
+FROM
+  log.e_persons
+ORDER BY
+  id ASC;
 -- Вставить изменение в журнал истории изменения сущности 'Физическое лицо'
-INSERT INTO log.e_persons (session_id, manipulation_type_id, iin, last_name, first_name, middle_name, gender_id, is_deleted) values ({sessionID}, {manipulationTypeID}, {iin}, {lastName}, {firstName}, {middleName}, {genderID}, {isDeleted}) RETURNING id;
+INSERT INTO
+  log.e_persons (
+    session_id,
+    manipulation_type_id,
+    iin, last_name,
+    first_name,
+    middle_name,
+    gender_id,
+    is_deleted
+  ) VALUES (
+    {sessionID},
+    {manipulationTypeID},
+    {iin},
+    {lastName},
+    {firstName},
+    {middleName},
+    {genderID},
+    {isDeleted})
+    RETURNING
+      id;
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Журнал регистрации запросов сущности 'Физическое лицо' (log$ person)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE log$.e_persons (
+  id SERIAL,
+  session_id INTEGER NOT NULL,
+  manipulation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
+  manipulation_type_id CHAR(6) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (session_id) REFERENCES meta.e_sessions(id),
+    FOREIGN KEY (manipulation_type_id) REFERENCES meta.manipulation_type(id)
+);
+-- Вставить запись в журнал
+INSERT INTO log$.e_persons (session_id, manipulation_type_id) VALUES ({sessionID}, {manipulationTypeID}) RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Юридическое лицо' (entity company)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -102,6 +148,7 @@ CREATE TABLE e_companies (
 COMMENT ON TABLE e_persons IS 'Сущность - Юридическое лицо';
 COMMENT ON COLUMN e_persons.bin IS 'БИН ЮЛ';
 COMMENT ON COLUMN e_persons.last_name IS 'Наименование ЮЛ';
+COMMENT ON COLUMN log.e_persons.is_deleted IS 'Состояние записи';
 -- Извлечь все юридические лица
 SELECT bin, company_name AS "companyName", is_deleted AS "isDeleted" FROM e_companies ORDER BY bin ASC;
 -- Извлечь юридическое лицо по БИН
@@ -115,12 +162,26 @@ SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'Y
 -- Извлечь не существующее юридическое лицо по БИН
 SELECT bin, company_name AS "companyName" FROM e_companies WHERE is_deleted = 'Y' AND bin = {bin};
 -- Вставить юридическое лицо
--- Tested: OK
 INSERT INTO e_companies (bin, company_name) VALUES ({bin}, {companyName}) RETURNING bin;
 -- Обновить юридическое лицо
-UPDATE e_companies SET bin = {bin}, company_name = {companyName} WHERE bin = {bin} RETURNING bin;
+UPDATE
+  e_companies
+SET
+  bin = {bin},
+  company_name = {companyName}
+WHERE
+  bin = {bin}
+RETURNING
+  bin;
 -- Удалить юридическое лицо
-UPDATE e_companies SET is_deleted = 'Y' WHERE bin = {bin} RETURNING bin;
+UPDATE
+  e_companies
+SET
+  is_deleted = 'Y'
+WHERE
+  bin = {bin}
+RETURNING
+  bin;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Журнал истории изменения сущности 'Юридическое лицо' (log company)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -138,8 +199,14 @@ CREATE TABLE log.e_companies (
         FOREIGN KEY (bin) REFERENCES e_companies(bin),
         CHECK (is_deleted IN ('N','Y'))
 );
+COMMENT ON TABLE log.e_companies IS 'Журнал - Юридическое лицо';
+COMMENT ON COLUMN log.e_companies.bin IS 'БИН ЮЛ';
+COMMENT ON COLUMN log.e_companies.bin IS 'БИН ЮЛ';
+COMMENT ON COLUMN log.e_companies.last_name IS 'Наименование ЮЛ';
 -- Извлечь все записи истории изменения сущности 'Юридическое лицо'
 SELECT id, session_id AS "sessionID", manipulation_date AS "manipulationDate", manipulation_type_id AS "manipulationTypeID", bin, company_name AS "companyName", is_deleted AS 'isDeleted' FROM log.e_companies ORDER BY id ASC;
+-- Вставить запись в журнал
+INSERT INTO log.e_companies (session_id, manipulation_date, manipulation_type_id, bin, company_name) VALUES ({sessionID}, {manipulationDate}, {manipulationTypeID}, {bin}, {companyName}) RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Должность физического лица' (entity position)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -418,11 +485,11 @@ INSERT INTO dict.is_deleted (id, condition_name) VALUES ('Y', 'Да') RETURNING 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Created
 CREATE TABLE dict.manipulation_type (
-  id CHAR(1) NOT NULL,
+  id CHAR(6) NOT NULL,
   manipulation_type_name VARCHAR(100) NOT NULL,
   is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-    PRIMARY KEY (manipulation_type_name),
-    UNIQUE (id),
+    PRIMARY KEY (id),
+    UNIQUE (manipulation_type_name),
     CHECK (is_deleted IN ('N', 'Y'))
 );
 --=======================================================================================================================================================================================================================================================================--
@@ -460,12 +527,12 @@ CREATE TABLE meta.e_users (
   id SERIAL NOT NULL,
   person_id CHAR(12) NOT NULL,
   u_username VARCHAR(20) NOT NULL,
-  u_password VARCHAR(20) NOT NULL,
+  u_password VARCHAR(4000) NOT NULL,
     is_blocked CHAR(1) NOT NULL DEFAULT 'N',
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (u_username, u_password),
       UNIQUE (id),
-      FOREIGN KEY (person_id) REFERENCES e_persons(iin),
+      FOREIGN KEY (person_id) REFERENCES e_persons(id),
       CHECK (is_blocked IN ('N', 'Y')),
       CHECK (is_deleted IN ('N', 'Y'))
 );
@@ -491,8 +558,9 @@ CREATE TABLE meta.e_roles (
   id SERIAL NOT NULL,
   role_name VARCHAR(200) NOT NULL,
   is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-    PRIMARY KEY (role_name),
-    UNIQUE (id),
+    PRIMARY KEY (id),
+    UNIQUE (role_name),
+    FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
     CHECK (is_deleted IN ('N', 'Y'))
 );
 -- Извлечь все роли

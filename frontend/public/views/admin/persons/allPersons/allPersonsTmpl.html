@@ -5,9 +5,9 @@
   <li ng-repeat='person in vm.persons'>
     <div class='personsList'>
       <div>
-        <span ng-bind='person.lastName'></span>
-        <span ng-bind='person.firstName'></span>
-        <span ng-bind='person.middleName'></span>
+        <span>{{person.lastName}}</span>
+        <span>{{person.firstName}}</span>
+        <span>{{person.middleName}}</span>
       </div>
       <div>
         <span ng-bind='person.iin'></span>

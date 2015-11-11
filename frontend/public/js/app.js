@@ -16,6 +16,16 @@
 
     $stateProvider
 
+    .state('login', {
+      url: '/login',
+      templateUrl: 'views/login/loginTmpl.html',
+      controller: 'LoginCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Authentification'
+      }
+    })
+
     .state('admin', {
       abstract: true,
       templateUrl: 'views/root.html'

@@ -42,4 +42,5 @@
 /backend/node_modules/pg-connection-string/
 /backend/node_modules/pg-types/
 /backend/node_modules/pg-pass/
+/backend/node_modules/bcrypt-nodejs/
 

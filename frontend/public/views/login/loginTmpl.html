@@ -1,0 +1,30 @@
+<div class='login-form'>
+  <div class='login-form-header'>
+    <h5>Authorization</h5>
+  </div>
+  <form
+    name='vm.loginForm'
+    class='login-form-content'>
+    <div class='input-field'>
+      <label for='username'>Username</label>
+      <input
+        id='username'
+        type='text'
+        class='validate'
+        ng-model='vm.user.username'>
+    </div>
+    <div class='input-field'>
+      <label for='password'>Password</label>
+      <input
+        id='password'
+        type='password'
+        class='validate'
+        ng-model='vm.user.password'>
+    </div>
+  </form>
+  <div class='login-form-footer'>
+    <button
+      class='btn waves-effect'
+      type='submit' ng-click='vm.login(vm.user)'>Enter</button>
+  </div>
+</div>
