@@ -7,14 +7,14 @@
     function LTModel() {
     };
 
-    LTModel.prototype.getObjects = function getObjects(config) {
+    LTModel.prototype.getObjects = function getObjects(config, cb) {
       return $http({
         method: config.method,
         url: config.url
       })
       .then(function (response) {
         if (response.status === 200) {
-          return response.data;
+          return cb(response.status, response.data);
         } else if (response.status === 204) {
           return [];
         } else {
@@ -105,25 +105,28 @@
       });
     };
 
-    LTModel.prototype.getAllObjects = function getAllObjects(config, cb) {
-      if(config.objectsPromise){
-        return config.objectsPromise;
+    LTModel.prototype.getAllObjects = function getAllObjects(config) {
+      console.log(config);
+      if(config.data.objectsPromise){
+        console.log('promise');
+        return config.data.objectsPromise;
       } else {
-        config.objectsPromise = $http({
+        config.data.objectsPromise = $http({
           method: 'GET',
           url: config.url
         })
         .then(function(response){
+          console.log(response.data);
           for (var i = 0, len = response.data.length; i < len; i++){
             config.data.objects.push(response.data[i]);
           }
-          return config.objects;
+          return config.data.objects;
         }, function(response){
           if (Number(response.status) === 401) {
             return _error;
           }
         });
-        return cb(config.objectsPromise);
+        return config.data.objectsPromise;
       }
     };
 

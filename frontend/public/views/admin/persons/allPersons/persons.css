@@ -5,3 +5,10 @@
   background-color: rgba(146, 172, 203, 0.15);
   border-radius: 3px;
 }
+.person-manage-tools {
+  padding: 3px !important;
+  opacity: 0.5;
+}
+.btn:hover {
+  opacity: 1
+}

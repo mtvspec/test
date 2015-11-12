@@ -582,6 +582,11 @@ CREATE TABLE meta.r_e_roles_e_users (
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
       CHECK (is_deleted IN ('N', 'Y'))
 );
+COMMENT ON TABLE meta.r_e_roles_e_users IS 'Связь - Роль - Пользователь';
+COMMENT ON COLUMN meta.r_e_roles_e_users.id IS 'Идентификатор роли пользователя';
+COMMENT ON COLUMN meta.r_e_roles_e_users.role_id IS 'Идентификатор роли пользователя';
+COMMENT ON COLUMN meta.r_e_roles_e_users.user_id IS 'Идентификатор пользователя';
+COMMENT ON COLUMN meta.r_e_roles_e_users.is_deleted IS 'Признак удаления записи';
 -- Извлечь все связи 'Роли - Пользователи'
 SELECT id, role_id AS "roleID", user_id AS "userID" FROM meta.r_e_roles_e_users ORDER BY id ASC;
 -- Вставить связь 'Роли - Пользователи'
