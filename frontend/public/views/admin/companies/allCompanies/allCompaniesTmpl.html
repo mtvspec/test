@@ -1,5 +1,9 @@
 <div>
-  <p>
-    <span ng-bind='vm.companies[0].companyName'></span>
-  </p>
+  <ul>
+    <li ng-repeat = 'company in vm.companies'>
+      <span>
+        {{company.companyName}}
+      </span>
+    </li>
+  </ul>
 </div>
