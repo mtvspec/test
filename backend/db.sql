@@ -23,6 +23,12 @@ CREATE TABLE e_projects (
       CHECK (is_deleted IN ('N', 'Y'))
 );
 COMMENT ON TABLE e_projects IS 'Сущность - Проект';
+-- Извлечь все проекты
+SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID", is_deleted AS "isDeleted" FROM e_projects ORDER BY id ASC;
+-- Извлечь существующие проекты
+SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM e_projects WHERE is_deleted = 'N' ORDER BY id ASC;
+-- Извлечь несуществующие проекты
+SELECT id, customer_id AS "customerID"m project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM e_projects WHERE is_deleted = 'Y' ORDER BY id ASC;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Инициация проекта' (project init)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
