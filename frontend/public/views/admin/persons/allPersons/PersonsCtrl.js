@@ -14,12 +14,14 @@
 	vm.persons = _persons,
   vm.genders = genders;
 
-  _personsPromise = PersonsModel.getAllObjects({
+  PersonsModel.getAllObjects({
     url: _url,
     data: {
-      objects: _persons
+      objects: _persons,
+      objectsPromise: _personsPromise
     }
-  }, function () {
+  }, function (data) {
+    console.log(data);
   });
 
   function showPersonDetails(person) {
@@ -27,6 +29,7 @@
   };
   vm.showPersonDetails = showPersonDetails;
 
+  vm.addPerson = addPerson;
 	function addPerson(ev) {
 		$mdDialog.show({
 			templateUrl: 'views/admin/persons/addPerson/addPersonTmpl.html',
@@ -40,8 +43,23 @@
     }, function () {
       // body...
     });
-	}
-	vm.addPerson = addPerson;
+	};
+
+  vm.deletePerson = deletePerson;
+  function deletePerson(ev, person) {
+    $mdDialog.show({
+      templateUrl: 'views/admin/persons/deletePerson/deletePersonTmpl.html',
+      controller: 'PersonDeleteCtrl',
+      controllerAs: 'vm',
+      targetEvent: ev,
+      clickOutsideToClose: true
+    })
+    .then(function () {
+      // body...
+    }, function () {
+      // body...
+    });
+  };
 
 	})
 })();

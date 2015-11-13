@@ -2,7 +2,95 @@
 -- General
 --=======================================================================================================================================================================================================================================================================--
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<<<<<<< HEAD
 -- Сущность 'Физическое лицо' (entity person) # tested # created: work-dev, home-dev
+=======
+-- Сущность 'Проект' (entity project)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- # tested # created: work-dev
+CREATE TABLE e_projects (
+  id SERIAL,
+  customer_id CHAR(12),
+  project_formal_name CHAR(2),
+  project_work_name VARCHAR(300) NOT NULL,
+  project_official_name VARCHAR(500),
+  start_date DATE,
+  end_date DATE,
+  budget NUMERIC,
+  manager_id CHAR(12),
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      UNIQUE (id, project_formal_name, project_work_name, project_official_name),
+      FOREIGN KEY (customer_id) REFERENCES e_companies(id),
+      FOREIGN KEY (manager_id) REFERENCES e_persons(id),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
+      CHECK (is_deleted IN ('N', 'Y'))
+);
+-- # tested # created: work-dev
+COMMENT ON TABLE e_projects IS 'Сущность - Проект';
+COMMENT ON COLUMN e_projects.id IS 'Идентификатор проекта';
+COMMENT ON COLUMN e_projects.customer_id IS 'Идентификатор юридического лица - Заказчика проекта';
+COMMENT ON COLUMN e_projects.project_formal_name IS 'Формальное наименование проекта';
+COMMENT ON COLUMN e_projects.project_work_name IS 'Рабочее наименование проекта';
+COMMENT ON COLUMN e_projects.project_official_name IS 'Официальное наименование проекта';
+COMMENT ON COLUMN e_projects.start_date IS 'Дата начала проекта';
+COMMENT ON COLUMN e_projects.end_date IS 'Дата завершения проекта';
+COMMENT ON COLUMN e_projects.budget IS 'Бюджет проекта';
+COMMENT ON COLUMN e_projects.manager_id IS 'Идентификатор физического лица - Руководителя проекта';
+COMMENT ON COLUMN e_projects.is_deleted IS 'Признак удаления записи';
+-- Извлечь все проекты
+SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID", is_deleted AS "isDeleted" FROM e_projects ORDER BY id ASC;
+-- Извлечь существующие проекты
+SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM e_projects WHERE is_deleted = 'N' ORDER BY id ASC;
+-- Извлечь несуществующие проекты
+SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM e_projects WHERE is_deleted = 'Y' ORDER BY id ASC;
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Сущность 'Инициация проекта' (project init)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE e_project_init (
+  id SERIAL,
+  project_id INTEGER NOT NULL,
+  init_date DATE,
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      FOREIGN KEY (project_id) REFERENCES e_projects(id),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
+);
+COMMENT ON TABLE e_project_init IS 'Сущность - Открытие проекта';
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Сущность 'Завершение проекта' (project close)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE e_project_close (
+  id SERIAL,
+  project_id INTEGER NOT NULL,
+  close_date DATE,
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      FOREIGN KEY (project_id) REFERENCES e_projects(id),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
+);
+COMMENT ON TABLE e_project_close IS 'Сущность - Завершение проекта';
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Связь 'Участники проекта - Проекты - Участники' (projects members)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE r_e_projects_e_members (
+  id SERIAL,
+  project_id INTEGER NOT NULL,
+  member_id INTEGER NOT NULL,
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (project_id, member_id),
+      UNIQUE (id),
+      FOREIGN KEY (project_id) REFERENCES e_projects(id),
+      FOREIGN KEY (member_id) REFERENCES e_members(id)
+);
+COMMENT ON TABLE r_e_projects_e_members IS 'Связь - Участники проекта';
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Сущность 'Физическое лицо' (entity person) # tested # created: work-dev
+-- Зависимости
+-- schema dict
+-- dictionary genders
+-- dictionary is_deleted
+>>>>>>> 5f7487abf4ddb83db5edcfbe9464b5cd0d626598
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE e_persons (
   id CHAR(12) NOT NULL, -- Необходимо реализовать проверку ИИН по маске на стороне бакэнда и фронтэнда (Внимание: ИИН представлен в формате VARCHAR)
@@ -25,7 +113,11 @@ COMMENT ON COLUMN e_persons.first_name IS 'Имя ФЛ';
 COMMENT ON COLUMN e_persons.middle_name IS 'Отчество ФЛ';
 COMMENT ON COLUMN e_persons.dob IS 'Дата рождения ФЛ';
 COMMENT ON COLUMN e_persons.gender_id IS 'Пол ФЛ';
+<<<<<<< HEAD
 COMMENT ON COLUMN e_persons.is_deleted IS 'Пол ФЛ';
+=======
+COMMENT ON COLUMN e_persons.is_deleted IS 'Признак удаления записи';
+>>>>>>> 5f7487abf4ddb83db5edcfbe9464b5cd0d626598
 -- Извлечь всех физических лиц # tested
 SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons ORDER BY id ASC;
 -- Извлечь физическое лицо по ИИН # tested
@@ -83,7 +175,7 @@ COMMENT ON COLUMN log.e_persons.first_name IS 'Имя ФЛ';
 COMMENT ON COLUMN log.e_persons.middle_name IS 'Отчество ФЛ';
 COMMENT ON COLUMN log.e_persons.dob IS 'Дата рождения ФЛ';
 COMMENT ON COLUMN log.e_persons.gender_id IS 'Пол ФЛ';
-COMMENT ON COLUMN log.e_persons.is_deleted IS 'Состояние записи';
+COMMENT ON COLUMN log.e_persons.is_deleted IS 'Признак удаления записи';
 -- Извлечь историю изменения сущности 'Физическое лицо' # tested
 SELECT id, session_id AS "sessionID", manipulation_date AS "manipulationDate", manipulation_type_id AS "manipulationTypeID", iin, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", gender_id AS "genderID", is_deleted AS "isDeleted" FROM log.e_persons ORDER BY id ASC;
 -- Вставить изменение в журнал истории изменения сущности 'Физическое лицо'
@@ -114,10 +206,11 @@ CREATE TABLE e_companies (
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
       CHECK (is_deleted IN ('N','Y'))
 );
-COMMENT ON TABLE e_persons IS 'Сущность - Юридическое лицо';
-COMMENT ON COLUMN e_persons.bin IS 'БИН ЮЛ';
-COMMENT ON COLUMN e_persons.last_name IS 'Наименование ЮЛ';
-COMMENT ON COLUMN log.e_persons.is_deleted IS 'Состояние записи';
+-- # tested
+COMMENT ON TABLE e_companies IS 'Сущность - Юридическое лицо';
+COMMENT ON COLUMN e_companies.id IS 'БИН ЮЛ';
+COMMENT ON COLUMN e_companies.company_name IS 'Наименование ЮЛ';
+COMMENT ON COLUMN e_companies.is_deleted IS 'Признак удаления записи';
 -- Извлечь все юридические лица
 SELECT id, company_name AS "companyName", is_deleted AS "isDeleted" FROM e_companies ORDER BY id ASC;
 -- Извлечь юридическое лицо по БИН
@@ -140,11 +233,11 @@ UPDATE e_companies SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 -- Журнал истории изменения сущности 'Юридическое лицо' (log company)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE log.e_companies (
-  id SERIAL NOT NULL,
+  id SERIAL,
   session_id INTEGER NOT NULL,
   manipulation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
   manipulation_type_id INTEGER NOT NULL,
-    bin CHAR(12) NOT NULL,
+    company_id CHAR(12) NOT NULL,
     company_name VARCHAR(500) NOT NULL,
       is_deleted CHAR(1) NOT NULL DEFAULT 'N',
         PRIMARY KEY (id),
@@ -154,18 +247,22 @@ CREATE TABLE log.e_companies (
         CHECK (is_deleted IN ('N','Y'))
 );
 COMMENT ON TABLE log.e_companies IS 'Журнал - Юридическое лицо';
-COMMENT ON COLUMN log.e_companies.bin IS 'БИН ЮЛ';
-COMMENT ON COLUMN log.e_companies.bin IS 'БИН ЮЛ';
-COMMENT ON COLUMN log.e_companies.last_name IS 'Наименование ЮЛ';
+COMMENT ON COLUMN log.e_companies.id IS 'Идентификатор записи журнала';
+COMMENT ON COLUMN log.e_companies.session_id IS 'Идентификатор сессии';
+COMMENT ON COLUMN log.e_companies.manipulation_date IS 'Дата изменения сущности';
+COMMENT ON COLUMN log.e_companies.manipulation_type_id IS 'Идентификатор типа изменения сущности';
+COMMENT ON COLUMN log.e_companies.company_id IS 'БИН ЮЛ';
+COMMENT ON COLUMN log.e_companies.company_name IS 'Наименование ЮЛ';
+COMMENT ON COLUMN log.e_companies.is_deleted IS 'Признак удаления записи';
 -- Извлечь все записи истории изменения сущности 'Юридическое лицо'
-SELECT id, session_id AS "sessionID", manipulation_date AS "manipulationDate", manipulation_type_id AS "manipulationTypeID", bin, company_name AS "companyName", is_deleted AS 'isDeleted' FROM log.e_companies ORDER BY id ASC;
+SELECT id, session_id AS "sessionID", manipulation_date AS "manipulationDate", manipulation_type_id AS "manipulationTypeID", company_id AS "companyID", company_name AS "companyName", is_deleted AS 'isDeleted' FROM log.e_companies ORDER BY id ASC;
 -- Вставить запись в журнал
-INSERT INTO log.e_companies (session_id, manipulation_date, manipulation_type_id, bin, company_name) VALUES ({sessionID}, {manipulationDate}, {manipulationTypeID}, {bin}, {companyName}) RETURNING id;
+INSERT INTO log.e_companies (session_id, manipulation_date, manipulation_type_id, company_id, company_name) VALUES ({sessionID}, {manipulationDate}, {manipulationTypeID}, {companyID}, {companyName}) RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Должность физического лица' (entity position)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE e_positions (
-  id SERIAL NOT NULL,
+  id SERIAL,
   position_name VARCHAR(500) NOT NULL,
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (id),
@@ -175,6 +272,10 @@ CREATE TABLE e_positions (
 COMMENT ON TABLE e_positions IS 'Сущность - Должность';
 COMMENT ON COLUMN e_positions.id IS 'Идентификатор должности';
 COMMENT ON COLUMN e_positions.position_name IS 'Наименование должности';
+<<<<<<< HEAD
+=======
+COMMENT ON COLUMN e_positions.is_deleted IS 'Признак удаления записи';
+>>>>>>> 5f7487abf4ddb83db5edcfbe9464b5cd0d626598
 -- Извлечь все должности
 SELECT id, position_name AS "positionName", is_deleted AS "isDeleted" FROM e_positions ORDER BY id ASC;
 -- Извлечь должность по идентификатору должности
@@ -214,6 +315,14 @@ CREATE TABLE log.e_positions (
         FOREIGN KEY (position_id) REFERENCES e_positions(id),
         CHECK (is_deleted IN ('N','Y'))
 );
+COMMENT ON TABLE log.e_positions IS 'Журнал - Должность ФЛ';
+COMMENT ON COLUMN log.e_positions.id IS 'Идентификатор записи журнала';
+COMMENT ON COLUMN log.e_positions.session_id IS 'Идентификатор сессии';
+COMMENT ON COLUMN log.e_positions.manipulation_date IS 'Дата изменения сущности';
+COMMENT ON COLUMN log.e_positions.manipulation_type_id IS 'Идентификатор типа изменения сущности';
+COMMENT ON COLUMN log.e_positions.position_id IS 'Идентификатор должности';
+COMMENT ON COLUMN log.e_positions.position_name IS 'Наименование должности';
+COMMENT ON COLUMN log.e_positions.is_deleted IS 'Признак удаления записи';
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Подразделение ЮЛ' (entity division)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -231,7 +340,7 @@ COMMENT ON TABLE e_divisions IS 'Подразделение ЮЛ';
 COMMENT ON COLUMN e_divisions.id IS 'Идентификатор подразделения ЮЛ';
 COMMENT ON COLUMN e_divisions.parent_division_id IS 'Идентификатор родительского подразделения ЮЛ';
 COMMENT ON COLUMN e_divisions.division_name IS 'Наименование подразделения ЮЛ';
-COMMENT ON COLUMN e_divisions.is_deleted IS 'Признак удаления сущности';
+COMMENT ON COLUMN e_divisions.is_deleted IS 'Признак удаления записи';
 -- Извлечь все подразделения ЮЛ
 SELECT id, parent_division_id AS "parentDivisionID", division_name AS "divisionName", is_deleted AS "isDeleted" FROM e_divisions ORDER BY id ASC;
 -- Извлечь подразделение ЮЛ по идентификатору подразделения ЮЛ
@@ -254,18 +363,24 @@ CREATE TABLE log.e_divisions (
   session_id INTEGER NOT NULL,
   manipulation_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
   manipulation_type_id INTEGER NOT NULL,
-    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-      PRIMARY KEY (id),
-      FOREIGN KEY (session_id) REFERENCES e_sessions(id),
-      FOREIGN KEY (manipulation_type_id) REFERENCES dict.manipulation_type(id),
-      FOREIGN KEY (division_id) REFERENCES e_divisions(id),
-      CHECK (is_deleted IN ('N','Y'))
+    division_id INTEGER NOT NULL,
+    parent_division_id INTEGER,
+    division_name VARCHAR (400) NOT NULL,
+      is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+        PRIMARY KEY (id),
+        FOREIGN KEY (session_id) REFERENCES e_sessions(id),
+        FOREIGN KEY (manipulation_type_id) REFERENCES dict.manipulation_type(id),
+        FOREIGN KEY (division_id) REFERENCES e_divisions(id),
+        CHECK (is_deleted IN ('N','Y'))
 );
 COMMENT ON TABLE log.e_divisions IS 'Журнал - Подразделение ЮЛ';
 COMMENT ON COLUMN log.e_divisions.id IS 'Идентификатор записи журнала';
 COMMENT ON COLUMN log.e_divisions.session_id IS 'Идентификатор сессии';
 COMMENT ON COLUMN log.e_divisions.manipulation_date IS 'Дата изменения сущности';
 COMMENT ON COLUMN log.e_divisions.manipulation_type_id IS 'Идентификатор типа изменения сущности';
+COMMENT ON COLUMN log.e_divisions.division_id IS 'Идентификатор подразделения ЮЛ';
+COMMENT ON COLUMN log.e_divisions.parent_division_id IS 'Идентификатор родительского подразделения ЮЛ';
+COMMENT ON COLUMN log.e_divisions.division_name IS 'Наименование подразделения ЮЛ';
 COMMENT ON COLUMN log.e_divisions.is_deleted IS 'Признак удаления сущности';
 -- Связь 'Юридическое лицо - Подразделения ЮЛ' (relationship company - division)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -582,6 +697,11 @@ CREATE TABLE meta.r_e_roles_e_users (
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
       CHECK (is_deleted IN ('N', 'Y'))
 );
+COMMENT ON TABLE meta.r_e_roles_e_users IS 'Связь - Роль - Пользователь';
+COMMENT ON COLUMN meta.r_e_roles_e_users.id IS 'Идентификатор роли пользователя';
+COMMENT ON COLUMN meta.r_e_roles_e_users.role_id IS 'Идентификатор роли пользователя';
+COMMENT ON COLUMN meta.r_e_roles_e_users.user_id IS 'Идентификатор пользователя';
+COMMENT ON COLUMN meta.r_e_roles_e_users.is_deleted IS 'Признак удаления записи';
 -- Извлечь все связи 'Роли - Пользователи'
 SELECT id, role_id AS "roleID", user_id AS "userID" FROM meta.r_e_roles_e_users ORDER BY id ASC;
 -- Вставить связь 'Роли - Пользователи'

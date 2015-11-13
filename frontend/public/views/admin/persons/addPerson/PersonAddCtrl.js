@@ -20,9 +20,13 @@
 				return field.$invalid && (personAddForm.$submitted || !field.$pristine);
 			}
 		};
+<<<<<<< HEAD
 
     console.log(person);
 
+=======
+    
+>>>>>>> 5f7487abf4ddb83db5edcfbe9464b5cd0d626598
     vm.submit = submit;
 		function submit(){
 			vm.personAddForm.$setSubmitted();

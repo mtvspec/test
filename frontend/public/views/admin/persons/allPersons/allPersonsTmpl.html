@@ -3,15 +3,20 @@
 </div>
 <ul>
   <li ng-repeat='person in vm.persons'>
-    <div class='personsList' ng-click='vm.showPersonDetails(person)'>
-      <div>
+    <div class='personsList row'>
+      <div class='col s2'>
         <span>{{person.lastName}}</span>
         <span>{{person.firstName}}</span>
         <span>{{person.middleName}}</span>
+        <div class='person-detail-data'>
+          <span>{{person.id}}</span>
+          <span>{{person.dob | date:"dd-MM-yyyy"}}</span>
+        </div>
       </div>
-      <div>
-        <span>{{person.id}}</span>
-        <span>{{person.dob | date:"dd-MM-yyyy"}}</span>
+      <div class='col s1 person-manage-tools'>
+        <button type='button' class='btn-floating red' ng-click='vm.showPersonDetails(person)'>
+          <i class="large mdi-navigation-menu"></i>
+        </button>
       </div>
     </div>
   </li>
