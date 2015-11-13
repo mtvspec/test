@@ -75,6 +75,16 @@
       }
     })
 
+    .state('addCompany', {
+      url: '/addCompany',
+      templateUrl: 'views/admin/companies/addCompany/addCompanyTmpl.html',
+      controller: 'ContactsAddController',
+      controllerAs: 'vm',
+      data: {
+        title: 'Добавление ЮЛ'
+      }
+    })
+
     .state('admin.layout.person', {
       url: '/person',
       templateUrl: 'views/test/person/add/person.html',

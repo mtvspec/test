@@ -1,0 +1,24 @@
+<div class='container'>
+  <div class='input-field'>
+    <label for='bin'>Введите БИН:</label>
+    <input
+      id='bin'
+      type='text'
+      ng-model='vm.company.id'>
+  </div>
+  <div class='input-field'>
+    <label for='companyName'>Введите наименование:</label>
+    <input
+      id='companyName'
+      type='text'
+      ng-model='vm.company.companyName'>
+  </div>
+  <div>
+    <button class='btn waves-effect' type='submit' ng-click='vm.submit(vm.company)'>Добавить ЮЛ</button>
+  </div>
+  <div class='well'>
+    <pre>
+      {{vm.company}}
+    </pre>
+  </div>
+</div>
