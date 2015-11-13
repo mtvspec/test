@@ -5,7 +5,7 @@
 	.controller('PersonAddCtrl', function ($mdDialog, Model) {
 
 		var vm = this,
-    _url = '/api/person/',
+    _url = '/api/persons/',
     personAddForm = {},
     person = {},
     PersonsModel = new Model();
@@ -20,13 +20,6 @@
 				return field.$invalid && (personAddForm.$submitted || !field.$pristine);
 			}
 		};
-
-    person = PersonsModel.getObject({
-      url: _url,
-      params: {
-        id: '871215301496'
-      }
-    });
 
     console.log(person);
 

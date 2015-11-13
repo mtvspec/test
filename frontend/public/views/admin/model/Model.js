@@ -9,7 +9,7 @@
 
     LTModel.prototype.getObjects = function getObjects(config) {
       return $http({
-        method: config.method,
+        method: 'GET',
         url: config.url
       })
       .then(function (response) {
@@ -27,11 +27,9 @@
     };
 
     LTModel.prototype.getObject = function getObject(config) {
-      console.log(_objects[0].id);
-      console.log(config.params.id);
-      for (var i = 0, len = _objects.length; i < len; i++) {
-        if (_objects[i].id == config.params.id) {
-          config.data = _objects[i];
+      for (var i = 0, len = config.data.objects.length; i < len; i++) {
+        if (config.data.objects[i].id == config.params.id) {
+          config.data = config.data.objects[i];
           return config;
           break;
         }
@@ -47,16 +45,16 @@
       .then(function(response){
         if (response.status === 201) {
           config.data.id = response.data.id;
-          _objects.push(config.data);
+          config.data.objects.push(config.data);
         } else {
-          return config.objects;
+          return config.data.objects;
         }
       });
     };
 
     LTModel.prototype.updateObject = function updateObject(config) {
       return $http({
-        method: config.method,
+        method: 'PUT',
         url: config.url,
         params: config.data.id,
         data: config.data
@@ -79,19 +77,19 @@
 
     LTModel.prototype.deleteObject = function deleteObject(config) {
       return $http({
-        method: config.method,
+        method: 'DELETE',
         url: config.url,
         params: config.data.id
       })
       .then(function (response) {
         if (response.status === 200 && config.data.id === Number(response.data.id)) {
-          for(var i = 0, len = _objects.length; i < len; i++){
-						if(_objects[i].id === data.id){
-							_objects.splice(i, 1);
+          for(var i = 0, len = config.data.objects.length; i < len; i++){
+						if(config.data.objects[i].id === data.id){
+							config.data.objects.splice(i, 1);
 							break;
 						}
 					}
-          return config.objects = _objects;
+          return config.data.objects = _objects;
         } else if (response.status === 204) {
           return {};
         } else if (response.status === 400) {

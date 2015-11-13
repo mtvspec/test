@@ -5,8 +5,8 @@
   .controller('PersonCtrl', function ($http) {
     
     
-    var vm = this;
-    var persons;
+    var vm = this,
+    persons;
     
     vm.persons = getPersons();
     
