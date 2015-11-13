@@ -2,7 +2,7 @@
 -- General
 --=======================================================================================================================================================================================================================================================================--
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Сущность 'Физическое лицо' (entity person) # tested # created: work-dev
+-- Сущность 'Физическое лицо' (entity person) # tested # created: work-dev, home-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE e_persons (
   id CHAR(12) NOT NULL, -- Необходимо реализовать проверку ИИН по маске на стороне бакэнда и фронтэнда (Внимание: ИИН представлен в формате VARCHAR)
@@ -25,7 +25,7 @@ COMMENT ON COLUMN e_persons.first_name IS 'Имя ФЛ';
 COMMENT ON COLUMN e_persons.middle_name IS 'Отчество ФЛ';
 COMMENT ON COLUMN e_persons.dob IS 'Дата рождения ФЛ';
 COMMENT ON COLUMN e_persons.gender_id IS 'Пол ФЛ';
-COMMENT ON COLUMN e_persons.gender_id IS 'Пол ФЛ';
+COMMENT ON COLUMN e_persons.is_deleted IS 'Пол ФЛ';
 -- Извлечь всех физических лиц # tested
 SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM e_persons ORDER BY id ASC;
 -- Извлечь физическое лицо по ИИН # tested
@@ -47,7 +47,7 @@ UPDATE e_persons SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 -- Восстановить физическое лицо по идентификатору физического лица
 UPDATE e_persons SET is_deleted = 'N' WHERE id = {id} RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Журнал истории изменения сущности 'Физическое лицо' (log person) # tested # created: work-dev
+-- Журнал истории изменения сущности 'Физическое лицо' (log person) # tested # created: work-dev, home-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE log.e_persons (
   id SERIAL NOT NULL,
@@ -172,9 +172,9 @@ CREATE TABLE e_positions (
       UNIQUE (position_name),
       CHECK (is_deleted IN ('N','Y'))
 );
-COMMENT ON TABLE e_persons IS 'Сущность - Должность';
-COMMENT ON COLUMN e_persons.id IS 'Идентификатор должности';
-COMMENT ON COLUMN e_persons.last_name IS 'Наименование должности';
+COMMENT ON TABLE e_positions IS 'Сущность - Должность';
+COMMENT ON COLUMN e_positions.id IS 'Идентификатор должности';
+COMMENT ON COLUMN e_positions.position_name IS 'Наименование должности';
 -- Извлечь все должности
 SELECT id, position_name AS "positionName", is_deleted AS "isDeleted" FROM e_positions ORDER BY id ASC;
 -- Извлечь должность по идентификатору должности
