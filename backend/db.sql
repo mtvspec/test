@@ -4,6 +4,7 @@
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Проект' (entity project)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- # tested # created: work-dev
 CREATE TABLE e_projects (
   id SERIAL,
   customer_id CHAR(12),
@@ -22,7 +23,18 @@ CREATE TABLE e_projects (
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
       CHECK (is_deleted IN ('N', 'Y'))
 );
+-- # tested # created: work-dev
 COMMENT ON TABLE e_projects IS 'Сущность - Проект';
+COMMENT ON COLUMN e_projects.id IS 'Идентификатор проекта';
+COMMENT ON COLUMN e_projects.customer_id IS 'Идентификатор юридического лица - Заказчика проекта';
+COMMENT ON COLUMN e_projects.project_formal_name IS 'Формальное наименование проекта';
+COMMENT ON COLUMN e_projects.project_work_name IS 'Рабочее наименование проекта';
+COMMENT ON COLUMN e_projects.project_official_name IS 'Официальное наименование проекта';
+COMMENT ON COLUMN e_projects.start_date IS 'Дата начала проекта';
+COMMENT ON COLUMN e_projects.end_date IS 'Дата завершения проекта';
+COMMENT ON COLUMN e_projects.budget IS 'Бюджет проекта';
+COMMENT ON COLUMN e_projects.manager_id IS 'Идентификатор физического лица - Руководителя проекта';
+COMMENT ON COLUMN e_projects.is_deleted IS 'Признак удаления записи';
 -- Извлечь все проекты
 SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID", is_deleted AS "isDeleted" FROM e_projects ORDER BY id ASC;
 -- Извлечь существующие проекты
@@ -71,6 +83,10 @@ CREATE TABLE r_e_projects_e_members (
 COMMENT ON TABLE r_e_projects_e_members IS 'Связь - Участники проекта';
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Физическое лицо' (entity person) # tested # created: work-dev
+-- Зависимости
+-- schema dict
+-- dictionary genders
+-- dictionary is_deleted
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE e_persons (
   id CHAR(12) NOT NULL, -- Необходимо реализовать проверку ИИН по маске на стороне бакэнда и фронтэнда (Внимание: ИИН представлен в формате VARCHAR)
@@ -183,10 +199,10 @@ CREATE TABLE e_companies (
       CHECK (is_deleted IN ('N','Y'))
 );
 -- # tested
-COMMENT ON TABLE e_persons IS 'Сущность - Юридическое лицо';
-COMMENT ON COLUMN e_persons.id IS 'БИН ЮЛ';
-COMMENT ON COLUMN e_persons.company_name IS 'Наименование ЮЛ';
-COMMENT ON COLUMN .e_persons.is_deleted IS 'Признак удаления записи';
+COMMENT ON TABLE e_companies IS 'Сущность - Юридическое лицо';
+COMMENT ON COLUMN e_companies.id IS 'БИН ЮЛ';
+COMMENT ON COLUMN e_companies.company_name IS 'Наименование ЮЛ';
+COMMENT ON COLUMN e_companies.is_deleted IS 'Признак удаления записи';
 -- Извлечь все юридические лица
 SELECT id, company_name AS "companyName", is_deleted AS "isDeleted" FROM e_companies ORDER BY id ASC;
 -- Извлечь юридическое лицо по БИН
