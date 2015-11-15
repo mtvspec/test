@@ -16,7 +16,7 @@
         url: url,
         data: user
       }).then(function (response) {
-        console.log(response.status.statusText.data);
+        console.log(response.status.statusText, response.data);
       }, function (response) {
         console.error(response.status.statusText);
       });
