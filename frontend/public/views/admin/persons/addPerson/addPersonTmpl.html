@@ -1,6 +1,6 @@
-<md-dialog aria-label='addPerson' style='width: 500px;'>
+<md-dialog aria-label='addPerson' class='medium'>
   <md-toolbar>
-    <div class='md-toolbar-tools'>
+    <div class='md-toolbar-tools unselectable'>
       <h2>Добавление ФЛ</h2>
       <span flex></span>
       <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
@@ -9,14 +9,18 @@
     </div>
   </md-toolbar>
   <md-dialog-content style='padding: 20px;'>
-    <div class='md-container'>
+    <div class='md-container unselectable'>
       <form name='vm.personAddForm'>
         <!-- person iin -->
         <div class='input-field'>
-          <label for='iin'>ИИН</label>
+          <label class='unselectable' for='iin'>ИИН</label>
           <input
             id='iin'
             type='text'
+            class='validate'
+            length='12'
+            minlength='12'
+            maxlength='12'
             ng-model='vm.person.id'>
         </div>
         <!-- person last name -->
@@ -26,6 +30,7 @@
             id='lastName'
             type='text'
             class='validate'
+            maxlength='200'
             ng-model='vm.person.lastName'>
         </div>
         <!-- person first name -->
@@ -48,8 +53,7 @@
         <!-- person dob -->
         <md-datepicker
           ng-model='vm.person.dob'
-          md-placeholder='Дата рождения'
-          required name='dob'>
+          md-placeholder='Дата рождения'>
         </md-datepicker>
         <!-- person gender -->
         <div class='input-field'>
@@ -72,7 +76,7 @@
   </md-dialog-content>
   <hr>
   <div class='md-actions'>
-  	<button class='btn waves-effect waves-light btn-blue' type='submit' ng-click='vm.submit()'>
+  	<button class='btn waves-effect waves-light btn-blue' type='submit' ng-click='vm.submit(vm.person)'>
       Добавить ФЛ
     </button>
   	<button class='btn waves-effect waves-light btn-blue' type='button' ng-click='vm.closeDialog()'>
