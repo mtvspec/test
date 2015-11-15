@@ -19,3 +19,18 @@ body {
 .tl-collection-item {
   margin-bottom: 5px;
 }
+.large {
+  width: 800px;
+}
+.medium {
+  width: 600px;
+}
+.small {
+  width: 400px;
+}
+.unselectable {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
+}
