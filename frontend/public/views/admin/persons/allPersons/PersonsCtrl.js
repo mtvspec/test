@@ -2,32 +2,28 @@
 	'use strict';
 
 	angular.module('app')
-	.controller('PersonsCtrl', function (Model, $mdDialog) {
+	.controller('PersonsCtrl', function ($http, $mdDialog) {
 
 	var vm = this,
-  _persons = [],
-  _personsPromise = {},
+  persons = [],
   genders = [],
-  PersonsModel = new Model(),
   _url = '/api/persons';
 
-	vm.persons = _persons,
   vm.genders = genders;
 
-  PersonsModel.getAllObjects({
-    url: _url,
-    data: {
-      objects: _persons,
-      objectsPromise: _personsPromise
-    }
-  }, function (data) {
-    console.log(data);
+  $http({
+    method: 'GET',
+    url: _url
+  }).then(function (response) {
+    vm.persons = response.data;
+  }, function (response) {
+    console.error(response.status.statusText);
   });
 
+  vm.showPersonDetails = showPersonDetails;
   function showPersonDetails(person) {
     console.debug(person);
   };
-  vm.showPersonDetails = showPersonDetails;
 
   vm.addPerson = addPerson;
 	function addPerson(ev) {
@@ -38,9 +34,9 @@
       targetEvent: ev,
       clickOutsideToClose: false
     })
-    .then(function () {
-
-    }, function () {
+    .then(function (response) {
+      console.log(response);
+    }, function (response) {
       // body...
     });
 	};
