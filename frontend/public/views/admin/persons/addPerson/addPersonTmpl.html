@@ -39,6 +39,7 @@
           <input
             id='firstName'
             type='text'
+            maxlength='200'
             ng-model='vm.person.firstName'
             class='validate'>
         </div>
@@ -48,28 +49,23 @@
           <input
             id='middleName'
             type='text'
+            maxlength='300'
             ng-model='vm.person.middleName'>
         </div>
         <!-- person dob -->
         <md-datepicker
           ng-model='vm.person.dob'
+          type='date'
           md-placeholder='Дата рождения'>
         </md-datepicker>
         <!-- person gender -->
         <div class='input-field'>
-          <label for='genderID'>Пол</label>
+          <label for="genderID">Пол</label>
           <input
             id='genderID'
-            type="text"
+            type='text'
             ng-model='vm.person.genderID'
             class='validate'>
-          <!-- <select
-            ng-model="vm.person.genderID"
-            required name='genderID'>
-            <options ng-repeat="gender in vm.genders" value="{{gender.id}}">
-              {{gender.genderName}}
-            </options>
-          </select> -->
         </div>
     	</form>
     </div>
