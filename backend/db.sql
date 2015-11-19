@@ -37,11 +37,21 @@ COMMENT ON COLUMN open_project.e_projects.budget IS 'Бюджет проекта
 COMMENT ON COLUMN open_project.e_projects.manager_id IS 'Идентификатор физического лица - Руководителя проекта';
 COMMENT ON COLUMN open_project.e_projects.is_deleted IS 'Состояние записи';
 -- Извлечь все проекты
-SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID", is_deleted AS "isDeleted" FROM e_projects ORDER BY id ASC;
+SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID", is_deleted AS "isDeleted" FROM open_project.e_projects ORDER BY id ASC;
 -- Извлечь существующие проекты
-SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM e_projects WHERE is_deleted = 'N' ORDER BY id ASC;
+SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE is_deleted = 'N' ORDER BY id ASC;
 -- Извлечь несуществующие проекты
-SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM e_projects WHERE is_deleted = 'Y' ORDER BY id ASC;
+SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE is_deleted = 'Y' ORDER BY id ASC;
+-- Извлечь существующий проект по идентификатору проекта
+SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE is_deleted = 'Y' AND id = {id};
+-- Вставить проект
+INSERT INTO open_project.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ({customerID}, {projectFormalName}, {projectWorkName}, {projectOfficialName}, {startDate}, {endDate}, {budget}, {managerID}) RETURNING id;
+-- Обновить проект по идентификатору проекта
+UPDATE open_project.e_projects SET customer_id = {customerID}, project_formal_name = {projectFormalName}, project_work_name = {projectWorkName}, project_official_name = {projectOfficialName}, start_date = {startDate}, end_date = {endDate}, budget = {budget}, manager_id = {managerID} WHERE id = {id} RETURNING id;
+-- Удалить проект по идентификатору проекта
+DELETE FROM open_project.e_projects WHERE id = {id};
+-- Praetorium
+INSERT INTO open_project.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301496', 'P', 'Praetorium', 'Информационная система "Praetorium"', '2015-01-01', '2015-12-31', 150000000, '871215301496') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Инициация проекта' (project init)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -94,6 +104,8 @@ COMMENT ON TABLE open_project.r_e_projects_e_members IS 'Связь - Участ
 -- dictionary genders
 -- dictionary is_deleted
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE SCHEMA fl;
+
 CREATE TABLE fl.e_persons (
   id CHAR(12) NOT NULL, -- Необходимо реализовать проверку ИИН по маске на стороне бакэнда и фронтэнда (Внимание: ИИН представлен в формате VARCHAR)
   last_name VARCHAR(200) NOT NULL,
@@ -136,6 +148,8 @@ UPDATE fl.e_persons SET id = {id}, last_name = {lastName}, first_name = {firstNa
 UPDATE fl.e_persons SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 -- Восстановить физическое лицо по идентификатору физического лица
 UPDATE fl.e_persons SET is_deleted = 'N' WHERE id = {id} RETURNING id;
+-- Тимур
+INSERT INTO fl.e_persons (id, last_name, first_name, middle_name, dob, gender_id) VALUES ('871215301496', 'Маусумбаев', 'Тимур', 'Владимирович', '1987-12-15', 'M') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Справочник 'Пол физического лица' (dictionary person gender) # tested
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -221,6 +235,8 @@ INSERT INTO log$.e_persons (session_id, manipulation_type_id) VALUES ({sessionID
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Юридическое лицо' (entity company) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE SCHEMA ul;
+
 CREATE TABLE ul.e_companies (
   id CHAR(12) NOT NULL, -- Необходимо реализовать проверку БИН по маске на стороне бакэнда и фронтэнда
   short_name VARCHAR(100) NOT NULL,
@@ -233,12 +249,12 @@ CREATE TABLE ul.e_companies (
       CHECK (is_deleted IN ('N','Y'))
 );
 -- # tested # created: work-dev
-COMMENT ON TABLE e_companies IS 'Сущность - Юридическое лицо';
-COMMENT ON COLUMN e_companies.id IS 'БИН ЮЛ';
-COMMENT ON COLUMN e_companies.short_name IS 'Короткое наименование ЮЛ';
-COMMENT ON COLUMN e_companies.long_name IS 'Наименование ЮЛ';
-COMMENT ON COLUMN e_companies.full_name IS 'Юридическое наименование ЮЛ';
-COMMENT ON COLUMN e_companies.is_deleted IS 'Состояние записи';
+COMMENT ON TABLE ul.e_companies IS 'Сущность - Юридическое лицо';
+COMMENT ON COLUMN ul.e_companies.id IS 'БИН ЮЛ';
+COMMENT ON COLUMN ul.e_companies.short_name IS 'Короткое наименование ЮЛ';
+COMMENT ON COLUMN ul.e_companies.long_name IS 'Наименование ЮЛ';
+COMMENT ON COLUMN ul.e_companies.full_name IS 'Юридическое наименование ЮЛ';
+COMMENT ON COLUMN ul.e_companies.is_deleted IS 'Состояние записи';
 -- Извлечь все юридические лица
 SELECT id, short_name AS "shortName", long_name AS "longName", full_name AS "fullName", is_deleted AS "isDeleted" FROM ul.e_companies ORDER BY id ASC;
 -- Извлечь юридическое лицо по БИН
@@ -259,6 +275,8 @@ UPDATE ul.e_companies SET id = {id}, short_name = {shortName}, {long_name} = {lo
 UPDATE ul.e_companies SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 -- Восстановить юридическое лицо
 UPDATE ul.e_companies SET is_deleted = 'N' WHERE id = {id} RETURNING id;
+-- Казипэкс
+INSERT INTO ul.e_companies (id, short_name, long_name, full_name) VALUES ('871215301496', 'Kazimpex', 'АО "РЦ "Казипэкс"', 'Акционерное общество "Республиканский центр "Казимпэкс"') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Журнал истории изменения сущности 'Юридическое лицо' (log company)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -722,7 +740,7 @@ UPDATE meta.r_e_roles_e_users SET role_id = {roleID}, user_id = {userID} WHERE i
 UPDATE meta.r_e_roles_e_users SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 --=======================================================================================================================================================================================================================================================================--
 CREATE SCHEMA address;
-
+--=======================================================================================================================================================================================================================================================================--
 CREATE TABLE address.e_country (
   id SERIAL,
   country_name VARCHAR(300) NOT NULL,
@@ -832,3 +850,103 @@ CREATE TABLE address.e_address (
     FOREIGN KEY (house_id) REFERENCES address.e_house(id),
     FOREIGN KEY (flat_id) REFERENCES address.e_flat(id)
 );
+
+CREATE TABLE open_project.r_e_projects_e_results (
+  id SERIAL,
+  project_id INTEGER NOT NULL,
+  result_id INTEGER NOT NULL,
+  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (id),
+  FOREIGN KEY (project_id) REFERENCES open_project.e_projects(id)
+  FOREIGN KEY (result_id) REFERENCES open_project.e_projects_results(id),
+  FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
+  CHECK (is_deleted IN ('N','Y'))
+);
+
+INSERT INTO open_project.e_projects_results (project_id, result_id) VALUES ({projectID}, {resultID}) RETURNING id;
+
+CREATE TABLE open_project.e_projects_results (
+  id SERIAL,
+  type_id INTEGER NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (type_id) REFERENCES dict.result_type(id)
+);
+
+CREATE TABLE dict.result_type (
+  id SERIAL,
+  type_name VARCHAR(300) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (type_name)
+);
+
+INSERT INTO dict.result_type (type_name) VALUES ({typeName}) RETURNING id;
+INSERT INTO dict.result_type (type_name) VALUES ('Информационная система');
+INSERT INTO dict.result_type (type_name) VALUES ('Аппаратное обеспечение');
+INSERT INTO dict.result_type (type_name) VALUES ('Программное обеспечение');
+INSERT INTO dict.result_type (type_name) VALUES ('Проектная документация');
+-- Проектная документация
+INSERT INTO dict.result_type (type_name) VALUES ('Концепция');
+INSERT INTO dict.result_type (type_name) VALUES ('Технико-экономическое обоснование');
+INSERT INTO dict.result_type (type_name) VALUES ('Техно-рабочий проект');
+INSERT INTO dict.result_type (type_name) VALUES ('Руководство пользователя');
+INSERT INTO dict.result_type (type_name) VALUES ('Руководство администратора');
+INSERT INTO dict.result_type (type_name) VALUES ('Техническая спецификация');
+INSERT INTO dict.result_type (type_name) VALUES ('Техническое задание');
+INSERT INTO dict.result_type (type_name) VALUES ('Программа и методика испытаний');
+INSERT INTO dict.result_type (type_name) VALUES ('Спецификация требований к ПО');
+INSERT INTO dict.result_type (type_name) VALUES ('Описание программы');
+
+CREATE TABLE open_project.e_requirements (
+  id SERIAL,
+  author_id CHAR(12) NOT NULL,
+  responsible_person_id CHAR(12) NOT NULL,
+  type_id INTEGER NOT NULL,
+  requirement_name VARCHAR(300) NOT NULL,
+  requirement_description VARCHAR(4000),
+  create_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
+  status_id INTEGER NOT NULL,
+  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (id),
+  FOREIGN KEY (author_id) REFERENCES fl.e_persons(id),
+  FOREIGN KEY (responsible_person_id) REFERENCES fl.e_persons(id),
+  FOREIGN KEY (type_id) REFERENCES dict.requirement_type(id),
+  FOREIGN KEY (status_id) REFERENCES dict.requirement_status(id)
+);
+
+CREATE TABLE dict.requirement_type (
+  id SERIAL,
+  type_name VARCHAR(300) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (type_name)
+);
+
+INSERT INTO dict.requirement_type (type_name) VALUES ({typeName}) RETURNING id;
+-- Типы требований
+INSERT INTO dict.requirement_type (type_name) VALUES ('Функциональное требование');
+INSERT INTO dict.requirement_type (type_name) VALUES ('Нефункциональное требование');
+INSERT INTO dict.requirement_type (type_name) VALUES ('Бизнес-требование');
+INSERT INTO dict.requirement_type (type_name) VALUES ('Бизнес-правило');
+INSERT INTO dict.requirement_type (type_name) VALUES ('Ограничение');
+INSERT INTO dict.requirement_type (type_name) VALUES ('Системное требование');
+INSERT INTO dict.requirement_type (type_name) VALUES ('Пользовательское требование');
+INSERT INTO dict.requirement_type (type_name) VALUES ('Характеристика');
+INSERT INTO dict.requirement_type (type_name) VALUES ('Атрибут качества');
+INSERT INTO dict.requirement_type (type_name) VALUES ('Требование к внешнему интерфейсу');
+
+CREATE TABLE dict.requirement_status (
+  id SERIAL,
+  status_name VARCHAR(300) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (status_name)
+);
+
+INSERT INTO dict.requirement_status (status_name) VALUES ({statusName}) RETURNING id;
+-- Статусы требований
+INSERT INTO dict.requirement_status (status_name) VALUES ('Принято');
+INSERT INTO dict.requirement_status (status_name) VALUES ('Сформулировано');
+INSERT INTO dict.requirement_status (status_name) VALUES ('Согласовано');
+INSERT INTO dict.requirement_status (status_name) VALUES ('Утверждено');
+INSERT INTO dict.requirement_status (status_name) VALUES ('Реализовано');
+INSERT INTO dict.requirement_status (status_name) VALUES ('Протестировано');
+
+INSERT INTO dict.requirement_status (status_name) VALUES ('Отклонено');
