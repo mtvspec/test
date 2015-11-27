@@ -21,8 +21,7 @@ CREATE TABLE open_project.e_projects (
       UNIQUE (id, project_formal_name, project_work_name, project_official_name),
       FOREIGN KEY (customer_id) REFERENCES ul.e_companies(id),
       FOREIGN KEY (manager_id) REFERENCES fl.e_persons(id),
-      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
-      CHECK (is_deleted IN ('N', 'Y'))
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
 -- # tested # created: work-dev
 COMMENT ON TABLE open_project.e_projects IS 'Сущность - Проект';
@@ -37,21 +36,27 @@ COMMENT ON COLUMN open_project.e_projects.budget IS 'Бюджет проекта
 COMMENT ON COLUMN open_project.e_projects.manager_id IS 'Идентификатор физического лица - Руководителя проекта';
 COMMENT ON COLUMN open_project.e_projects.is_deleted IS 'Состояние записи';
 -- Извлечь все проекты
-SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID", is_deleted AS "isDeleted" FROM open_project.e_projects ORDER BY id ASC;
+SELECT id, customer_id AS "projectCustomerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "projectStartDate", end_date AS "projectEndDate", budget AS "projectBudget", manager_id AS "projectManagerID", is_deleted AS "isDeleted" FROM open_project.e_projects ORDER BY id ASC;
 -- Извлечь существующие проекты
-SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE is_deleted = 'N' ORDER BY id ASC;
+SELECT id, customer_id AS "projectCustomerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "projectStartDate", end_date AS "projectEndDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE is_deleted = 'N' ORDER BY id ASC;
 -- Извлечь несуществующие проекты
-SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE is_deleted = 'Y' ORDER BY id ASC;
+SELECT id, customer_id AS "projectCustomerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "projectStartDate", end_date AS "projectEndDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE is_deleted = 'Y' ORDER BY id ASC;
+--  Извлечь проект по идентификатору проекта
+SELECT id, customer_id AS "projectCustomerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "projectStartDate", end_date AS "projectEndDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE id = {id};
 -- Извлечь существующий проект по идентификатору проекта
-SELECT id, customer_id AS "customerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "startDate", end_date AS "endDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE is_deleted = 'Y' AND id = {id};
+SELECT id, customer_id AS "projectCustomerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "projectStartDate", end_date AS "projectEndDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE is_deleted = 'Y' AND id = {id};
+-- Извлечь несуществующий проект по идентификатору проекта
+SELECT id, customer_id AS "projectCustomerID", project_formal_name AS "projectFormalName", project_work_name AS "projectWorkName", project_official_name AS "projectOfficialName", start_date AS "projectStartDate", end_date AS "projectEndDate", budget, manager_id AS "managerID" FROM open_project.e_projects WHERE is_deleted = 'Y' AND id = {id};
 -- Вставить проект
-INSERT INTO open_project.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ({customerID}, {projectFormalName}, {projectWorkName}, {projectOfficialName}, {startDate}, {endDate}, {budget}, {managerID}) RETURNING id;
+INSERT INTO open_project.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ({projectCustomerID}, {projectFormalName}, {projectWorkName}, {projectOfficialName}, {projectStartDate}, {projectEndDate}, {projectBudget}, {projectManagerID}) RETURNING id;
 -- Обновить проект по идентификатору проекта
-UPDATE open_project.e_projects SET customer_id = {customerID}, project_formal_name = {projectFormalName}, project_work_name = {projectWorkName}, project_official_name = {projectOfficialName}, start_date = {startDate}, end_date = {endDate}, budget = {budget}, manager_id = {managerID} WHERE id = {id} RETURNING id;
+UPDATE open_project.e_projects SET customer_id = {projectCustomerID}, project_formal_name = {projectFormalName}, project_work_name = {projectWorkName}, project_official_name = {projectOfficialName}, start_date = {projectStartDate}, end_date = {projectEndDate}, budget = {projectBudget}, manager_id = {projectManagerID} WHERE id = {id} RETURNING id;
 -- Удалить проект по идентификатору проекта
 DELETE FROM open_project.e_projects WHERE id = {id};
 -- Praetorium
 INSERT INTO open_project.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301496', 'P', 'Praetorium', 'Информационная система "Praetorium"', '2015-01-01', '2015-12-31', 150000000, '871215301496') RETURNING id;
+-- ЕИАС
+INSERT INTO open_project.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301496', 'E', 'ЕИАС', 'Программно-аппаратный комплекс Единой информационно-аналитической системы', '2015-01-01', '2015-12-31', 120000000, '871215301496') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Инициация проекта' (project init)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -61,16 +66,19 @@ CREATE TABLE open_project.e_project_init (
   init_date DATE,
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (id),
+      UNIQUE (project_id),
       FOREIGN KEY (project_id) REFERENCES open_project.e_projects(id),
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
 COMMENT ON TABLE open_project.e_project_init IS 'Сущность - Открытие проекта';
 COMMENT ON COLUMN open_project.e_project_init.project_id IS 'Идентификатор проекта';
 COMMENT ON COLUMN open_project.e_project_init.init_date IS 'Состояние записи';
+-- Вопросы
+-- Что является основанием для инициации проекта?
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Завершение проекта' (project close)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE e_project_close (
+CREATE TABLE open_project.e_project_close (
   id SERIAL,
   project_id INTEGER NOT NULL,
   close_date DATE,
@@ -83,6 +91,29 @@ COMMENT ON TABLE open_project.e_project_close IS 'Сущность - Завер�
 COMMENT ON COLUMN open_project.e_project_close.project_id IS 'Идентификатор проекта';
 COMMENT ON COLUMN open_project.e_project_close.close_date IS 'Дата закрытия проекта';
 COMMENT ON COLUMN open_project.e_project_close.is_deleted IS 'Состояние записи';
+-- Вопросы
+-- Что является основанием для закрытия проекта?
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Связь 'Проект - Дата инициации - Дата закрытия'
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE open_project.r_e_projects_e_project_init_e_project_close {
+  id SERIAL,
+  project_id INTEGER NOT NULL,
+  project_init_id INTEGER,
+  project_close_id INTEGER,
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (project_id, project_init_id, project_close_id),
+      UNIQUE (id)
+      FOREIGN KEY (project_id) REFERENCES open_project.e_projects(id),
+      FOREIGN KEY (project_init_id) REFERENCES open_project.e_project_init(id),
+      FOREIGN KEY (project_close_id) REFERENCES open_project.e_project_close(id)
+};
+COMMENT ON TABLE open_project.r_e_projects_e_project_init_e_project_close IS 'Связь - Проект - Инициация - Закрытие';
+COMMENT ON TABLE open_project.r_e_projects_e_project_init_e_project_close.id IS 'Идентификатор связи';
+COMMENT ON TABLE open_project.r_e_projects_e_project_init_e_project_close.project_id IS 'Идентификатор проекта';
+COMMENT ON TABLE open_project.r_e_projects_e_project_init_e_project_close.project_init_id IS 'Идентификатор инициации проекта';
+COMMENT ON TABLE open_project.r_e_projects_e_project_init_e_project_close.project_close_id IS 'Идентификатор закрытия проекта';
+COMMENT ON TABLE open_project.r_e_projects_e_project_init_e_project_close.is_deleted IS 'Состояние записи';
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Связь 'Участники проекта - Проекты - Участники' (projects members)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -851,35 +882,63 @@ CREATE TABLE address.e_address (
     FOREIGN KEY (flat_id) REFERENCES address.e_flat(id)
 );
 
+-- Сущность "Результаты проектов"
+CREATE TABLE open_project.e_projects_results (
+  id SERIAL,
+  type_id INTEGER NOT NULL,
+  responsible_person_id CHAR(12) NOT NULL, -- Идентификатор ответственного (физического) лица
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      FOREIGN KEY (responsible_person_id) REFERENCES fl.e_persons(id),
+      FOREIGN KEY (type_id) REFERENCES dict.result_type(id),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
+);
+
+-- Связь "Проект - Результаты проекта"
 CREATE TABLE open_project.r_e_projects_e_results (
   id SERIAL,
   project_id INTEGER NOT NULL,
   result_id INTEGER NOT NULL,
-  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (id),
-  FOREIGN KEY (project_id) REFERENCES open_project.e_projects(id)
-  FOREIGN KEY (result_id) REFERENCES open_project.e_projects_results(id),
-  FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
-  CHECK (is_deleted IN ('N','Y'))
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (project_id, result_id),
+      UNIQUE (id)
+      FOREIGN KEY (project_id) REFERENCES open_project.e_projects(id)
+      FOREIGN KEY (result_id) REFERENCES open_project.e_projects_results(id),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
 
 INSERT INTO open_project.e_projects_results (project_id, result_id) VALUES ({projectID}, {resultID}) RETURNING id;
 
-CREATE TABLE open_project.e_projects_results (
-  id SERIAL,
-  type_id INTEGER NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (type_id) REFERENCES dict.result_type(id)
-);
-
+-- Справочник "Тип требования"
 CREATE TABLE dict.result_type (
   id SERIAL,
   type_name VARCHAR(300) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE (type_name)
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      UNIQUE (type_name),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
-
+-- Извлечь все типы требований
+SELECT id, type_name AS "typeName" FROM dict.result_type ORDER BY id;
+-- Извлечь тип требования по идентификатору
+SELECT id, type_name AS "typeName" FROM dict.result_type WHERE id = {id};
+-- Извлечь существующие типы требований
+SELECT id, type_name AS "typeName" FROM dict.result_type WHERE is_deleted = 'N' ORDER BY id;
+-- Извлечь существующий тип требования по идентификатору типа требования
+SELECT id, type_name AS "typeName" FROM dict.result_type WHERE is_deleted = 'N' AND id = {id};
+-- Извлечь несуществующие типы требований
+SELECT id, type_name AS "typeName" FROM dict.result_type WHERE is_deleted = 'Y' ORDER BY id;
+-- Извлечь несуществующий тип требования по идентификатору типа требования
+SELECT id, type_name AS "typeName" FROM dict.result_type WHERE is_deleted = 'Y' AND id = {id};
+-- Втавить тип требования
 INSERT INTO dict.result_type (type_name) VALUES ({typeName}) RETURNING id;
+-- Обновить тип требования
+UPDATE dict.result_type SET type_name = {typeName} WHERE id = {id} RETURNING id;
+-- Удалить тип требования
+UPDATE dict.result_type SET is_deleted = 'Y' WHERE id = {id};
+-- Восстановить удаленный тип требования
+UPDATE dict.result_type SET is_deleted = 'N' WHERE id = {id};
+-- Результаты проекта
 INSERT INTO dict.result_type (type_name) VALUES ('Информационная система');
 INSERT INTO dict.result_type (type_name) VALUES ('Аппаратное обеспечение');
 INSERT INTO dict.result_type (type_name) VALUES ('Программное обеспечение');
@@ -899,25 +958,28 @@ INSERT INTO dict.result_type (type_name) VALUES ('Описание програ�
 CREATE TABLE open_project.e_requirements (
   id SERIAL,
   author_id CHAR(12) NOT NULL,
-  responsible_person_id CHAR(12) NOT NULL,
+  responsible_person_id CHAR(12) NOT NULL, -- Идентификатор ответственного (физического) лица
   type_id INTEGER NOT NULL,
   requirement_name VARCHAR(300) NOT NULL,
   requirement_description VARCHAR(4000),
   create_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
   status_id INTEGER NOT NULL,
-  is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (id),
-  FOREIGN KEY (author_id) REFERENCES fl.e_persons(id),
-  FOREIGN KEY (responsible_person_id) REFERENCES fl.e_persons(id),
-  FOREIGN KEY (type_id) REFERENCES dict.requirement_type(id),
-  FOREIGN KEY (status_id) REFERENCES dict.requirement_status(id)
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      FOREIGN KEY (author_id) REFERENCES fl.e_persons(id),
+      FOREIGN KEY (responsible_person_id) REFERENCES fl.e_persons(id),
+      FOREIGN KEY (type_id) REFERENCES dict.requirement_type(id),
+      FOREIGN KEY (status_id) REFERENCES dict.requirement_status(id),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
 
 CREATE TABLE dict.requirement_type (
   id SERIAL,
   type_name VARCHAR(300) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE (type_name)
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      UNIQUE (type_name),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
 
 INSERT INTO dict.requirement_type (type_name) VALUES ({typeName}) RETURNING id;

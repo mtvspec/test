@@ -1,0 +1,82 @@
+<md-dialog aria-label='addProject' class='medium'>
+  <md-toolbar>
+    <div class='md-toolbar-tools unselectable teal-darken-4'>
+      <h1 class="md-headline bold">Добавление проекта</h1>
+      <span flex></span>
+      <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
+        <md-icon md-svg-src='../../../../resources/icons/close.svg' class='s24' aria-label='Закрыть окно'></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-content style='padding: 20px;'>
+    <div class='md-container unselectable'>
+      <form name='vm.projectAddForm'>
+        <!-- project customerID -->
+        <md-input-container>
+          <label>Заказчик:</label>
+          <md-select ng-model="vm.project.customerID" md-on-open='vm.loadCustomers()'>
+            <md-option ng-repeat="customer in vm.companies" value="{{customer.id}}">
+              {{customer.longName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <!-- project formal name -->
+        <md-input-container>
+          <label>Формальное наименование проекта:</label>
+          <input ng-model='vm.project.projectFormalName' required name="projectFormalName" min="1" max="2">
+          <div ng-messages="vm.projectAddForm.projectFormalName.$error">
+            <div ng-message="required">Это поле обязательно для заполнения</div>
+          </div>
+        </md-input-container>
+        <!-- project work name -->
+        <md-input-container>
+          <label>Рабочее наименование проекта:</label>
+          <input ng-model='vm.project.projectWorkName' required name="projectWorkName">
+          <div ng-messages="vm.projectAddForm.projectWorkName.$error">
+            <div ng-message="required">Это поле обязательно для заполнения</div>
+          </div>
+        </md-input-container>
+        <!-- person official name -->
+        <md-input-container>
+          <label>Официальное наименование проекта:</label>
+          <input ng-model='vm.project.projectOfficialName'>
+        </md-input-container>
+        <!-- project start date -->
+        <md-datepicker
+          class="datepicker"
+          ng-model='vm.project.startDate'
+          md-placeholder='Дата инициации:'>
+        </md-datepicker>
+        <!-- project end date -->
+        <md-datepicker
+          class="datepicker"
+          ng-model='vm.project.endDate'
+          md-placeholder='Дата завершения:'>
+        </md-datepicker>
+        <!-- project budget -->
+        <md-input-container>
+          <label>Бюджет проекта:</label>
+          <input ng-model='vm.project.budget' type="number">
+        </md-input-container>
+        <!-- project managerID  -->
+        <md-input-container>
+          <label>Руководитель проекта:</label>
+          <md-select ng-model="vm.project.managerID" md-on-open='vm.loadPersons()'>
+            <md-option ng-repeat="manager in vm.persons" value="{{manager.id}}">
+              {{manager.lastName}} {{manager.firstName}} {{manager.middleName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+    	</form>
+    </div>
+  </md-content>
+  <hr>
+  <div class='md-actions teal-darken-4'>
+  	<md-button class='md-raised md-primary teal-lighten-2' type='submit' ng-click='vm.submit(vm.project)'>
+      Добавить проект
+    </md-button>
+  	<md-button class='md-raised' type='button' ng-click='vm.closeDialog()'>
+      Отмена
+    </md-button>
+  </div>
+</md-dialog>

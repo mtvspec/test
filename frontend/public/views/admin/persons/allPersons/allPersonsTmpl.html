@@ -1,7 +1,7 @@
 <div>
-  <button class='waves-effect waves-light btn btn-blue' ng-click='vm.addPerson($event)'>Добавить ФЛ</button>
+  <md-button class='md-raised' ng-click='vm.addPerson($event)'>Добавить ФЛ</md-button>
 </div>
-<ul>
+<ul class="list">
   <li ng-repeat='person in vm.persons'>
     <div class='personsList row'>
       <div class='col s2'>
@@ -12,11 +12,6 @@
           <span>{{person.id}}</span>
           <span>{{person.dob | date:"dd-MM-yyyy"}}</span>
         </div>
-      </div>
-      <div class='col s1 person-manage-tools'>
-        <button type='button' class='btn-floating red' ng-click='vm.showPersonDetails(person)'>
-          <i class="large mdi-navigation-menu"></i>
-        </button>
       </div>
     </div>
   </li>

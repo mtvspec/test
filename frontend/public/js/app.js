@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  angular.module('app', ['ui.router', 'ngMaterial'])
+  angular.module('app', ['ui.router', 'ngMaterial', 'ngMessages'])
   .run(function ($rootScope) {
     $rootScope.$on('$stateChangeSuccess', function (evt, toState) {
       if (toState.data && toState.data.title) {
@@ -26,6 +26,46 @@
       }
     })
 
+    .state('main', {
+      abstract: true,
+      templateUrl: 'views/root.html'
+    })
+
+    .state('main.layout', {
+      views: {
+        header: {
+          templateUrl: 'views/main/header.html'
+        },
+        left: {
+          templateUrl: 'views/main/left.html',
+          controller: 'LeftCtrl',
+          controllerAs: 'vm'
+        },
+        content: {
+          templateUrl: 'views/main/content.html'
+        },
+        right: {
+          templateUrl: 'views/main/right.html'
+        },
+        footer: {
+          templateUrl: 'views/main/footer.html'
+        }
+      },
+      data: {
+        title: 'Open Project'
+      }
+    })
+
+    .state('main.layout.projects', {
+      url: '/projects',
+      templateUrl: 'views/main/projects/allProjects/allProjectsTmpl.html',
+      controller: 'ProjectsCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Проекты'
+      }
+    })
+
     .state('admin', {
       abstract: true,
       templateUrl: 'views/root.html'
@@ -46,7 +86,7 @@
     })
 
     .state('admin.layout.persons', {
-      url: '/persons',
+      url: '/admin/persons',
       templateUrl: 'views/admin/persons/allPersons/AllPersonsTmpl.html',
       controller: 'PersonsCtrl',
       controllerAs: 'vm',

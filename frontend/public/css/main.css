@@ -1,17 +1,18 @@
 @font-face {
-  font-family: 'Roboto Regular';
-  src: url('../lib/bower_components/Materialize/dist/font/roboto/Roboto-Thin.ttf');
+  font-family: 'Roboto Light';
+  src: url('../../resources/fonts/roboto/Roboto-Light.ttf');
+}
+html, body {
+  height: 100%;
 }
 body {
-  font-family: 'Roboto Regular';
-  font-weight: 600;
+  font-family: 'Roboto Light';
 }
-.header {
-  background-color: rgb(200, 200, 200);
-  padding: 10px;
+.container-root {
+  height: 100%;
 }
-.content {
-  padding: 10px;
+md-option:hover {
+  background-color: #4db6ac;
 }
 .tl-collection {
   border: 1px solid rgb(250, 250, 250);

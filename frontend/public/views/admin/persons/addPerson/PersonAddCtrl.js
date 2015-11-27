@@ -6,11 +6,28 @@
 
 		var vm = this,
     _url = '/api/persons/',
+    _gendersUrl = '/api/dict/genders',
     personAddForm = {},
-    person = {};
+    person = {},
+    genders = [];
 
     vm.personAddForm = personAddForm,
-    vm.person = person;
+    vm.person = person,
+    vm.genders = genders;
+
+    vm.loadGenders = loadGenders;
+    function loadGenders() {
+      $http({
+        method: 'GET',
+        url: _gendersUrl
+      }).then(function (response) {
+        if (response.status === 200) {
+          vm.genders = response.data;
+        }
+      }, function (response) {
+        console.error(response.status.statusText);
+      });
+    };
 
     vm.hasError = hasError;
 		function hasError(fieldName){
@@ -33,9 +50,10 @@
           if (response.status === 201) {
             data.id = response.data.id;
           }
-          vm.closeDialog();
+          closeDialog();
         }, function (response) {
-          vm.closeDialog();
+          console.error(response.status.statusText);
+          closeDialog();
         });
 			}
 		};

@@ -1,6 +1,6 @@
 <md-dialog aria-label='addPerson' class='medium'>
   <md-toolbar>
-    <div class='md-toolbar-tools unselectable'>
+    <div class='md-toolbar-tools unselectable teal-lighten-2'>
       <h2>Добавление ФЛ</h2>
       <span flex></span>
       <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
@@ -9,74 +9,52 @@
     </div>
   </md-toolbar>
   <md-dialog-content style='padding: 20px;'>
-    <div class='md-container unselectable'>
+    <div class='md-container unselectable teal-lighten-5'>
       <form name='vm.personAddForm'>
         <!-- person iin -->
-        <div class='input-field'>
-          <label class='unselectable' for='iin'>ИИН</label>
-          <input
-            id='iin'
-            type='text'
-            class='validate'
-            length='12'
-            minlength='12'
-            maxlength='12'
-            ng-model='vm.person.id'>
-        </div>
+        <md-input-container>
+          <label >ИИН:</label>
+          <input type="text" name="iin" ng-model='vm.person.id' required>
+        </md-input-container>
         <!-- person last name -->
-        <div class='input-field'>
-          <label for='lastName'>Фамилия</label>
-          <input
-            id='lastName'
-            type='text'
-            class='validate'
-            maxlength='200'
-            ng-model='vm.person.lastName'>
-        </div>
+        <md-input-container>
+          <label >Фамилия:</label>
+          <input type="text" name="lastName" ng-model='vm.person.lastName' maxlength="200" required>
+        </md-input-container>
         <!-- person first name -->
-        <div class='input-field'>
-          <label for='firstName'>Имя</label>
-          <input
-            id='firstName'
-            type='text'
-            maxlength='200'
-            ng-model='vm.person.firstName'
-            class='validate'>
-        </div>
+        <md-input-container>
+          <label >Имя:</label>
+          <input type="text" name="lastName" ng-model='vm.person.firstName' maxlength="200" required>
+        </md-input-container>
         <!-- person middle name -->
-        <div class='input-field'>
-          <label for='middleName'>Отчество</label>
-          <input
-            id='middleName'
-            type='text'
-            maxlength='300'
-            ng-model='vm.person.middleName'>
-        </div>
+        <md-input-container>
+          <label >Отчество:</label>
+          <input type="text" name="lastName" ng-model='vm.person.middleName' maxlength="300">
+        </md-input-container>
         <!-- person dob -->
         <md-datepicker
           ng-model='vm.person.dob'
-          type='date'
-          md-placeholder='Дата рождения'>
+          md-placeholder='Дата рождения:'>
         </md-datepicker>
         <!-- person gender -->
-        <div class='input-field'>
-          <label for="genderID">Пол</label>
-          <input
-            id='genderID'
-            type='text'
-            ng-model='vm.person.genderID'
-            class='validate'>
-        </div>
+        <md-input-container>
+          <label>Пол:</label>
+          <md-select ng-model="vm.person.genderID" md-on-open='vm.loadGenders()'>
+            <md-option ng-repeat="gender in vm.genders" value="{{gender.id}}">
+              {{gender.genderName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
     	</form>
     </div>
   </md-dialog-content>
   <hr>
   <div class='md-actions'>
-  	<button class='btn waves-effect waves-light btn-blue' type='submit' ng-click='vm.submit(vm.person)'>
+  	<md-button class='md-raised md-primary teal-lighten-2' type='submit' ng-click='vm.submit(vm.person)'>
       Добавить ФЛ
-    </button>
-  	<button class='btn waves-effect waves-light btn-blue' type='button' ng-click='vm.closeDialog()'>
+    </md-button>
+  	<md-button class='md-raised' type='button' ng-click='vm.closeDialog()'>
       Отмена
-    </button>
+    </md-button>
   </div>
 </md-dialog>
