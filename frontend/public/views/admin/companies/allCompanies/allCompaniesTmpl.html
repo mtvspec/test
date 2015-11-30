@@ -1,9 +1,15 @@
 <div>
-  <ul>
-    <li ng-repeat = 'company in vm.companies'>
-      <span>
-        {{company.companyName}}
-      </span>
-    </li>
-  </ul>
+  <md-button class='md-raised' ng-click='vm.addCompany($event)'>Добавить ЮЛ</md-button>
 </div>
+<ul class="list">
+  <li ng-repeat='company in vm.companies'>
+    <div class='personsList row'>
+      <div class='col s2'>
+        <span>{{company.longName}}</span>
+        <div class='person-detail-data'>
+          <span>{{company.id}}</span>
+        </div>
+      </div>
+    </div>
+  </li>
+</ul>

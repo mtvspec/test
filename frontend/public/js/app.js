@@ -34,7 +34,9 @@
     .state('main.layout', {
       views: {
         header: {
-          templateUrl: 'views/main/header.html'
+          templateUrl: 'views/main/header.html',
+          controller: 'MainHeaderCtrl',
+          controllerAs: 'vm'
         },
         left: {
           templateUrl: 'views/main/left.html',
@@ -56,10 +58,28 @@
       }
     })
 
+    .state('main.layout.main', {
+      url: '/main',
+      templateUrl: 'views/main/main.html',
+      data: {
+        title: 'Open Project'
+      }
+    })
+
     .state('main.layout.projects', {
       url: '/projects',
       templateUrl: 'views/main/projects/allProjects/allProjectsTmpl.html',
       controller: 'ProjectsCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Проекты'
+      }
+    })
+
+    .state('main.layout.project', {
+      url: '/project/:id',
+      templateUrl: 'views/main/projects/project/projectTmpl.html',
+      controller: 'ProjectCtrl',
       controllerAs: 'vm',
       data: {
         title: 'Проекты'
@@ -85,6 +105,14 @@
       }
     })
 
+    .state('admin.layout.main', {
+      url: '/admin/main',
+      templateUrl: 'views/admin/main/mainTmpl.html',
+      data: {
+        title: 'Администрирование'
+      }
+    })
+
     .state('admin.layout.persons', {
       url: '/admin/persons',
       templateUrl: 'views/admin/persons/allPersons/AllPersonsTmpl.html',
@@ -96,7 +124,7 @@
     })
 
     .state('admin.layout.companies', {
-      url: '/comps',
+      url: '/admin/companies',
       templateUrl: 'views/admin/companies/allCompanies/AllCompaniesTmpl.html',
       controller: 'CompaniesCtrl',
       controllerAs: 'vm',

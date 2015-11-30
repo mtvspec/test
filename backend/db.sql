@@ -360,8 +360,6 @@ COMMENT ON COLUMN e_positions.is_deleted IS 'Состояние записи';
 SELECT id, position_name AS "positionName", is_deleted AS "isDeleted" FROM ul.e_positions ORDER BY id ASC;
 -- Извлечь должность по идентификатору должности
 SELECT id, position_name AS "positionName", is_deleted AS "isDeleted" FROM ul.e_positions WHERE id = {id};
--- Извлечь должность по наименованию должности
-SELECT id, position_name AS "positionName" FROM ul.e_positions WHERE position_name = {positionName};
 -- Извлечь все существующие должности
 SELECT id, position_name AS "positionName" FROM ul.e_positions WHERE is_deleted = 'N' ORDER BY id ASC;
 -- Извлечь существующую должность по идентификатору должности
@@ -421,19 +419,23 @@ COMMENT ON COLUMN ul.e_divisions.id IS 'Идентификатор подраз�
 COMMENT ON COLUMN ul.e_divisions.parent_division_id IS 'Идентификатор родительского подразделения ЮЛ';
 COMMENT ON COLUMN ul.e_divisions.division_name IS 'Наименование подразделения ЮЛ';
 COMMENT ON COLUMN ul.e_divisions.is_deleted IS 'Состояние записи';
--- Извлечь все подразделения ЮЛ
+-- Извлечь все сущности "Подразделение ЮЛ"
 SELECT id, parent_division_id AS "parentDivisionID", division_name AS "divisionName", is_deleted AS "isDeleted" FROM ul.e_divisions ORDER BY id ASC;
--- Извлечь подразделение ЮЛ по идентификатору подразделения ЮЛ
+-- Извлечь сущность "Подразделение ЮЛ" по идентификатору сущности
 SELECT id, parent_division_id AS "parentDivisionID", division_name AS "divisionName", is_deleted AS "isDeleted" FROM ul.e_divisions WHERE id = {id};
--- Вставить подразделение ЮЛ
+-- Извлечь существующие сущности "Подразделение ЮЛ"
+SELECT id, parent_division_id AS "parentDivisionID", division_name AS "divisionName" FROM ul.e_divisions WHERE is_deleted = "N" ORDER BY id ASC;
+-- Извлечь существующую сущность "Подразделение ЮЛ"
+SELECT id, parent_division_id AS "parentDivisionID", division_name AS "divisionName" FROM ul.e_divisions WHERE is_deleted = "N" AND id = {id};
+-- Вставить сущность "Подразделение ЮЛ"
 INSERT INTO ul.e_divisions (division_name) VALUES ({divisionName}) RETURNING id;
--- Вставить дочернее подразделение ЮЛ
+-- Вставить сущность "(дочерноее) Подразделение ЮЛ"
 INSERT INTO ul.e_divisions (parent_division_id, division_name) VALUES ({parentDivisionID}, {divisionName}) RETURNING id;
--- Обновить подразделение ЮЛ
+-- Обновить сущность "Подразделение ЮЛ" по идентификатору сущности
 UPDATE ul.e_divisions SET division_name = {divisionName} WHERE id = {id} RETURNING id;
--- Обновить дочернее подразделение ЮЛ
+-- Обновить сущность "(дочернее) Подразделение ЮЛ" по идентификатору сущности
 UPDATE ul.e_divisions SET parent_division_id = {parentDivisionID}, division_name = {divisionName} RETURNING id;
--- Удалить подразделение ЮЛ
+-- Удалить сущность "Подразделение ЮЛ" по идентификатору сущности
 UPDATE ul.e_divisions SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Журнал истории изменения сущности 'Подразделение ЮЛ' (division log)

@@ -1,24 +1,46 @@
-<div class='container'>
-  <div class='input-field'>
-    <label for='bin'>Введите БИН:</label>
-    <input
-      id='bin'
-      type='text'
-      ng-model='vm.company.id'>
+<md-dialog aria-label='addCompany' class='medium'>
+  <md-toolbar>
+    <div class='md-toolbar-tools unselectable teal-darken-4'>
+      <h2>Добавление ЮЛ</h2>
+      <span flex></span>
+      <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
+        <md-icon class='fa fa-times fa-lg' aria-label='Закрыть окно'></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content style='padding: 20px;'>
+    <div class='md-container unselectable'>
+      <form name='vm.companyAddForm'>
+        <!-- company bin -->
+        <md-input-container>
+          <label > БИН:</label>
+          <input type="text" name="bin" ng-model='vm.company.id' required>
+        </md-input-container>
+        <!-- company short name -->
+        <md-input-container>
+          <label >Короткое наименование:</label>
+          <input type="text" name="shortName" ng-model='vm.company.shortName' maxlength="200" required>
+        </md-input-container>
+        <!-- company long name -->
+        <md-input-container>
+          <label >Длинное наименование:</label>
+          <input type="text" name="longName" ng-model='vm.company.longName' maxlength="200" required>
+        </md-input-container>
+        <!-- company full name -->
+        <md-input-container>
+          <label >Полное наименование:</label>
+          <input type="text" name="fullName" ng-model='vm.company.fullName' maxlength="300">
+        </md-input-container>
+    	</form>
+    </div>
+  </md-dialog-content>
+  <hr>
+  <div class='md-actions'>
+  	<md-button class='md-raised md-primary teal-lighten-2' type='submit' ng-click='vm.submit(vm.company)'>
+      Добавить ЮЛ
+    </md-button>
+  	<md-button class='md-raised' type='button' ng-click='vm.closeDialog()'>
+      Отмена
+    </md-button>
   </div>
-  <div class='input-field'>
-    <label for='companyName'>Введите наименование:</label>
-    <input
-      id='companyName'
-      type='text'
-      ng-model='vm.company.companyName'>
-  </div>
-  <div>
-    <button class='btn waves-effect' type='submit' ng-click='vm.submit(vm.company)'>Добавить ЮЛ</button>
-  </div>
-  <div class='well'>
-    <pre>
-      {{vm.company}}
-    </pre>
-  </div>
-</div>
+</md-dialog>

@@ -37,7 +37,6 @@
 			}
 		};
 
-    console.log(person);
     vm.submit = submit;
 		function submit(data){
 			vm.personAddForm.$setSubmitted();
@@ -46,14 +45,15 @@
           method: 'POST',
           url: _url,
           data: data
-        }, function (response) {
+        }).then(function (response) {
           if (response.status === 201) {
+            console.log('Created');
             data.id = response.data.id;
+            vm.closeDialog();
           }
-          closeDialog();
         }, function (response) {
           console.error(response.status.statusText);
-          closeDialog();
+          vm.closeDialog();
         });
 			}
 		};

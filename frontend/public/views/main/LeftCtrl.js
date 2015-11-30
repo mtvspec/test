@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('app')
-  .controller('LeftCtrl', function($http, $mdDialog) {
+  .controller('LeftCtrl', function($state, $http, $mdDialog) {
 
     var vm = this,
     _url = '/api/projects',
@@ -23,6 +23,11 @@
     function showProjectID(id) {
       activeProject = id;
       console.log(activeProject);
+    };
+
+    vm.sendSelectedProjectID = sendSelectedProjectID;
+    function sendSelectedProjectID(id) {
+      $state.go('main.layout.project', {id: id});
     };
 
     vm.addProject = addProject;
