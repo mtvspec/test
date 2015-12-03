@@ -77,12 +77,22 @@
     })
 
     .state('main.layout.project', {
-      url: '/project/:id',
+      url: '/projects/:id/results',
       templateUrl: 'views/main/projects/project/projectTmpl.html',
       controller: 'ProjectCtrl',
       controllerAs: 'vm',
       data: {
         title: 'Проекты'
+      }
+    })
+
+    .state('main.layout.results', {
+      url: '/project/:id/results',
+      templateUrl: 'views/main/projects/project/results/allResults/allResultsTmpl.html',
+      controller: 'ProjectResultsCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Результаты проекта'
       }
     })
 

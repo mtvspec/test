@@ -63,10 +63,9 @@
           if (response.status === 201) {
             data.id = response.data.id;
           }
-          closeDialog();
+          vm.closeDialog();
         }, function (response) {
           console.log(response.status.statusText);
-          closeDialog();
         });
 			}
 		};

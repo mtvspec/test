@@ -1,1 +1,6 @@
-<p>{{vm.projectID}}</p>
+<md-button class="md-raised" ng-click="vm.addProjectResult(vm.projectID, $event)">Добавить результат</md-button>
+<div>
+  <ul class='list'>
+    <li ng-repeat='result in vm.results'>{{result.resultName}}</li>
+  </ul>
+</div>
