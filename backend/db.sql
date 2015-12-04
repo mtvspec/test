@@ -982,7 +982,68 @@ CREATE TABLE open_project.r_e_projects_e_results (
 );
 
 INSERT INTO open_project.e_projects_results (project_id, result_id) VALUES ({projectID}, {resultID}) RETURNING id;
-
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Сущность "Замечания" #tested #created: work-dev
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE open_project.e_remarks (
+  id SERIAL,
+  author_id CHAR(12) NOT NULL,
+  object_id INTEGER NOT NULL,
+  remark_text VARCHAR(4000) NOT NULL,
+  responsible_person_id CHAR(12) NOT NULL,
+  reg_datetime TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT LOCALTIMESTAMP,
+  status_id INTEGER NOT NULL DEFAULT 1,
+    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
+      PRIMARY KEY (id),
+      UNIQUE (remark_text),
+      FOREIGN KEY (author_id) REFERENCES fl.e_persons(id),
+      FOREIGN KEY (object_id) REFERENCES open_project.e_remarks_objects(id),
+      FOREIGN KEY (responsible_person_id) REFERENCES fl.e_persons(id),
+      FOREIGN KEY (status_id) REFERENCES dict.remark_status(id),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
+);
+-- Извлечь все замечания
+SELECT id, author_id AS "authorID", object_id AS "objectID", remark_text AS "remarkText", responsible_person_id AS "responsiblePersonID", reg_datetime AS "regDateTime", status_id AS "statusID" FROM open_project.e_remarks ORDER BY id ASC;
+-- Вставить замечание
+INSERT INTO open_project.e_remarks (author_id, object_id, remark_text, responsible_person_id, status_id) VALUES ({authorID}, {objectID}, {remarkText}, {responsiblePersonID}, {statusID}) RETURNING id;
+-- "Замечание к истории изменения условного наименования ОПГ"
+INSERT INTO open_project.e_remarks (author_id, object_id, remark_text, responsible_person_id, status_id) VALUES ('871215301496', 1, 'Убрать возможность добавления условного наименования ОПГ', '771122350160', 1) RETURNING id;
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Справочник "Статусы замечаний" #tested #created: work-dev
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE dict.remark_status (
+  id SERIAL,
+  status_name VARCHAR(300) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (status_name)
+);
+-- Извлечь все статусы замечаний
+SELECT id, status_name AS "statusName" FROM dict.remark_status ORDER BY id ASC;
+-- Вставить статус
+INSERT INTO dict.remark_status (status_name) VALUES ({statusName}) RETURNING id;
+-- "Новое"
+INSERT INTO dict.remark_status (status_name) VALUES ('Новое') RETURNING id;
+-- "Принято"
+INSERT INTO dict.remark_status (status_name) VALUES ('Принято') RETURNING id;
+-- "На устранении"
+INSERT INTO dict.remark_status (status_name) VALUES ('На устранении') RETURNING id;
+-- "Устранено"
+INSERT INTO dict.remark_status (status_name) VALUES ('Устранено') RETURNING id;
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Сущность "Объект замечаний" #tested #created: work-dev
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE open_project.e_remarks_objects (
+  id SERIAL,
+  object_name VARCHAR (1000) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (object_name)
+);
+-- Извлечь все объекты замечаний
+SELECT id, object_name AS "objectName" FROM open_project.e_remarks_objects ORDER BY id ASC;
+-- Вставить объект замечания
+INSERT INTO open_project.e_remarks_objects (object_name) VALUES ({objectName}) RETURNING id;
+-- "История изменения условных наименований ОПГ"
+INSERT INTO open_project.e_remarks_objects (object_name) VALUES ('История изменения условных наименований ОПГ') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Справочник "Тип результата" #tested #created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

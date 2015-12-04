@@ -86,6 +86,16 @@
       }
     })
 
+    .state('main.layout.remarks', {
+      url: '/remarks',
+      templateUrl: 'views/main/projects/project/results/remarks/allRemarks/allRemarks.html',
+      controller: 'RemarksCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Замечания'
+      }
+    })
+
     .state('main.layout.results', {
       url: '/project/:id/results',
       templateUrl: 'views/main/projects/project/results/allResults/allResultsTmpl.html',
