@@ -1,0 +1,13 @@
+<md-content>
+  <div>
+    <h4>Здравствуйте, {{vm.User.person.lastName}} {{vm.User.person.middleName}}</h4>
+    <label>Выберите роль:</label>
+    <md-list>
+      <md-list-item ng-repeat="role in vm.User.roles">
+        <md-button type="button" ng-click="vm.selectRole(role.roleID)">
+          {{role.roleName}}
+        </md-button>
+      </md-list-item>
+    </md-list>
+  </div>
+</md-content>

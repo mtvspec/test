@@ -5,7 +5,7 @@ CREATE SCHEMA open_project;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Проект' (entity project)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- # tested # created: work-dev
+-- # tested # created: work-dev, home-dev
 CREATE TABLE open_project.e_projects (
   id SERIAL,
   customer_id CHAR(12),
@@ -23,7 +23,7 @@ CREATE TABLE open_project.e_projects (
       FOREIGN KEY (manager_id) REFERENCES fl.e_persons(id),
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
--- # tested # created: work-dev
+-- # tested # created: work-dev, home-dev
 COMMENT ON TABLE open_project.e_projects IS 'Сущность - Проект';
 COMMENT ON COLUMN open_project.e_projects.id IS 'Идентификатор проекта';
 COMMENT ON COLUMN open_project.e_projects.customer_id IS 'Идентификатор юридического лица - Заказчика проекта';
@@ -54,9 +54,9 @@ UPDATE open_project.e_projects SET customer_id = {projectCustomerID}, project_fo
 -- Удалить проект по идентификатору проекта
 DELETE FROM open_project.e_projects WHERE id = {id};
 -- Praetorium
-INSERT INTO open_project.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301496', 'P', 'Praetorium', 'Информационная система "Praetorium"', '2015-01-01', '2015-12-31', 150000000, '871215301496') RETURNING id;
+INSERT INTO open_project.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301101', 'PR', 'Praetorium', 'Информационная система "Praetorium"', '2015-01-01', '2015-12-31', 150000000, '871215301496') RETURNING id;
 -- ЕИАС
-INSERT INTO open_project.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301496', 'E', 'ЕИАС', 'Программно-аппаратный комплекс Единой информационно-аналитической системы', '2015-01-01', '2015-12-31', 120000000, '871215301496') RETURNING id;
+INSERT INTO open_project.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301102', 'ES', 'ЕИАС', 'Программно-аппаратный комплекс Единой информационно-аналитической системы', '2015-01-01', '2015-12-31', 120000000, '871215301496') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Инициация проекта' (project init)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -129,11 +129,7 @@ CREATE TABLE open_project.r_e_projects_e_members (
 );
 COMMENT ON TABLE open_project.r_e_projects_e_members IS 'Связь - Участники проекта';
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Сущность 'Физическое лицо' (entity person) # tested # created: work-dev // TODO Обновить структуру БД
--- Зависимости
--- schema dict
--- dictionary genders
--- dictionary is_deleted
+-- Сущность 'Физическое лицо' (entity person) # tested # created: work-dev, home-dev // TODO Обновить структуру БД
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE SCHEMA fl;
 
@@ -146,11 +142,9 @@ CREATE TABLE fl.e_persons (
   gender_id CHAR(1) NOT NULL,
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (id),
-      FOREIGN KEY (gender_id) REFERENCES dict.d_genders(id),
-      CHECK (gender_id IN ('M','F')),
-      CHECK (is_deleted IN ('N','Y'))
+      FOREIGN KEY (gender_id) REFERENCES fl.gender(id)
 );
--- # tested # created: work-dev
+-- # tested # created: work-dev, home-dev
 COMMENT ON TABLE fl.e_persons IS 'Сущность - Физическое лицо';
 COMMENT ON COLUMN fl.e_persons.id IS 'ИИН ФЛ';
 COMMENT ON COLUMN fl.e_persons.last_name IS 'Фамилия ФЛ';
@@ -179,8 +173,10 @@ UPDATE fl.e_persons SET id = {id}, last_name = {lastName}, first_name = {firstNa
 UPDATE fl.e_persons SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 -- Восстановить физическое лицо по идентификатору физического лица
 UPDATE fl.e_persons SET is_deleted = 'N' WHERE id = {id} RETURNING id;
--- Тимур
+-- Вставить физическое лицо "Тимур"
 INSERT INTO fl.e_persons (id, last_name, first_name, middle_name, dob, gender_id) VALUES ('871215301496', 'Маусумбаев', 'Тимур', 'Владимирович', '1987-12-15', 'M') RETURNING id;
+-- Втавить физическое лицо "Куралай"
+INSERT INTO fl.e_persons (id, last_name, first_name, dob, gender_id) VALUES ('940909450852', 'Талапкызы', 'Куралай', '1994-09-09', 'F') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Справочник 'Пол физического лица' (dictionary person gender) # tested
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -307,7 +303,11 @@ UPDATE ul.e_companies SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 -- Восстановить юридическое лицо
 UPDATE ul.e_companies SET is_deleted = 'N' WHERE id = {id} RETURNING id;
 -- Казипэкс
-INSERT INTO ul.e_companies (id, short_name, long_name, full_name) VALUES ('871215301496', 'Kazimpex', 'АО "РЦ "Казипэкс"', 'Акционерное общество "Республиканский центр "Казимпэкс"') RETURNING id;
+INSERT INTO ul.e_companies (id, short_name, long_name, full_name) VALUES ('871215301100', 'Kazimpex', 'АО "РЦ "Казипэкс"', 'Акционерное общество "Республиканский центр "Казимпэкс"') RETURNING id;
+-- АТЦ
+INSERT INTO ul.e_companies (id, short_name, long_name, full_name) VALUES ('871215301101', 'АТЦ', 'Штаб АТЦ КНБ РК', 'Штаб Антитеррористического центра Комитета транспортного контроля Республики Казахстан') RETURNING id;
+-- КГД
+INSERT INTO ul.e_companies (id, short_name, long_name, full_name) VALUES ('871215301102', 'КГД', 'КГД МФ РК', 'Комитет государственных доходов Министерства финансов Республики Казахстан') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Журнал истории изменения сущности 'Юридическое лицо' (log company)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -671,16 +671,18 @@ INSERT INTO meta.e_sessions (user_id, role_id) VALUES ({userID}, {roleID}) RETUR
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Пользователи' (entity user) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE meta.e_users (
+CREATE TABLE meta.e_users ( -- TODO Обновить таблицу в БД
   id SERIAL NOT NULL,
   person_id CHAR(12) NOT NULL,
   u_username VARCHAR(20) NOT NULL,
   u_password VARCHAR(4000) NOT NULL,
+  default_role_id INTEGER NOT NULL,
     is_blocked CHAR(1) NOT NULL DEFAULT 'N',
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (u_username, u_password),
       UNIQUE (id),
-      FOREIGN KEY (person_id) REFERENCES e_persons(id),
+      FOREIGN KEY (person_id) REFERENCES fl.e_persons(id),
+      FOREIGN KEY (default_role_id) REFERENCES meta.e_roles(id),
       CHECK (is_blocked IN ('N', 'Y')),
       CHECK (is_deleted IN ('N', 'Y'))
 );
@@ -690,12 +692,15 @@ COMMENT ON COLUMN meta.e_users.id IS 'Идентификатор учетной 
 COMMENT ON COLUMN meta.e_users.person_id IS 'Идентификатор физического лица';
 COMMENT ON COLUMN meta.e_users.u_username IS 'Имя пользователя';
 COMMENT ON COLUMN meta.e_users.u_password IS 'Пароль пользователя';
+COMMENT ON COLUMN meta.e_users.default_role_id IS 'Идентификатор роли по умолчанию';
 COMMENT ON COLUMN meta.e_users.is_blocked IS 'Состояние учетной записи';
 COMMENT ON COLUMN meta.e_users.is_deleted IS 'Состояние записи';
+-- Извлечь всех пользователей
+SELECT id, person_id AS "personID", u_username AS "username", u_password AS "password", default_role_id AS "defaultRoleID", is_blocked AS "isBlocked", is_deleted AS "isDeleted" FROM meta.e_users ORDER BY id ASC;
 -- Извлечь пользователя (физическое лицо) по имени пользователя # tested
 SELECT id, person_id AS "personID", u_username AS "username", is_blocked AS "isBlocked",  is_deleted AS "isDeleted" FROM meta.e_users WHERE u_username = {username};
 -- Вставить пользователя # tested # created: work-dev
-INSERT INTO meta.e_users (person_id, u_username, u_password) VALUES ({personID}, {username}, {password}) RETURNING id;
+INSERT INTO meta.e_users (person_id, u_username, u_password, default_role_id) VALUES ({personID}, {username}, {password}, {defaultRoleID}) RETURNING id;
 -- Изменить пароль пользователя по идентификатору пользователя
 UPDATE meta.e_users SET u_password = {password} WHERE id = {id} RETURNING id;
 -- Удалить пользователя по идентификатору пользователя # tested
@@ -706,6 +711,10 @@ UPDATE meta.e_users SET is_deleted = 'N' WHERE id = {id} RETURNING id;
 UPDATE meta.e_users SET is_blocked = 'Y' WHERE id = {id} RETURNING id;
 -- Разблокировать пользователя по идентификатору пользователя # tested
 UPDATE meta.e_users SET is_blocked = 'N' WHERE id = {id} RETURNING id;
+-- Вставить пользователя "Тимур"
+INSERT INTO meta.e_users (person_id, u_username, u_password, default_role_id) VALUES ('871215301496', 'mtvspec', '$2a$10$qjPA2g9BVo.36aBQSucIeuQymEtD114rgvOWFgxiQkNwlNaKi06pK', 1) RETURNING id;
+-- Вставить пользователя "Куралай"
+INSERT INTO meta.e_users (person_id, u_username, u_password, default_role_id) VALUES ('940909450852', 'tkspec', '$2a$10$0/dm17l/FsHKBoEKkp.ddu7G7cU2/AJb3j5kquL56uCyA82tRwuDq', 2) RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Роли' (entity role) # tested # created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -743,6 +752,10 @@ UPDATE meta.e_roles SET role_name = {roleName} WHERE id = {id} RETURNING id;
 UPDATE meta.e_roles SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 -- Восстановить роль по идентификатору роли # tested
 UPDATE meta.e_roles SET is_deleted = 'N' WHERE id = {id} RETURNING id;
+-- Вставить роль "Администратор"
+INSERT INTO meta.e_roles (role_name) VALUES ('Администратор') RETURNING id;
+-- Вставить роль "Пользователь"
+INSERT INTO meta.e_roles (role_name) VALUES ('Пользователь') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Связь 'Роли - Пользователи' (relationship role - user)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -752,7 +765,7 @@ CREATE TABLE meta.r_e_roles_e_users (
   user_id INTEGER NOT NULL,
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (role_id, user_id),
-      UNIQUE (id)
+      UNIQUE (id),
       FOREIGN KEY (role_id) REFERENCES meta.e_roles(id),
       FOREIGN KEY (user_id) REFERENCES meta.e_users(id),
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
@@ -762,15 +775,23 @@ COMMENT ON TABLE meta.r_e_roles_e_users IS 'Связь - Роль - Пользо
 COMMENT ON COLUMN meta.r_e_roles_e_users.id IS 'Идентификатор роли пользователя';
 COMMENT ON COLUMN meta.r_e_roles_e_users.role_id IS 'Идентификатор роли пользователя';
 COMMENT ON COLUMN meta.r_e_roles_e_users.user_id IS 'Идентификатор пользователя';
-COMMENT ON COLUMN meta.r_e_roles_e_users.is_deleted IS 'Признак удаления записи';
+COMMENT ON COLUMN meta.r_e_roles_e_users.is_deleted IS 'Состояние записи';
 -- Извлечь все связи 'Роли - Пользователи'
 SELECT id, role_id AS "roleID", user_id AS "userID" FROM meta.r_e_roles_e_users ORDER BY id ASC;
+-- Извлечь связь "Роли - Пользователь" по идентификатору пользователя
+SELECT id, role_id AS "roleID", user_id AS "userID" FROM meta.r_e_roles_e_users WHERE is_deleted = 'N' AND user_id = {userID};
 -- Вставить связь 'Роли - Пользователи'
 INSERT INTO meta.r_e_roles_e_users (role_id, user_id) VALUES ({roleID}, {userID}) RETURNING id;
 -- Обновить связь 'Роль - Пользователь' по идентификатору связи
 UPDATE meta.r_e_roles_e_users SET role_id = {roleID}, user_id = {userID} WHERE id = {id} RETURNING id;
 -- Удалить связь 'Роль - Пользователь' по идентификатору связи
 UPDATE meta.r_e_roles_e_users SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
+-- Выбрать все роли всех пользователей
+SELECT u.user_id AS "userID", r.role_name AS "roleName" FROM meta.r_e_roles_e_users u, meta.e_roles r WHERE u.role_id = r.id ORDER BY id ASC;
+-- Пользователь "Тимур"
+INSERT INTO meta.r_e_roles_e_users (role_id, user_id) VALUES (1, 2) RETURNING id;
+-- Пользователь "Куралай"
+INSERT INTO meta.r_e_roles_e_users (role_id, user_id) VALUES (2, 3) RETURNING id;
 --=======================================================================================================================================================================================================================================================================--
 CREATE SCHEMA address;
 --=======================================================================================================================================================================================================================================================================--
@@ -893,7 +914,7 @@ CREATE TABLE open_project.e_projects_results (
       PRIMARY KEY (id),
       FOREIGN KEY (responsible_person_id) REFERENCES fl.e_persons(id),
       FOREIGN KEY (type_id) REFERENCES dict.result_type(id),
-      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность "Результаты проектов" #tested #created: work-dev
@@ -1085,6 +1106,10 @@ UPDATE dict.result_type SET is_deleted = 'N' WHERE id = {id} RETURNING id;
 -- Результаты проекта
 -- "Информационная система"
 INSERT INTO dict.result_type (type_name) VALUES ('Информационная система'); -- 1
+-- "Проектаная документация"
+INSERT INTO dict.result_type (type_name) VALUES ('Проектная документация');
+-- "Другое"
+INSERT INTO dict.result_type (type_name) VALUES ('Другое');
 -- "Виды обеспечений информационной системы"
 INSERT INTO dict.result_type (parent_id, type_name) VALUES (1, 'Аппаратное обеспечение'); -- 2
 -- На каком аппаратном обеспечении должна работать информационная система?

@@ -1,0 +1,19 @@
+.login-form {
+  width: 200px;
+  margin: 0 auto;
+  border: 1px solid black;
+}
+.login-form-header {
+  padding: 15px;
+  width: 100%;
+  text-align: center;
+  background-color: rgb(37, 87, 217);
+}
+.login-form-content {
+  padding: 15px;
+}
+.login-form-footer {
+  padding: 15px;
+  background-color: rgb(37, 87, 217);
+  text-align: center;
+}

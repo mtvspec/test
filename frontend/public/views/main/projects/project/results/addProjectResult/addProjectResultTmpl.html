@@ -1,6 +1,6 @@
-<md-dialog aria-label='addProjectResult' class='medium'>
+<md-dialog aria-label='Add project result' class='large'>
   <md-toolbar>
-    <div class='md-toolbar-tools unselectable teal-darken-4'>
+    <div class='md-toolbar-tools unselectable'>
       <h1 class="md-headline bold">Добавление результата проекта</h1>
       <span flex></span>
       <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
@@ -8,7 +8,7 @@
       </md-button>
     </div>
   </md-toolbar>
-  <md-content style='padding: 20px;'>
+  <md-content class="padding-medium">
     <div class='md-container unselectable'>
       <form name='vm.projectResultAddForm'>
         <!-- project result type id -->
@@ -64,13 +64,12 @@
     	</form>
     </div>
   </md-content>
-  <hr>
-  <div class='md-actions teal-darken-4'>
-  	<md-button class='md-raised md-primary teal-lighten-2' type='submit' ng-click='vm.submit(vm.result)'>
-      Добавить результат
+  <md-dialog-actions class="align-right">
+    <md-button class='md-primary' type='submit' ng-click='vm.submit(vm.result)'>
+      Добавить
     </md-button>
-  	<md-button class='md-raised' type='button' ng-click='vm.closeDialog()'>
+    <md-button type='button' ng-click='vm.closeDialog()'>
       Отмена
     </md-button>
-  </div>
+  </md-dialog-actions>
 </md-dialog>

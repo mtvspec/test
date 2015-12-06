@@ -1,0 +1,13 @@
+<md-content>
+  <div>
+    <md-button class="md-raised" ng-click="vm.addUser()">Добавить пользователя</md-button>
+  </div>
+  <md-list>
+    <md-list-item class="list" ng-repeat="user in vm.users">
+      <div>
+        <span>{{user.person.lastName}}</span>
+        <span>{{user.person.firstName}}</span>
+      </div>
+    </md-list-item>
+  </md-list>
+</md-content>

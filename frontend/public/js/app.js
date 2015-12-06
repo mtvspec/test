@@ -2,17 +2,21 @@
   'use strict';
 
   angular.module('app', ['ui.router', 'ngMaterial', 'ngMessages'])
-  .run(function ($rootScope) {
+  .run(function ($rootScope, $state) {
     $rootScope.$on('$stateChangeSuccess', function (evt, toState) {
       if (toState.data && toState.data.title) {
         $rootScope.APP_TITLE = toState.data.title;
       } else {
         throw new Error('No title specified in state "' + toState.name + '"');
       }
+      if (toState.data && toState.data.sid) {
+      } else {
+        $state.go('login');
+      }
     })
   })
   .config(function ($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('/login');
 
     $stateProvider
 
@@ -23,6 +27,27 @@
       controllerAs: 'vm',
       data: {
         title: 'Authentification'
+      }
+    })
+
+    .state('roles', {
+      url: '/roles',
+      templateUrl: 'views/login/roles/rolesTmpl.html',
+      controller: 'RolesCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Выберите роль',
+        sid: 1
+      }
+    })
+
+    .state('signup', {
+      url: '/signup',
+      templateUrl: 'views/signup/signupTmpl.html',
+      controller: 'SignupCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Sign Up'
       }
     })
 
@@ -54,7 +79,7 @@
         }
       },
       data: {
-        title: 'Open Project'
+        title: 'Open Project',
       }
     })
 
@@ -62,7 +87,8 @@
       url: '/main',
       templateUrl: 'views/main/main.html',
       data: {
-        title: 'Open Project'
+        title: 'Open Project',
+        sid: 1
       }
     })
 
@@ -72,7 +98,8 @@
       controller: 'ProjectsCtrl',
       controllerAs: 'vm',
       data: {
-        title: 'Проекты'
+        title: 'Проекты',
+        sid: 1
       }
     })
 
@@ -82,7 +109,8 @@
       controller: 'ProjectCtrl',
       controllerAs: 'vm',
       data: {
-        title: 'Проекты'
+        title: 'Проекты',
+        sid: 1
       }
     })
 
@@ -129,7 +157,8 @@
       url: '/admin/main',
       templateUrl: 'views/admin/main/mainTmpl.html',
       data: {
-        title: 'Администрирование'
+        title: 'Администрирование',
+        sid: 1
       }
     })
 
@@ -140,6 +169,17 @@
       controllerAs: 'vm',
       data: {
         title: 'Физические лица'
+      }
+    })
+
+    .state('admin.layout.users', {
+      url: '/admin/users',
+      templateUrl: 'views/admin/users/allUsers/allUsersTmpl.html',
+      controller: 'UsersCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Пользователи',
+        sid: 1
       }
     })
 

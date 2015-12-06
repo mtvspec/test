@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('app')
-  .controller('ProjectCtrl', function ($stateParams, $http, $mdDialog) {
+  .controller('ProjectCtrl', function ($http, $mdDialog, $stateParams, ProjectModel) {
     var vm = this,
     _url = '/api/projects/',
     _projectResultTypesUrl = '/api/dict/project-result-types',
@@ -17,7 +17,52 @@
     projectID = 0;
     vm.projectID = $stateParams.id,
     vm.results = results,
-    vm.types = types;
+    vm.types = loadProjectResultTypes(),
+    vm.persons = loadPersons();
+
+    vm.getTypeNameByID = getTypeNameByID;
+    function getTypeNameByID(types, typeID) {
+      var typeName;
+      for (var i = 0; i < types.length; i++) {
+        if (types[i].id === typeID) {
+          typeName = types[i].typeName;
+        }
+      }
+      return typeName;
+    };
+
+    vm.getPersonLastnameByID = getPersonLastnameByID;
+    function getPersonLastnameByID(persons, authorID) {
+      var lastName;
+      for (var i = 0; i < persons.length; i++) {
+        if (persons[i].id === authorID) {
+          lastName = persons[i].lastName;
+        }
+      }
+      return lastName;
+    };
+
+    vm.getPersonFirstnameByID = getPersonFirstnameByID;
+    function getPersonFirstnameByID(persons, authorID) {
+      var firstName;
+      for (var i = 0; i < persons.length; i++) {
+        if (persons[i].id === authorID) {
+          firstName = persons[i].firstName;
+        }
+      }
+      return firstName;
+    };
+
+    vm.getPersonMiddlenameByID = getPersonMiddlenameByID;
+    function getPersonMiddlenameByID(persons, authorID) {
+      var middleName;
+      for (var i = 0; i < persons.length; i++) {
+        if (persons[i].id === authorID) {
+          middleName = persons[i].middleName;
+        }
+      }
+      return middleName;
+    };
 
     vm.loadProjectResultTypes = loadProjectResultTypes;
     function loadProjectResultTypes() {
@@ -110,7 +155,7 @@
           method: 'POST',
           url: _url + vm.projectID + '/results',
           data: data
-        }, function (response) {
+        }).then(function (response) {
           if (response.status === 201) {
             data.id = response.data.id;
           }

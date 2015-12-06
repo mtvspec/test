@@ -128,3 +128,30 @@ li:last-child {
 .bold {
   font-weight: bold;
 }
+.align-center {
+  text-align: center;
+}
+.padding-medium {
+  padding: 20px;
+}
+.align-right {
+  text-align: right;
+}
+.display-center {
+  display: block;
+  align-items: center;
+  justify-content: center;
+}
+.project-result {
+  background-color: #fafafa;
+  margin: 2px;
+  padding: 5px;
+  width: 100%;
+  border-radius: 3px;
+  text-align: left;
+  border: 0;
+}
+.project-result:hover {
+  background-color: #dadada;
+  opacity: 0.75;
+}
