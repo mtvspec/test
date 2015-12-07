@@ -683,8 +683,7 @@ CREATE TABLE meta.e_users ( -- TODO Обновить таблицу в БД
       UNIQUE (id),
       FOREIGN KEY (person_id) REFERENCES fl.e_persons(id),
       FOREIGN KEY (default_role_id) REFERENCES meta.e_roles(id),
-      CHECK (is_blocked IN ('N', 'Y')),
-      CHECK (is_deleted IN ('N', 'Y'))
+      FOREIGN KEY (is_blocked) REFERENCES meta.is_blocked(id)
 );
 -- # tested # created: work-dev
 COMMENT ON TABLE meta.e_users IS 'Сушность - Пользователь';
@@ -716,7 +715,7 @@ INSERT INTO meta.e_users (person_id, u_username, u_password, default_role_id) VA
 -- Вставить пользователя "Куралай"
 INSERT INTO meta.e_users (person_id, u_username, u_password, default_role_id) VALUES ('940909450852', 'tkspec', '$2a$10$0/dm17l/FsHKBoEKkp.ddu7G7cU2/AJb3j5kquL56uCyA82tRwuDq', 2) RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Сущность 'Роли' (entity role) # tested # created: work-dev
+-- Сущность 'Роли' (entity role) # tested # created: work-dev home-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE meta.e_roles (
   id SERIAL NOT NULL,
@@ -727,11 +726,11 @@ CREATE TABLE meta.e_roles (
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id),
       CHECK (is_deleted IN ('N', 'Y'))
 );
--- # tested
+-- # tested #created: work-dev home-dev
 COMMENT ON TABLE meta.e_roles IS 'Сущность - Роль пользователя';
 COMMENT ON COLUMN meta.e_roles.id IS 'Идентификатор роли пользователя';
 COMMENT ON COLUMN meta.e_roles.role_name IS 'Наименование роли пользователя';
-COMMENT ON COLUMN meta.e_users.is_deleted IS 'Признак удаления записи';
+COMMENT ON COLUMN meta.e_roles.is_deleted IS 'Состояние записи';
 -- Извлечь все роли # tested
 SELECT id, role_name AS "roleName", is_deleted AS "isDeleted" FROM meta.e_roles ORDER BY id ASC;
 -- Извлечь существующие роли # tested
@@ -752,9 +751,9 @@ UPDATE meta.e_roles SET role_name = {roleName} WHERE id = {id} RETURNING id;
 UPDATE meta.e_roles SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 -- Восстановить роль по идентификатору роли # tested
 UPDATE meta.e_roles SET is_deleted = 'N' WHERE id = {id} RETURNING id;
--- Вставить роль "Администратор"
+-- Вставить роль "Администратор" #tested #created: work-dev home-dev
 INSERT INTO meta.e_roles (role_name) VALUES ('Администратор') RETURNING id;
--- Вставить роль "Пользователь"
+-- Вставить роль "Пользователь" #tested #created: work-dev home-dev
 INSERT INTO meta.e_roles (role_name) VALUES ('Пользователь') RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Связь 'Роли - Пользователи' (relationship role - user)
