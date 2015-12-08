@@ -28,6 +28,7 @@
 					method: 'GET',
 					url: _url
 				}).then(function (response) {
+          console.log(response);
 					return response.data;
 				})
 			},
@@ -76,9 +77,10 @@
 					method: 'GET',
 					url: _url + data.id
 				}).then(function (response) {
+          console.log(response);
 					return response.data;
 				}, function(response){
-					console.error('GET task info:', response.status.statusText);
+					console.error('GET task info:', response);
 				})
 			},
 			readAllPersons: function readAllPersons(user){

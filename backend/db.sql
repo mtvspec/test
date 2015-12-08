@@ -662,6 +662,8 @@ COMMENT ON COLUMN meta.e_sessions.role_id IS 'Идентификатор рол�
 COMMENT ON COLUMN meta.e_sessions.open_date IS 'Дата и время открытия сессии';
 COMMENT ON COLUMN meta.e_sessions.close_date IS 'Дата и время закрытия сессии';
 COMMENT ON COLUMN meta.e_sessions.status IS 'Cтатус сессии';
+-- Извлечь все сессии
+SELECT id, user_id AS "userID", role_id AS "roleID", open_date AS "openDate", close_date AS "closeDate", status FROM meta.e_sessions ORDER BY id ASC;
 -- Извлечь сессию по идентификатору сессии # tested # created: work-dev
 SELECT id, user_id AS "userID", role_id AS "roleID", open_date AS "openDate", close_date AS "closeDate", status FROM meta.e_sessions WHERE id = {id};
 -- Извлечь сессии по идентификатору пользователя # tested # created: work-dev
@@ -683,7 +685,8 @@ CREATE TABLE meta.e_users ( -- TODO Обновить таблицу в БД
       UNIQUE (id),
       FOREIGN KEY (person_id) REFERENCES fl.e_persons(id),
       FOREIGN KEY (default_role_id) REFERENCES meta.e_roles(id),
-      FOREIGN KEY (is_blocked) REFERENCES meta.is_blocked(id)
+      FOREIGN KEY (is_blocked) REFERENCES meta.is_blocked(id),
+      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
 -- # tested # created: work-dev
 COMMENT ON TABLE meta.e_users IS 'Сушность - Пользователь';
@@ -788,9 +791,23 @@ UPDATE meta.r_e_roles_e_users SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 -- Выбрать все роли всех пользователей
 SELECT u.user_id AS "userID", r.role_name AS "roleName" FROM meta.r_e_roles_e_users u, meta.e_roles r WHERE u.role_id = r.id ORDER BY id ASC;
 -- Пользователь "Тимур"
-INSERT INTO meta.r_e_roles_e_users (role_id, user_id) VALUES (1, 2) RETURNING id;
+INSERT INTO meta.r_e_roles_e_users (role_id, user_id) VALUES (1, 1) RETURNING id;
+INSERT INTO meta.r_e_roles_e_users (role_id, user_id) VALUES (2, 1) RETURNING id;
 -- Пользователь "Куралай"
 INSERT INTO meta.r_e_roles_e_users (role_id, user_id) VALUES (2, 3) RETURNING id;
+
+
+CREATE TABLE meta.is_blocked (
+  id CHAR(1),
+  condition_name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (condition_name),
+    CHECK (id IN ('N', 'Y'))
+);
+
+--
+INSERT INTO meta.is_blocked (id, condition_name) VALUES ('N', 'Нет') RETURNING id;
+INSERT INTO meta.is_blocked (id, condition_name) VALUES ('Y', 'Да') RETURNING id;
 --=======================================================================================================================================================================================================================================================================--
 CREATE SCHEMA address;
 --=======================================================================================================================================================================================================================================================================--

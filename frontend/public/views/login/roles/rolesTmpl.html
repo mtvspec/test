@@ -1,6 +1,6 @@
 <md-content>
   <div>
-    <h4>Здравствуйте, {{vm.getPersonFirstnameByID(vm.persons, vm.User.person.personID)}} {{vm.getPersonMiddlenameByID(vm.persons, vm.User.person.personID)}}</h4>
+    <h4>Здравствуйте, {{vm.User.person.firstName}} {{vm.User.person.middleName}}</h4>
     <label>Выберите роль:</label>
     <md-list>
       <md-list-item ng-repeat="role in vm.User.roles">

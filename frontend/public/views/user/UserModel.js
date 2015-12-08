@@ -4,18 +4,24 @@
   angular.module('app')
   .factory('UserModel', function ($http) {
     var User = {},
-    url = '/api/users/login';
+    roles = [],
+    _authentificateUserUrl = '/api/users/login',
+    _authoriseUserUrl = '/api/users/authorise/';
     return {
       authentificateUser: function authentificateUser(user) {
         return $http({
           method: 'POST',
-          url: url,
-          data: user
+          url: _authentificateUserUrl,
+          data: {
+            lang: 'ru',
+            user
+          }
         }).then(function (response) {
+          console.log(response);
           User = response.data;
           return response.data;
         }, function (response) {
-          console.error(response.status.statusText);
+          console.error(response);
           return false;
         });
       },
@@ -25,6 +31,22 @@
         } else {
           return null;
         }
+      },
+      authoriseUser: function authoriseUser(userID) {
+        return $http({
+          method: 'GET',
+          url: _authoriseUserUrl + userID,
+          params: {
+            lang: 'ru'
+          }
+        }).then(function (response) {
+          console.log(response);
+          roles = response.data;
+          return roles;
+        }, function (response) {
+          console.error(response);
+          return false;
+        })
       }
     }
   });
