@@ -1,7 +1,8 @@
 .login-form {
-  width: 200px;
-  margin: 0 auto;
-  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 150px;
 }
 .login-form-header {
   padding: 15px;
@@ -13,7 +14,6 @@
   padding: 15px;
 }
 .login-form-footer {
-  padding: 15px;
-  background-color: rgb(37, 87, 217);
-  text-align: center;
+  display: flex;
+  justify-content: center;
 }

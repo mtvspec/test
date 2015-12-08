@@ -1,5 +1,5 @@
-<md-content class="small">
-  <div class="display-center">
+<div class="login-form">
+  <md-content class="small">
     <md-input-container>
       <label>Username:</label>
       <input
@@ -14,11 +14,11 @@
         ng-model='vm.user.password'
         required>
     </md-input-container>
-    <md-actions>
+    <md-actions class="login-form-footer">
       <md-button
         class='md-primary'
         type='submit'
         ng-click='vm.login(vm.user)'>Enter</md-button>
     </md-actions>
-  </div>
-</md-content>
+  </md-content>
+</div>
