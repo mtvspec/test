@@ -20,11 +20,16 @@
         console.error(error);
     });
 
-    console.log(vm.User);
-
     vm.selectRole = selectRole;
-    function selectRole(id) {
-      switch (id) {
+    function selectRole(roleID) {
+      UserModel.openSession({userID: vm.User.userID, roleID: roleID}).then(
+        function (token) {
+          console.log(token);
+        }, function (error) {
+          console.log(error);
+        }
+      );
+      switch (roleID) {
         case 1:
           $state.go('admin.layout.main');
           break;
@@ -36,5 +41,7 @@
           break;
       }
     };
-  })
+
+  });
+
 })();

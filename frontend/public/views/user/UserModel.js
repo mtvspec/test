@@ -5,7 +5,7 @@
   .factory('UserModel', function ($http) {
     var User = {},
     roles = [],
-    _authentificateUserUrl = '/api/users/login',
+    _authentificateUserUrl = '/api/users/authentificate/',
     _authoriseUserUrl = '/api/users/authorise/';
     return {
       authentificateUser: function authentificateUser(user) {
@@ -17,11 +17,10 @@
             user
           }
         }).then(function (response) {
-          console.log(response);
-          User = response.data;
-          return response.data;
+          console.log(response.status, response.statusText, response.data);
+          return User = response.data;
         }, function (response) {
-          console.error(response);
+          console.error(response.status, response.statusText, response.data);
           return false;
         });
       },
@@ -44,9 +43,25 @@
           roles = response.data;
           return roles;
         }, function (response) {
-          console.error(response);
+          console.error(response.status, response.statusText, response.data);
           return false;
         })
+      },
+      openSession: function openSession(user) {
+        return $http({
+          method: 'POST',
+          url: 'api/users/open-session',
+          data: {
+            user
+          }
+        }).then(function (response) {
+          console.log(response);
+          if (response.status === 201) {
+            console.log(response);
+          }
+        }, function (response) {
+          console.log(response);
+        });
       }
     }
   });

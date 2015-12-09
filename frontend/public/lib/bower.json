@@ -23,6 +23,7 @@
     "tests"
   ],
   "dependencies": {
+    "jquery": "*",
     "angular": "~1.4.7",
     "angular-ui-router": "~0.2.15",
     "angular-material": "~0.11.4",

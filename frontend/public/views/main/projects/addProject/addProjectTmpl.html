@@ -1,6 +1,6 @@
-<md-dialog aria-label='addProject' class='medium'>
+<md-dialog aria-label='addProject' class='large'>
   <md-toolbar>
-    <div class='md-toolbar-tools unselectable teal-darken-4'>
+    <div class='md-toolbar-tools unselectable'>
       <h1 class="md-headline bold">Добавление проекта</h1>
       <span flex></span>
       <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
@@ -71,12 +71,12 @@
     </div>
   </md-content>
   <hr>
-  <div class='md-actions teal-darken-4'>
-  	<md-button class='md-raised md-primary teal-lighten-2' type='submit' ng-click='vm.submit(vm.project)'>
+  <md-actions class='md-actions'>
+  	<md-button class='md-primary' type='submit' ng-click='vm.submit(vm.project)'>
       Добавить проект
     </md-button>
-  	<md-button class='md-raised' type='button' ng-click='vm.closeDialog()'>
+  	<md-button type='button' ng-click='vm.closeDialog()'>
       Отмена
     </md-button>
-  </div>
+  </md-actions>
 </md-dialog>
