@@ -47,10 +47,11 @@ INSERT INTO company.a_companies_names (short_name, long_name, full_name) VALUES 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE company.e_companies (
   id CHAR(12) NOT NULL,
-  name_id INTEGER NOT NULL,
+  short_name VARCHAR(100) NOT NULL,
+  long_name VARCHAR(300),
+  full_name VARCHAR(500),
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (id),
-      FOREIGN KEY (name_id) REFERENCES company.a_companies_names(id),
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
 -- ok
