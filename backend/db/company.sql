@@ -6,7 +6,6 @@
 -- structure:
 -- schema         "company"                                 - схема "Юридическое лицо"
 -- entity         "e_companies"                             - сущность "Юридическое лицо"
--- attribute      "a_companies_names"                       - атрибут "Наименование юридического лица"
 -- entity         "e_divisions"                             - сущность "Подразделение юридического лица"
 -- relationship   "r_e_companies_e_divisions"               - связь "Юридическое лицо - Подразделения юридического лица"
 -- entity         "e_positions"                             - сущность "Должность физического лица"
@@ -58,7 +57,7 @@ CREATE TABLE company.e_companies (
 COMMENT ON TABLE company.e_companies IS 'E Юридическое лицо';
 COMMENT ON COLUMN company.e_companies.id IS 'БИН ЮЛ';
 -- Извлечь все юридические лица - ok
-SELECT c.id, n.short_name AS "shortName", n.long_name AS "longName", n.full_name AS "fullName", c.is_deleted AS "isDeleted" FROM company.e_companies c, company.a_companies_names n WHERE c.name_id = n.id ORDER BY id ASC;
+SELECT id, short_name AS "shortName", long_name AS "longName", full_name AS "fullName", is_deleted AS "isDeleted" FROM company.e_companies ORDER BY id ASC;
 -- Извлечь юридическое лицо по БИН - ok
 SELECT id, short_name AS "shortName", long_name AS "longName", full_name AS "fullName", is_deleted AS "isDeleted" FROM company.e_companies WHERE id = {id};
 -- Извлечь существующие юридические лица - ok
@@ -69,19 +68,19 @@ SELECT id, short_name AS "shortName", long_name AS "longName", full_name AS "ful
 SELECT id, short_name AS "shortName", long_name AS "longName", full_name AS "fullName" FROM company.e_companies WHERE is_deleted = 'Y' ORDER BY id ASC;
 -- Извлечь не существующее юридическое лицо по БИН -
 SELECT id, short_name AS "shortName", long_name AS "longName", full_name AS "fullName" FROM company.e_companies WHERE is_deleted = 'Y' AND id = {id};
--- Вставить юридическое лицо
+-- Вставить юридическое лицо - ok
 INSERT INTO company.e_companies (id, short_name, long_name, full_name) VALUES ({id}, {shortName}, {longName}, {fullName}) RETURNING id;
--- Обновить юридическое лицо
+-- Обновить юридическое лицо - ok
 UPDATE company.e_companies SET id = {id}, short_name = {shortName}, {long_name} = {longName}, full_name = {fullName} WHERE id = {id} RETURNING id;
--- Удалить юридическое лицо
+-- Удалить юридическое лицо - ok
 UPDATE company.e_companies SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
--- Восстановить удаленное юридическое лицо
+-- Восстановить удаленное юридическое лицо - ok
 UPDATE company.e_companies SET is_deleted = 'N' WHERE id = {id} RETURNING id;
 -- Вставить юридическое лицо "Казипэкс" - ok
-INSERT INTO company.e_companies (id, name_id) VALUES ('871215301100', 1) RETURNING id;
--- Вставить юридическое лицо "АТЦ"
+INSERT INTO company.e_companies (id, short_name, long_name, full_name) VALUES ('871215301100', 'Казимпэкс', 'АО "РЦ "Казимпэкс"', 'Акционерное общество "Республиканский центр "Казимпэкс"') RETURNING id;
+-- Вставить юридическое лицо "АТЦ" - ok
 INSERT INTO company.e_companies (id, short_name, long_name, full_name) VALUES ('871215301101', 'АТЦ', 'Штаб АТЦ КНБ РК', 'Штаб Антитеррористического центра Комитета транспортного контроля Республики Казахстан') RETURNING id;
--- Вставить юридическое лицо "КГД"
+-- Вставить юридическое лицо "КГД" - ok
 INSERT INTO company.e_companies (id, short_name, long_name, full_name) VALUES ('871215301102', 'КГД', 'КГД МФ РК', 'Комитет государственных доходов Министерства финансов Республики Казахстан') RETURNING id;
 -- Извлечь юридическое лицо по БИН - '871215301100' - ok
 SELECT id, short_name AS "shortName", long_name AS "longName", full_name AS "fullName", is_deleted AS "isDeleted" FROM company.e_companies WHERE id = '871215301100';
@@ -89,6 +88,8 @@ SELECT id, short_name AS "shortName", long_name AS "longName", full_name AS "ful
 SELECT id, short_name AS "shortName", long_name AS "longName", full_name AS "fullName" FROM company.e_companies WHERE is_deleted = 'N' AND id = '871215301100';
 -- Извлечь не существующее юридическое лицо по БИН - '871215301100' - ok
 SELECT id, short_name AS "shortName", long_name AS "longName", full_name AS "fullName" FROM company.e_companies WHERE is_deleted = 'Y' AND id = '871215301100';
+-- Обновить юридическое лицо - '871215301100' - ok
+UPDATE company.e_companies SET id = '871215301100', short_name = 'Казимпэкс', long_name = 'АО "РЦ "Казимпэкс"', full_name = 'Акционерное общество "Республиканский центр "Казимпэкс"' WHERE id = '871215301100' RETURNING id;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность 'Подразделение ЮЛ' (entity division)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
