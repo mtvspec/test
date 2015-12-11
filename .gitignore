@@ -6,4 +6,7 @@
 /backend/node_modules/body-parser/
 /backend/node_modules/debug/
 /backend/node_modules/bcrypt-nodejs/
+/backend/node_modules/chai/
+/backend/node_modules/chai-as-promised/
+/backend/node_modules/superagent/
 /frontend/public/lib/bower_components/

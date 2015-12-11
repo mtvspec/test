@@ -9,7 +9,7 @@ CREATE TABLE persons.e_persons (
   last_name VARCHAR(200) NOT NULL,
   first_name VARCHAR(200) NOT NULL,
   middle_name VARCHAR(300),
-  dob DATE NOT NULL,
+  dob TIMESTAMP WITH LOCAL TIME ZONE NOT NULL,
   gender_id CHAR(1) NOT NULL,
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (id),

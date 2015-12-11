@@ -5,13 +5,19 @@
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.14.1",
+    "chai": "^3.4.1",
     "cookie-parser": "^1.4.0",
     "debug": "^2.2.0",
     "express": "^4.13.3",
     "morgan": "^1.6.1",
-    "pg": "^4.4.3"
+    "pg": "^4.4.3",
+    "should": "^8.0.0",
+    "superagent": "^1.5.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*"
+  },
   "scripts": {
     "start": "node ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
