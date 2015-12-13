@@ -80,7 +80,8 @@
           console.log(response);
 					return response.data;
 				}, function(response){
-					console.error('GET task info:', response);
+          console.info('Person ID:', data.id);
+					console.error('GET person:', response.status, response.statusText);
 				})
 			},
 			readAllPersons: function readAllPersons(user){

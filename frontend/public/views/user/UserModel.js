@@ -13,13 +13,13 @@
           method: 'POST',
           url: _authentificateUserUrl,
           data: {
-            lang: 'ru',
             user
           }
         }).then(function (response) {
           console.log(response.status, response.statusText, response.data);
           return User = response.data;
         }, function (response) {
+          console.info(user);
           console.error(response.status, response.statusText, response.data);
           return false;
         });
@@ -34,15 +34,13 @@
       authoriseUser: function authoriseUser(userID) {
         return $http({
           method: 'GET',
-          url: _authoriseUserUrl + userID,
-          params: {
-            lang: 'ru'
-          }
+          url: _authoriseUserUrl + userID
         }).then(function (response) {
           console.log(response);
           roles = response.data;
           return roles;
         }, function (response) {
+          console.info('userID:', userID);
           console.error(response.status, response.statusText, response.data);
           return false;
         })
