@@ -31,20 +31,6 @@
           return null;
         }
       },
-      authoriseUser: function authoriseUser(userID) {
-        return $http({
-          method: 'GET',
-          url: _authoriseUserUrl + userID
-        }).then(function (response) {
-          console.log(response);
-          roles = response.data;
-          return roles;
-        }, function (response) {
-          console.info('userID:', userID);
-          console.error(response.status, response.statusText, response.data);
-          return false;
-        })
-      },
       openSession: function openSession(user) {
         return $http({
           method: 'POST',

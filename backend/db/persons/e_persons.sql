@@ -49,7 +49,7 @@ INSERT INTO persons.e_persons (id, last_name, first_name, middle_name, dob, gend
 -- Втавить физическое лицо "Талапкызы Куралай" - ok
 INSERT INTO persons.e_persons (id, last_name, first_name, dob, gender_id) VALUES ('940909450852', 'Талапкызы', 'Куралай', '1994-09-09', 'F') RETURNING id;
 -- Вставить физическое лицо "Ожанов Руслан Адиьевич" - ok
-INSERT INTO persons.e_persons (id, last_name, first_name, middle_name, dob, gender_id) VALUES ('890402350620', 'Ожанов', 'Руслан', 'Адиьевич', '1989-04-02', 'M') RETURNING id;
+INSERT INTO persons.e_persons (id, last_name, first_name, middle_name, dob, gender_id) VALUES ('890402350620', 'Ожанов', 'Руслан', 'Адильевич', '1989-04-02', 'M') RETURNING id;
 -- Вставить физическое лицо "Кенченбаева Надия Рашитовна" - ok
 INSERT INTO persons.e_persons (id, last_name, first_name, middle_name, dob, gender_id) VALUES ('630623401756', 'Кенченбаева', 'Надия', 'Рашитовна', '1963-06-23', 'F') RETURNING id;
 -- Вставить физическое лицо "Касымов Руслан Толегенович" - ok
@@ -64,6 +64,8 @@ INSERT INTO persons.e_persons (id, last_name, first_name, middle_name, dob, gend
 INSERT INTO persons.e_persons (id, last_name, first_name, middle_name, dob, gender_id) VALUES ('910124301766', 'Калимбетов', 'Аблал', 'Алимжанович', '1991-01-24', 'M') RETURNING id;
 -- Вставить физическое лицо "Менкибаев Султан Вячеславович" - ok
 INSERT INTO persons.e_persons (id, last_name, first_name, middle_name, dob, gender_id) VALUES ('920916350563', 'Менкибаев', 'Султан', 'Вячеславович', '1992-09-16', 'M') RETURNING id;
+-- Вставить физическое лицо "Андамас Алмас Нурланбекович" - ok
+INSERT INTO persons.e_persons (id, last_name, first_name, middle_name, dob, gender_id) VALUES ('920526351333', 'Андамас', 'Алмас', 'Нурланбекович', '1992-05-26', 'M') RETURNING id;
 -- Извлечь физичекое лицо по идентификатору физического лица - '871215301496' - ok
 SELECT id, last_name AS "lastName", first_name AS "firstName", middle_name AS "middleName", dob, gender_id AS "genderID", is_deleted AS "isDeleted" FROM persons.e_persons WHERE id = '871215301496';
 -- Извлечь существующее физичекое лицо по идентификатору физического лица - '871215301496' - ok

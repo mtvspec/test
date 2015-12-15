@@ -8,7 +8,7 @@
     vm.login = login;
     function login(user) {
       UserModel.authentificateUser(user).then(function (User) {
-        if (User.defaultRoleID && User.defaultRoleID === 1) {
+        if (typeof User.id === 'number' && User.id > 0) {
           $state.go('roles');
         }
       }, function (error) {

@@ -1,10 +1,10 @@
-<md-dialog aria-label='addPerson' class='medium'>
+<md-dialog aria-label='addPerson' class='large'>
   <md-toolbar>
-    <div class='md-toolbar-tools unselectable teal-darken-4'>
+    <div class='md-toolbar-tools unselectable'>
       <h2>Добавление ФЛ</h2>
       <span flex></span>
       <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
-        <md-icon class='fa fa-times fa-lg' aria-label='Закрыть окно'></md-icon>
+        <md-icon md-svg-src='../../../../resources/icons/close.svg' class='s24' aria-label='Закрыть окно'></md-icon>
       </md-button>
     </div>
   </md-toolbar>
@@ -50,10 +50,10 @@
   </md-dialog-content>
   <hr>
   <div class='md-actions'>
-  	<md-button class='md-raised md-primary teal-lighten-2' type='submit' ng-click='vm.submit(vm.person)'>
+  	<md-button class='md-primary' type='submit' ng-click='vm.submit(vm.person)'>
       Добавить ФЛ
     </md-button>
-  	<md-button class='md-raised' type='button' ng-click='vm.closeDialog()'>
+  	<md-button type='button' ng-click='vm.closeDialog()'>
       Отмена
     </md-button>
   </div>

@@ -30,7 +30,7 @@ UPDATE users.r_e_user_e_roles SET user_id = {userID}, role_id = {roleID} WHERE i
 -- Удалить связь 'Роль - Пользователь' по идентификатору связи
 UPDATE users.r_e_user_e_roles SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 -- Выбрать все роли всех пользователей
-SELECT u.user_id AS "userID", r.role_name AS "roleName" FROM users.r_e_user_e_roles u, users.e_roles r WHERE u.role_id = r.id ORDER BY r.id ASC;
+SELECT u.user_id AS "userID", u.role_id AS "roleID", r.role_name AS "roleName" FROM users.r_e_user_e_roles u, users.e_roles r WHERE u.role_id = r.id ORDER BY r.id ASC;
 SELECT u.role_id AS "roleID", r.role_name AS "roleName" FROM users.r_e_user_e_roles u, users.e_roles r WHERE u.role_id = r.id AND user_id = {userID};
 -- Пользователь "Тимур"
 INSERT INTO users.r_e_user_e_roles (user_id, role_id) VALUES (1, 1) RETURNING id;

@@ -4,7 +4,7 @@
     <label>Выберите роль:</label>
     <md-list>
       <md-list-item ng-repeat="role in vm.User.roles">
-        <md-button type="button" ng-click="vm.selectRole(role.roleID)">
+        <md-button type="button" ng-click="vm.selectRole(role.id)">
           {{role.roleName}}
         </md-button>
       </md-list-item>

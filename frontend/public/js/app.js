@@ -168,7 +168,8 @@
       controller: 'PersonsCtrl',
       controllerAs: 'vm',
       data: {
-        title: 'Физические лица'
+        title: 'Физические лица',
+        sid: 1
       }
     })
 
@@ -189,7 +190,8 @@
       controller: 'CompaniesCtrl',
       controllerAs: 'vm',
       data: {
-        title: 'Юридические лица'
+        title: 'Юридические лица',
+        sid: 1
       }
     })
 
