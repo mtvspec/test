@@ -7,13 +7,17 @@
 	var vm = this,
   persons = [],
   genders = [],
-  _url = '/api/persons';
+  _url = '/api/persons',
+  session = UserModel.getSession();
 
   vm.genders = genders;
 
   $http({
     method: 'GET',
-    url: _url
+    url: _url,
+    headers: {
+      'session-id': session
+    }
   }).then(function (response) {
     vm.persons = response.data;
   }, function (response) {

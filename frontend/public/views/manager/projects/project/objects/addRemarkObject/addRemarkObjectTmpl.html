@@ -1,0 +1,30 @@
+<md-dialog aria-label='addRemark' class='medium'>
+  <md-toolbar>
+    <div class='md-toolbar-tools unselectable teal-darken-4'>
+      <h1 class="md-headline bold">Добавление объекта замечаний</h1>
+      <span flex></span>
+      <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
+        <md-icon md-svg-src='../../../../resources/icons/close.svg' class='s24' aria-label='Закрыть окно'></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-content style='padding: 20px;'>
+    <div class='md-container unselectable'>
+      <form name='vm.remarkObjectAddForm'>
+        <!-- remark text -->
+        <md-input-container>
+          <label>Наименование объекта замечаний:</label>
+          <textarea ng-model='vm.remarkObject.objectName'></textarea>
+        </md-input-container>
+    </div>
+  </md-content>
+  <hr>
+  <div class='md-actions teal-darken-4'>
+  	<md-button class='md-raised md-primary teal-lighten-2' type='submit' ng-click='vm.submit(vm.remarkObject)'>
+      Добавить результат
+    </md-button>
+  	<md-button class='md-raised' type='button' ng-click='vm.closeDialog()'>
+      Отмена
+    </md-button>
+  </div>
+</md-dialog>

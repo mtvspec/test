@@ -1,0 +1,75 @@
+<md-dialog aria-label='Add project result' class='large'>
+  <md-toolbar>
+    <div class='md-toolbar-tools unselectable'>
+      <h1 class="md-headline bold">Добавление результата проекта</h1>
+      <span flex></span>
+      <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
+        <md-icon md-svg-src='../../../../resources/icons/close.svg' class='s24' aria-label='Закрыть окно'></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-content class="padding-medium">
+    <div class='md-container unselectable'>
+      <form name='vm.projectResultAddForm'>
+        <!-- project result type id -->
+        <md-input-container>
+          <label>Тип результата:</label>
+          <md-select ng-model="vm.result.typeID" md-on-open='vm.loadProjectResultTypes()'>
+            <md-option ng-repeat="type in vm.types" value="{{type.id}}">
+              {{type.typeName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <!-- project result name -->
+        <md-input-container>
+          <label>Наименование результата:</label>
+          <input ng-model='vm.result.resultName'>
+        </md-input-container>
+        <!-- project result parent id -->
+        <md-input-container>
+          <label>Родительский результат:</label>
+          <md-select ng-model="vm.result.parentID" md-on-open='vm.loadProjectResultParents()'>
+            <md-option ng-repeat="parent in vm.parents" value="{{parent.id}}">
+              {{parent.resultName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <!-- project result author id  -->
+        <md-input-container>
+          <label>Источник:</label>
+          <md-select ng-model="vm.result.authorID" md-on-open='vm.loadPersons()'>
+            <md-option ng-repeat="author in vm.persons" value="{{author.id}}">
+              {{author.lastName}} {{author.firstName}} {{author.middleName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <!-- project result manager id  -->
+        <md-input-container>
+          <label>Ответственное лицо:</label>
+          <md-select ng-model="vm.result.responsiblePersonID" md-on-open='vm.loadPersons()'>
+            <md-option ng-repeat="responsiblePerson in vm.persons" value="{{responsiblePerson.id}}">
+              {{responsiblePerson.lastName}} {{responsiblePerson.firstName}} {{responsiblePerson.middleName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <!-- project result status id  -->
+        <md-input-container>
+          <label>Статус результата:</label>
+          <md-select ng-model="vm.result.statusID" md-on-open='vm.loadProjectResultStatuses()'>
+            <md-option ng-repeat="status in vm.statuses" value="{{status.id}}">
+              {{status.resultStatusName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+    	</form>
+    </div>
+  </md-content>
+  <md-dialog-actions class="align-right">
+    <md-button class='md-primary' type='submit' ng-click='vm.submit(vm.result)'>
+      Добавить
+    </md-button>
+    <md-button type='button' ng-click='vm.closeDialog()'>
+      Отмена
+    </md-button>
+  </md-dialog-actions>
+</md-dialog>

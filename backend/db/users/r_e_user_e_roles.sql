@@ -35,5 +35,6 @@ SELECT u.role_id AS "roleID", r.role_name AS "roleName" FROM users.r_e_user_e_ro
 -- Пользователь "Тимур"
 INSERT INTO users.r_e_user_e_roles (user_id, role_id) VALUES (1, 1) RETURNING id;
 INSERT INTO users.r_e_user_e_roles (user_id, role_id) VALUES (1, 2) RETURNING id;
+INSERT INTO users.r_e_user_e_roles (user_id, role_id) VALUES (1, 3) RETURNING id;
 -- Пользователь "Куралай"
 INSERT INTO users.r_e_user_e_roles (user_id, role_id) VALUES (2, 2) RETURNING id;

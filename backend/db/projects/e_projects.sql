@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------------------------------
 -- Сущность 'Проект' (entity project)
 ----------------------------------------------------------------------------------------------------
---
+-- ok
 CREATE TABLE projects.e_projects (
   id SERIAL,
   customer_id CHAR(12),
@@ -15,11 +15,11 @@ CREATE TABLE projects.e_projects (
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (id),
       UNIQUE (id, project_formal_name, project_work_name, project_official_name),
-      FOREIGN KEY (customer_id) REFERENCES companies.e_companies(id),
+      FOREIGN KEY (customer_id) REFERENCES organizations.e_organizations(id),
       FOREIGN KEY (manager_id) REFERENCES persons.e_persons(id),
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
 );
---
+-- ok
 COMMENT ON TABLE projects.e_projects IS 'E Проект';
 COMMENT ON COLUMN projects.e_projects.id IS 'Идентификатор проекта';
 COMMENT ON COLUMN projects.e_projects.customer_id IS 'Идентификатор заказчика проекта';
@@ -50,6 +50,6 @@ UPDATE projects.e_projects SET customer_id = {projectCustomerID}, project_formal
 -- Удалить проект по идентификатору проекта
 DELETE FROM projects.e_projects WHERE id = {id};
 -- Praetorium
-INSERT INTO projects.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301101', 'PR', 'Praetorium', 'Информационная система "Praetorium"', '2015-01-01', '2015-12-31', 150000000, '871215301496') RETURNING id;
+INSERT INTO projects.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301101', 'PR', 'Praetorium', 'Информационная система "Praetorium"', '2015-01-01', '2015-12-31', 150000000, '890402350620') RETURNING id;
 -- ЕИАС
-INSERT INTO projects.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301102', 'ES', 'ЕИАС', 'Программно-аппаратный комплекс Единой информационно-аналитической системы', '2015-01-01', '2015-12-31', 120000000, '871215301496') RETURNING id;
+INSERT INTO projects.e_projects (customer_id, project_formal_name, project_work_name, project_official_name, start_date, end_date, budget, manager_id) VALUES ('871215301102', 'ES', 'ЕИАС', 'Программно-аппаратный комплекс Единой информационно-аналитической системы', '2015-01-01', '2015-12-31', 120000000, '890402350620') RETURNING id;

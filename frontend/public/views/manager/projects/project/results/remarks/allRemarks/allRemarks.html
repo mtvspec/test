@@ -1,0 +1,21 @@
+<md-content>
+  <div>
+    <md-button class="md-raised" ng-click="vm.addRemark($event)">Добавление замечания</md-button>
+    <md-button class="md-raised" ng-click="vm.addRemarkObject($event)">Добавление объекта замечаний</md-button>
+  </div>
+  <md-list>
+    <md-list-item ng-repeat="object in vm.objects">
+      <div>
+        <h4>{{object.objectName}}</h4>
+        <md-list>
+          <md-list-item ng-repeat="remark in vm.filterObjects(vm.remarks, object.id)">
+            <div>
+              <p>{{remark.remarkText}}</p>
+              <p>{{remark.statusID}}</p>
+            </div>
+          </md-list-item>
+        </md-list>
+      </div>
+    </md-list-item>
+  </md-list>
+</md-content>

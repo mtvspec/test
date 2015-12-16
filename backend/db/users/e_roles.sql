@@ -37,5 +37,17 @@ UPDATE users.e_roles SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
 UPDATE users.e_roles SET is_deleted = 'N' WHERE id = {id} RETURNING id;
 -- Вставить роль "Администратор" - ok
 INSERT INTO users.e_roles (role_name) VALUES ('Администратор') RETURNING id;
+-- Вставить роль "Руководитель" - ok
+INSERT INTO users.e_roles (role_name) VALUES ('Руководитель') RETURNING id;
+-- Вставить роль "Руководитель проекта" - ok
+INSERT INTO users.e_roles (role_name) VALUES ('Руководитель проекта') RETURNING id;
+-- Вставить роль "Разработчик" - ok
+INSERT INTO users.e_roles (role_name) VALUES ('Разработчик') RETURNING id;
+-- Вставить роль "Технический писатель" - ok
+INSERT INTO users.e_roles (role_name) VALUES ('Технический писатель') RETURNING id;
+-- Вставить роль "Постановщик задач" - ok
+INSERT INTO users.e_roles (role_name) VALUES ('Постановщик задач') RETURNING id;
+-- Вставить роль "Тестировщик" - ok
+INSERT INTO users.e_roles (role_name) VALUES ('Тестировщик') RETURNING id;
 -- Вставить роль "Пользователь" - ok
 INSERT INTO users.e_roles (role_name) VALUES ('Пользователь') RETURNING id;

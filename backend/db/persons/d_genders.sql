@@ -2,12 +2,11 @@
 -- Справочник 'Пол физического лица' (dictionary person gender)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- ok
-CREATE TABLE persons.d_person_gender (
+CREATE TABLE persons.d_genders (
   id CHAR(1),
-  gender_name VARCHAR(100) NOT NULL,
+  gender_name VARCHAR(10) NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (gender_name),
-    CHECK (id IN ('M','F'))
+    UNIQUE (gender_name)
 );
 -- ok
 COMMENT ON TABLE persons.d_person_gender IS 'D Пол физического лица';

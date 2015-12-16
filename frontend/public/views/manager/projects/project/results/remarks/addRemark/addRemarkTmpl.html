@@ -1,0 +1,58 @@
+<md-dialog aria-label='addRemark' class='medium'>
+  <md-toolbar>
+    <div class='md-toolbar-tools unselectable teal-darken-4'>
+      <h1 class="md-headline bold">Добавление замечания</h1>
+      <span flex></span>
+      <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
+        <md-icon md-svg-src='../../../../resources/icons/close.svg' class='s24' aria-label='Закрыть окно'></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-content style='padding: 20px;'>
+    <div class='md-container unselectable'>
+      <form name='vm.remarkAddForm'>
+        <!-- remark author id -->
+        <md-input-container>
+          <label>Источник замечания:</label>
+          <md-select ng-model="vm.remark.authorID" md-on-open='vm.loadPersons()'>
+            <md-option ng-repeat="person in vm.persons" value="{{person.id}}">
+              {{person.lastName}} {{person.firstName}} {{person.middleName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <!-- remark object id -->
+        <md-input-container>
+          <label>Объект замечания:</label>
+          <md-select ng-model="vm.remark.objectID" md-on-open='vm.loadRemarksObjects()'>
+            <md-option ng-repeat="object in vm.objects" value="{{object.id}}">
+              {{object.objectName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <!-- remark text -->
+        <md-input-container>
+          <label>Текст замечания:</label>
+          <textarea ng-model='vm.remark.remarkText'></textarea>
+        </md-input-container>
+        <!-- remark responsible person id -->
+        <md-input-container>
+          <label>Ответственное лицо:</label>
+          <md-select ng-model="vm.remark.responsiblePersonID" md-on-open='vm.loadPersons()'>
+            <md-option ng-repeat="person in vm.persons" value="{{person.id}}">
+              {{person.lastName}} {{person.firstName}} {{person.middleName}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+    	</form>
+    </div>
+  </md-content>
+  <hr>
+  <div class='md-actions teal-darken-4'>
+  	<md-button class='md-raised md-primary teal-lighten-2' type='submit' ng-click='vm.submit(vm.remark)'>
+      Добавить результат
+    </md-button>
+  	<md-button class='md-raised' type='button' ng-click='vm.closeDialog()'>
+      Отмена
+    </md-button>
+  </div>
+</md-dialog>

@@ -22,6 +22,9 @@
         case 2:
           $state.go('main.layout.main');
           break;
+        case 3:
+          $state.go('manager.layout.main');
+          break;
         default:
           return;
           break;

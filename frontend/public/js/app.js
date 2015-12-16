@@ -162,6 +162,49 @@
       }
     })
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    .state('manager', {
+      abstract: true,
+      templateUrl: 'views/root.html'
+    })
+
+    .state('manager.layout', {
+      views: {
+        header: {
+          templateUrl: 'views/manager/header.html',
+          controller: 'MainHeaderCtrl',
+          controllerAs: 'vm'
+        },
+        left: {
+          templateUrl: 'views/manager/left.html',
+          controller: 'LeftCtrl',
+          controllerAs: 'vm'
+        },
+        content: {
+          templateUrl: 'views/manager/content.html'
+        },
+        right: {
+          templateUrl: 'views/manager/right.html'
+        },
+        footer: {
+          templateUrl: 'views/manager/footer.html'
+        }
+      },
+      data: {
+        title: 'Руководитель'
+      }
+    })
+
+    .state('manager.layout.main', {
+      url: '/manager/main',
+      templateUrl: 'views/manager/mainTmpl.html',
+      data: {
+        title: 'Руководитель',
+        sid: 1
+      }
+    })
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     .state('admin.layout.persons', {
       url: '/admin/persons',
       templateUrl: 'views/admin/persons/allPersons/AllPersonsTmpl.html',

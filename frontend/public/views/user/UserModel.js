@@ -4,6 +4,7 @@
   angular.module('app')
   .factory('UserModel', function ($http) {
     var User = {},
+    session,
     roles = [],
     _authentificateUserUrl = '/api/users/authentificate/',
     _authoriseUserUrl = '/api/users/authorise/';
@@ -16,7 +17,6 @@
             user
           }
         }).then(function (response) {
-          console.log(response.status, response.statusText, response.data);
           return User = response.data;
         }, function (response) {
           console.info(user);
@@ -31,6 +31,13 @@
           return null;
         }
       },
+      getSession: function getSession() {
+        if (session) {
+          return session;
+        } else {
+          return null;
+        }
+      },
       openSession: function openSession(user) {
         return $http({
           method: 'POST',
@@ -39,12 +46,12 @@
             user
           }
         }).then(function (response) {
-          console.log(response);
           if (response.status === 201) {
-            console.log(response);
+            session = response.data;
           }
         }, function (response) {
-          console.log(response);
+          console.info(user);
+          console.error(response.status, response.statusText, response.data);
         });
       }
     }

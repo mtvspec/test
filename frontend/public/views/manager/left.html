@@ -1,0 +1,12 @@
+<div class='projects-panel'>
+  <div class='projects'>
+      <ul class='projects-list'>
+        <li ng-repeat='project in vm.projects'>
+          <md-button class='md-raised project-btn' type='button' ng-click='vm.sendSelectedProjectID(project.id)'>{{project.projectFormalName}}</md-button>
+        </li>
+      </ul>
+  </div>
+  <div class='project-add-toolbox'>
+    <md-button class='md-raised project-btn' type='button' ng-click='vm.addProject($event)'>+</md-button>
+  </div>
+</div>

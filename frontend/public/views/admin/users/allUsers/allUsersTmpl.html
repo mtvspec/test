@@ -2,12 +2,19 @@
   <div>
     <md-button class="md-raised" ng-click="vm.addUser()">Добавить пользователя</md-button>
   </div>
-  <md-list>
-    <md-list-item class="list" ng-repeat="user in vm.users">
-      <div>
-        <span>{{user.person.lastName}}</span>
-        <span>{{user.person.firstName}}</span>
+  <ul class="list">
+    <li ng-repeat='user in vm.users'>
+      <div class='personsList row'>
+        <div class='col s2'>
+          <span>{{user.person.lastName}}</span>
+          <span>{{user.person.firstName}}</span>
+          <span>{{user.person.middleName}}</span>
+          <div class='person-detail-data'>
+            <span>{{user.person.id}}</span>
+            <span>{{user.person.dob | date:"dd-MM-yyyy"}}</span>
+          </div>
+        </div>
       </div>
-    </md-list-item>
-  </md-list>
+    </li>
+  </ul>
 </md-content>
