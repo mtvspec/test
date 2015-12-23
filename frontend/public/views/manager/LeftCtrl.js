@@ -10,13 +10,13 @@
     vm.sendSelectedProjectID = sendSelectedProjectID;
     function sendSelectedProjectID(id) {
       ProjectModel.setSelectedProjectID(id);
-      $state.go('main.layout.project', {id: id});
+      $state.go('manager.layout.project', {id: id});
     };
 
     vm.addProject = addProject;
     function addProject(ev) {
       $mdDialog.show({
-  			templateUrl: 'views/main/projects/addProject/addProjectTmpl.html',
+  			templateUrl: 'views/manager/projects/addProject/addProjectTmpl.html',
   			controller: 'ProjectAddCtrl',
         controllerAs: 'vm',
         targetEvent: ev,

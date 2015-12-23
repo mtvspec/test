@@ -45,13 +45,31 @@
 					data: data
 				}).then(function(response){
 					console.log('Create:', response.data);
-					data.id = response.data.id;
-					_persons.push(data);
-          return status = 201;
+          if (response.status === 201) {
+            data.id = response.data.id;
+  					_persons.push(data);
+            return response.status;
+          }
 				}, function (response) {
 				  console.error('Create person:', response.status, response.statusText, response.data);
 				});
 			},
+      createPerson$: function createPerson$(id, data) {
+        return $http({
+          method: 'POST',
+          url: '/api/companies/' + id + '/persons',
+          data: data
+        }).then(function (response) {
+          console.info('Create:', response.data);
+          if (response.status === 201) {
+            data.id = response.data.id;
+            _persons$.push(data);
+            return response.status;
+          }
+        }, function (response) {
+          console.error('Create person$:', response.status, response.statusText, response.data);
+        });
+      },
       getPersons: function getPersons() {
         return _persons;
       },

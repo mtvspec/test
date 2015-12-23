@@ -1,7 +1,7 @@
 <md-dialog aria-label='Add project result' class='large'>
   <md-toolbar>
     <div class='md-toolbar-tools unselectable'>
-      <h1 class="md-headline bold">Добавление результата проекта 123</h1>
+      <h1 class="md-headline bold">Добавление результата проекта</h1>
       <span flex></span>
       <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
         <md-icon md-svg-src='../../../../resources/icons/close.svg' class='s24' aria-label='Закрыть окно'></md-icon>
@@ -11,11 +11,10 @@
   <md-content class="padding-medium">
     <div class='md-container unselectable'>
       <form name='vm.projectResultAddForm'>
-        <label for="">123</label>
         <!-- project result type id -->
         <div class="row">
           <div class="column">
-            <div flex="20">
+            <div flex="50">
               <md-input-container>
                 <label>Тип результата:</label>
                 <md-select ng-model="vm.result.typeID">

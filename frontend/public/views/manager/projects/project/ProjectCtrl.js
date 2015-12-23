@@ -2,25 +2,14 @@
   'use strict';
 
   angular.module('app')
-  .controller('ProjectCtrl', function ($http, $mdDialog, $stateParams, ProjectModel, PersonsModel, ProjectResultsModel) {
+  .controller('ProjectCtrl', function ($http, $mdDialog, $stateParams, ProjectModel, PersonsModel, ProjectsResultsModel, DictModel) {
     var vm = this,
     _projectResultTypesUrl = '/api/dict/project-result-types',
     _projectResultStatusesUrl = '/api/dict/project-result-statuses',
     projectResultAddForm = {};
     vm.projectID = $stateParams.id,
-    vm.persons = PersonsModel.getPersons();
-    loadProjectResultTypes();
-
-    function loadProjectResultTypes() {
-      $http({
-        method: 'GET',
-        url: _projectResultTypesUrl
-      }).then(function (response) {
-          return vm.types = response.data;
-      }, function (response) {
-        console.error(response.status, response.statusText);
-      });
-    };
+    vm.persons = PersonsModel.getPersons(),
+    vm.types = DictModel.getResultTypes();
 
     vm.getTypeNameByID = getTypeNameByID;
     function getTypeNameByID(types, typeID) {
@@ -66,14 +55,14 @@
       return middleName;
     };
 
-    ProjectResultsModel.getProjectResults(vm.projectID).then(function (results) {
+    ProjectsResultsModel.retrieveProjectResults(vm.projectID).then(function (results) {
       vm.results = results;
     });
 
     vm.addProjectResult = addProjectResult;
     function addProjectResult(id, ev) {
       $mdDialog.show({
-  			templateUrl: 'views/main/projects/project/results/addProjectResult/addProjectResultTmpl.html',
+  			templateUrl: 'views/manager/projects/project/results/addProjectResult/addProjectResultTmpl.html',
   			controller: 'ProjectResultAddCtrl',
         controllerAs: 'vm',
         targetEvent: ev,

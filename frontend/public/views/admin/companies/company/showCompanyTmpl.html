@@ -1,0 +1,80 @@
+<md-dialog aria-label='addCompany' class='large'>
+  <md-toolbar>
+    <div class='md-toolbar-tools unselectable'>
+      <h2>{{vm.company.longName}}</h2>
+      <span flex></span>
+      <md-button class='md-icon-button' ng-click='vm.closeDialog()'>
+        <md-icon md-svg-src='../../../../resources/icons/close.svg' class='s24' aria-label='Закрыть окно'></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content style='padding: 20px;'>
+    <div class='md-container unselectable'>
+      <form name='vm.companyAddForm'>
+        <!-- company bin -->
+        <md-input-container>
+          <label > БИН:</label>
+          <input type="text" name="bin" ng-model='vm.company.id' required>
+        </md-input-container>
+        <!-- company short name -->
+        <md-input-container>
+          <label >Короткое наименование:</label>
+          <input type="text" name="shortName" ng-model='vm.company.shortName' maxlength="200" required>
+        </md-input-container>
+        <!-- company long name -->
+        <md-input-container>
+          <label >Длинное наименование:</label>
+          <input type="text" name="longName" ng-model='vm.company.longName' maxlength="200" required>
+        </md-input-container>
+        <!-- company full name -->
+        <md-input-container>
+          <label >Полное наименование:</label>
+          <input type="text" name="fullName" ng-model='vm.company.fullName' maxlength="300">
+        </md-input-container>
+    	</form>
+    </div>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h3>
+          <span>
+            Физические лица
+          </span>
+        </h3>
+        <span flex></span>
+        <md-button ng-click="vm.addPerson(vm.company.id, $event)">Регистрация ФЛ</md-button>
+      </div>
+    </md-toolbar>
+        <table class="table table-striped table-hover">
+          <thead style="text-align: center">
+            <th style="width: 150px;">
+              Фамилия
+            </th>
+            <th style="width: 150px;">
+              Имя
+            </th>
+            <th style="width: 150px;">
+              Отчество
+            </th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="person in vm.persons">
+              <td>
+                {{person.lastName}}
+              </td>
+              <td>
+                {{person.firstName}}
+              </td>
+              <td>
+                {{person.middleName}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  </md-dialog-content>
+  <hr>
+  <div class='md-actions'>
+  	<md-button type='button' ng-click='vm.closeDialog()'>
+      Закрыть
+    </md-button>
+  </div>
+</md-dialog>

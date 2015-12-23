@@ -34,5 +34,26 @@
       });
   	};
 
+    vm.showCompany = showCompany;
+    function showCompany(company, ev) {
+      $mdDialog.show({
+  			templateUrl: 'views/admin/companies/company/showCompanyTmpl.html',
+  			controller: 'CompanyCtrl',
+        controllerAs: 'vm',
+        targetEvent: ev,
+        clickOutsideToClose: false,
+        locals: {
+          company: company
+        }
+      })
+      .then(function (response) {
+        console.log(response);
+        // on success
+      }, function (response) {
+        console.log(response);
+        // on failure
+      });
+    }
+
   });
 })();
