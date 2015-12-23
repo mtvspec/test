@@ -2,28 +2,10 @@
   'use strict';
 
   angular.module('app')
-  .controller('LeftCtrl', function($state, $http, $mdDialog, ProjectModel) {
+  .controller('LeftCtrl', function($state, $http, $mdDialog, ProjectModel, ProjectsModel) {
 
-    var vm = this,
-    _url = '/api/projects',
-    projects = [],
-    activeProject;
-    vm.projects = projects;
-
-    $http({
-      method: 'GET',
-      url: _url
-    }).then(function (response) {
-      return vm.projects = response.data;
-    }, function (response) {
-      console.error(response.status.statusText);
-    });
-
-    vm.showProjectID = showProjectID;
-    function showProjectID(id) {
-      activeProject = id;
-      console.log(activeProject);
-    };
+    var vm = this;
+    vm.projects = ProjectsModel.getProjects();
 
     vm.sendSelectedProjectID = sendSelectedProjectID;
     function sendSelectedProjectID(id) {

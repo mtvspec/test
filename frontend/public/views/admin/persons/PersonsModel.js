@@ -6,13 +6,39 @@
 
 	function PersonsModel($http){
 
-		var _url = '/api/persons/';
+		var _url = '/api/persons/',
+    _gendersUrl = '/api/dict/genders',
+    _persons = [],
+    _genders = [],
+		_personsPromise;
 
-		var _persons = [];
-		var _personsPromise;
+    $http({
+      method: 'GET',
+      url: _gendersUrl
+    }).then(function (response) {
+      for (var i = 0; i < response.data.length; i++) {
+        _genders.push(response.data[i]);
+      }
+      return _genders;
+    }, function (response) {
+      console.error('Load person genders:', response.status, response.statusText);
+    });
+
+    $http({
+      method: 'GET',
+      url: _url
+    }).then(function (response) {
+      for (var i = 0; i < response.data.length; i++) {
+        _persons.push(response.data[i]);
+      }
+      return _persons;
+    }, function (response) {
+      console.error('Load persons:', response.status, response.statusText);
+    });
 
 		return {
-			createPerson: function(data){
+			createPerson: function createPerson(data) {
+        console.log(data);
 				return $http({
 					method: 'POST',
 					url: _url,
@@ -21,8 +47,17 @@
 					console.log('Create:', response.data);
 					data.id = response.data.id;
 					_persons.push(data);
+          return status = 201;
+				}, function (response) {
+				  console.error('Create person:', response.status, response.statusText, response.data);
 				});
 			},
+      getPersons: function getPersons() {
+        return _persons;
+      },
+      getGenders: function getGenders() {
+        return _genders;
+      },
 			readPersons: function(){
 				return $http({
 					method: 'GET',
@@ -42,7 +77,6 @@
 					var i, len;
 					for(i = 0, len = _persons.length; i < len; i++){
 						if(_persons[i].id === data.id){
-              _persons[i].iin = data.iin;
               _persons[i].lastName = data.lastName;
 							_persons[i].firstName = data.firstName;
               _persons[i].middleName = data.middleName;
@@ -52,7 +86,7 @@
 						}
 					}
 				}, function(response){
-					console.error('UPDATE task:', response.status.statusText);
+					console.error('UPDATE person:', response.status, response.statusText);
 				});
 			},
 			removePerson: function(data){
@@ -69,7 +103,7 @@
 						}
 					}
 				}, function(response){
-					console.error('DELETE task:', response.status.statusText);
+					console.error('DELETE person:', response.status, response.statusText);
 				})
 			},
 			readPerson: function(data){

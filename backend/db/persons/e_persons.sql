@@ -13,7 +13,7 @@ CREATE TABLE persons.e_persons (
   gender_id CHAR(1) NOT NULL,
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (id),
-      FOREIGN KEY (gender_id) REFERENCES persons.d_person_gender(id)
+      FOREIGN KEY (gender_id) REFERENCES persons.d_genders(id)
 );
 -- ok
 COMMENT ON TABLE persons.e_persons IS 'E Физические лица';

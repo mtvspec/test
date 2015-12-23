@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('app')
-  .controller('ProjectCtrl', function ($http, $mdDialog, $stateParams, ProjectModel) {
+  .controller('ProjectCtrl', function ($http, $mdDialog, $stateParams, ProjectModel, ProjectResultsModel) {
     var vm = this,
     _url = '/api/projects/',
     _projectResultTypesUrl = '/api/dict/project-result-types',
@@ -112,20 +112,15 @@
       });
     };
 
-    $http({
-      method: 'GET',
-      url: _url + vm.projectID + '/results'
-    }).then(function (response) {
-      return vm.results = response.data;
-    }, function (response) {
-      console.error(response.status.statusText);
+    ProjectResultsModel.getProjectResults(projectID).then(function (results) {
+      vm.results.push(results);
     });
 
     vm.addProjectResult = addProjectResult;
     function addProjectResult(id, ev) {
       $mdDialog.show({
   			templateUrl: 'views/main/projects/project/results/addProjectResult/addProjectResultTmpl.html',
-  			controller: 'ProjectCtrl',
+  			controller: 'ProjectResultAddCtrl',
         controllerAs: 'vm',
         targetEvent: ev,
         clickOutsideToClose: false,
@@ -136,40 +131,6 @@
       }, function () {
         // on failure
       });
-    };
-
-    vm.hasError = hasError;
-		function hasError(fieldName){
-			var field = projectResultAddForm[fieldName];
-			if(field){
-				return field.$invalid && (projectResultAddForm.$submitted || !field.$pristine);
-			}
-		};
-
-    vm.submit = submit;
-		function submit(data){
-      console.log(data);
-			vm.projectResultAddForm.$setSubmitted();
-			if(vm.projectResultAddForm.$valid){
-				$http({
-          method: 'POST',
-          url: _url + vm.projectID + '/results',
-          data: data
-        }).then(function (response) {
-          if (response.status === 201) {
-            data.id = response.data.id;
-          }
-          vm.closeDialog();
-        }, function (response) {
-          console.log(response.status.statusText);
-        });
-			}
-		};
-
-    vm.closeDialog = closeDialog;
-    vm.closeDialog = closeDialog;
-    function closeDialog() {
-      $mdDialog.cancel();
     };
 
   });

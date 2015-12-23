@@ -8,45 +8,68 @@
   <link rel='stylesheet' href='views/login/login.css'>
   <link rel='stylesheet' href='views/main/main.css'>
   <link rel='stylesheet' href='views/admin/persons/allPersons/persons.css'>
+  <style type="text/css">
+        /**
+         * Hide when Angular is not yet loaded and initialized
+         */
+        [ng-cloak] {
+            display: none;
+        }
+    </style>
 </head>
 <body class="md-body-1">
   <div class='container-root' ui-view></div>
   <script src='lib/bower_components/jquery/dist/jquery.js'></script>
   <script src='lib/bower_components/angular/angular.js'></script>
   <script src='lib/bower_components/angular-ui-router/release/angular-ui-router.js'></script>
-	<script src="lib/bower_components/angular-material/angular-material.js"></script>
-	<script src="lib/bower_components/angular-animate/angular-animate.js"></script>
-	<script src="lib/bower_components/angular-aria/angular-aria.js"></script>
+  <script src="lib/bower_components/angular-aria/angular-aria.js"></script>
+  <script src="lib/bower_components/angular-animate/angular-animate.js"></script>
+  <script src="lib/bower_components/angular-material/angular-material.js"></script>
   <script src='lib/bower_components/angular-messages/angular-messages.js'></script>
   <script src='js/app.js'></script>
+  <!-- users -->
   <script src='views/login/LoginCtrl.js'></script>
   <script src='views/user/UserModel.js'></script>
   <script src='views/admin/users/UsersModel.js'></script>
-  <script src='views/main/projects/project/ProjectModel.js'></script>
   <script src='views/login/roles/RolesCtrl.js'></script>
   <script src='views/admin/users/allUsers/UsersCtrl.js'></script>
   <script src='views/signup/SignupCtrl.js'></script>
-  <script src='views/main/LeftCtrl.js'></script>
-  <script src='views/main/projects/allProjects/ProjectsCtrl.js'></script>
-  <script src='views/main/projects/addProject/ProjectAddCtrl.js'></script>
-  <script src='views/main/projects/project/results/remarks/allRemarks/RemarksCtrl.js'></script>
-  <script src='views/main/projects/project/results/remarks/addRemark/RemarkAddCtrl.js'></script>
-  <script src='views/main/projects/project/objects/addRemarkObject/RemarkObjectAddCtrl.js'></script>
-  <script src='views/main/MainHeaderCtrl.js'></script>
-  <script src='views/main/projects/project/ProjectCtrl.js'></script>
+  <!-- kazimpex -->
+  <script src='views/admin/kazimpex/KazimpexCtrl.js'></script>
+  <!-- projects -->
+  <script src='views/project-manager/projects/allProjects/ProjectsCtrl.js'></script>
+  <script src='views/project-manager/projects/addProject/ProjectAddCtrl.js'></script>
+  <!-- project -->
+  <script src='views/project-manager/projects/project/results/remarks/allRemarks/RemarksCtrl.js'></script>
+  <script src='views/project-manager/projects/project/results/remarks/addRemark/RemarkAddCtrl.js'></script>
+  <script src='views/project-manager/projects/project/objects/addRemarkObject/RemarkObjectAddCtrl.js'></script>
+  <script src='views/project-manager/projects/project/ProjectCtrl.js'></script>
+  <script src='views/project-manager/projects/project/ProjectModel.js'></script>
+  <!-- project results -->
+  <script src='views/project-manager/projects/project/results/addProjectResult/ProjectResultAddCtrl.js'></script>
+  <script src='views/project-manager/projects/project/results/ProjectResultsModel.js'></script>
+  <!-- persons -->
   <script src='views/admin/persons/allPersons/PersonsCtrl.js'></script>
   <script src='views/test/person/add/PersonCtrl.js'></script>
   <script src='views/admin/persons/addPerson/PersonAddCtrl.js'></script>
   <script src='views/admin/persons/PersonsModel.js'></script>
+  <!-- companies -->
   <script src='views/admin/companies/allCompanies/CompaniesCtrl.js'></script>
   <script src='views/admin/companies/addCompany/CompanyAddCtrl.js'></script>
   <script src='views/admin/model/Model.js'></script>
   <!-- manager -->
   <script src='views/manager/LeftCtrl.js'></script>
+  <script src='views/manager/MainHeaderCtrl.js'></script>
+  <script src='views/manager/projects/ProjectsModel.js'></script>
   <script src='views/manager/projects/allProjects/ProjectsCtrl.js'></script>
   <script src='views/manager/projects/addProject/ProjectAddCtrl.js'></script>
-  <script src='views/manager/MainHeaderCtrl.js'></script>
   <script src='views/manager/projects/project/ProjectCtrl.js'></script>
   <script src='views/manager/projects/project/ProjectModel.js'></script>
+  <script src='views/manager/projects/project/results/addProjectResult/ProjectResultAddCtrl.js'></script>
+  <script src='views/manager/projects/project/results/ProjectResultsModel.js'></script>
+  <script src='views/manager/MainHeaderCtrl.js'></script>
+  <!-- project-manager -->
+  <script src='views/main/LeftCtrl.js'></script>
+  <script src='views/main/MainHeaderCtrl.js'></script>
 </body>
 </html>

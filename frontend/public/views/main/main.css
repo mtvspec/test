@@ -57,7 +57,7 @@
   padding-bottom: 15px;
   left: 0;
   top: 0;
-  bottom: 60px;
+  bottom: 0;
   width: 60px;
   box-shadow: inset 0 0 20px black;
 }
@@ -104,17 +104,6 @@ li:last-child {
 }
 .project-btn:active {
   opacity: 1;
-}
-.project-add-toolbox {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  left: 0;
-  bottom: 0;
-  width: 60px;
-  height: 60px;
-  box-shadow: inset 0 0 20px black;
 }
 .teal-lighten-2 {
   background-color: #4db6ac !important;

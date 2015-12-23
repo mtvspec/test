@@ -105,7 +105,7 @@
 
     .state('main.layout.project', {
       url: '/projects/:id/results',
-      templateUrl: 'views/main/projects/project/projectTmpl.html',
+      templateUrl: 'views/manager/projects/project/projectTmpl.html',
       controller: 'ProjectCtrl',
       controllerAs: 'vm',
       data: {
@@ -162,6 +162,17 @@
       }
     })
 
+    .state('admin.layout.kazimpex', {
+      url: '/admin/kazimpex',
+      templateUrl: 'views/admin/kazimpex/kazimpex.html',
+      controller: 'KazimpexCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Казимпэкс',
+        sid: 1
+      }
+    })
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     .state('manager', {
       abstract: true,
@@ -203,6 +214,18 @@
         sid: 1
       }
     })
+
+    .state('manager.layout.project', {
+      url: '/projects/:id/results',
+      templateUrl: 'views/manager/projects/project/projectTmpl.html',
+      controller: 'ProjectCtrl',
+      controllerAs: 'vm',
+      data: {
+        title: 'Проекты',
+        sid: 1
+      }
+    })
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     .state('admin.layout.persons', {

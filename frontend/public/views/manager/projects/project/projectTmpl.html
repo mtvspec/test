@@ -2,7 +2,7 @@
 <md-content>
   <md-list>
     <md-list-item ng-repeat="result in vm.results">
-      <button class="project-result" onclick="alert('Золото!')">
+      <button class="project-result">
         <span><b>{{vm.getTypeNameByID(vm.types, result.typeID)}}: {{result.resultName}}</b></span>
         <br>
         <span>Источник: {{vm.getPersonLastnameByID(vm.persons, result.authorID)}} {{vm.getPersonFirstnameByID(vm.persons, result.authorID)}} {{vm.getPersonMiddlenameByID(vm.persons, result.authorID)}}</span>

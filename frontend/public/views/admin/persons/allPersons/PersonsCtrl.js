@@ -2,7 +2,7 @@
 	'use strict';
 
 	angular.module('app')
-	.controller('PersonsCtrl', function ($http, $mdDialog) {
+	.controller('PersonsCtrl', function ($http, $mdDialog, UserModel) {
 
 	var vm = this,
   persons = [],

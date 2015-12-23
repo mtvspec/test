@@ -15,25 +15,6 @@ COMMENT ON TABLE open_project.r_e_projects_e_members IS 'Связь - Участ
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Сущность "Результаты проектов" #tested #created: work-dev
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE open_project.e_project_results (
-  id SERIAL,
-  project_id INTEGER NOT NULL,
-  type_id INTEGER NOT NULL, -- идентификатор типа результата
-  result_name VARCHAR(500),
-  parent_id INTEGER,
-  author_id CHAR(12),
-  responsible_person_id CHAR(12), -- идентификатор ответственного (физического) лица
-  status_id INTEGER,
-    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-      PRIMARY KEY (id),
-      FOREIGN KEY (project_id) REFERENCES open_project.e_projects(id),
-      FOREIGN KEY (type_id) REFERENCES dict.result_type(id),
-      FOREIGN KEY (parent_id) REFERENCES open_project.e_project_results(id),
-      FOREIGN KEY (author_id) REFERENCES fl.e_persons(id),
-      FOREIGN KEY (responsible_person_id) REFERENCES fl.e_persons(id),
-      FOREIGN KEY (status_id) REFERENCES dict.result_status(id),
-      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
-);
 -- Извлечь все результаты проектов
 SELECT id, project_id AS "projectID", type_id AS "typeID", result_name AS "resultName", parent_id AS "parentID", author_id AS "authorID", responsible_person_id AS "responsiblePersonID", status_id AS "statusID", is_deleted AS "isDeleted" FROM open_project.e_project_results ORDER BY id ASC;
 -- Извлечь результаты проекта по идентификатору проекта
@@ -47,20 +28,11 @@ UPDATE open_project.e_project_results SET project_id = {projectID}, type_id = {t
 -- Удалить результат проекта
 UPDATE open_project.e_project_results SET is_deleted = 'N' WHERE id = {id} RETURNING id;
 
-INSERT INTO open_project.e_project_results (project_id, type_id, result_name, author_id, responsible_person_id, status_id) VALUES (1, 1, 'Информационная система "Praetorium"', '871215301496', '871215301496', 1) RETURNING id;
+INSERT INTO projects.e_project_results (project_id, type_id, result_name, author_id, responsible_person_id, status_id) VALUES (1, 1, '"Praetorium"', '871215301496', '871215301496', 1) RETURNING id;
 
 INSERT INTO open_project.e_project_results (project_id, type_id, result_name, parent_id, author_id, responsible_person_id, status_id) VALUES (1, 3, 'Подсистема хранения данных', 1, '871215301496', '871215301496', 1) RETURNING id;
 
-CREATE TABLE dict.result_status (
-  id SERIAL,
-  result_status_name VARCHAR(500) NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (result_status_name)
-);
 
-SELECT id, result_status_name AS "resultStatusName" FROM dict.result_status ORDER BY id ASC;
-
-INSERT INTO dict.result_status (result_status_name) VALUES ('Принят');
 
 -- Справочник "Тип результата"
 -- "Информационная система"
@@ -69,22 +41,7 @@ INSERT INTO dict.result_status (result_status_name) VALUES ('Принят');
 -- "Функция"
 -- "Документ"
 
--- Справочник "Статус результата проекта"
--- "Принят"
--- "Проектируется"
--- "Спроектирован"
--- "На реализации"
--- "Реализован"
--- "На тестировании"
--- "Протестирован"
--- "На отладке"
--- "Отлажен"
--- "Внедряется"
--- "Внедрен"
--- "На списании"
--- "Списан"
--- "Требуется уточнение"
--- "Отклонен"
+
 -- Связь "Проект - Результаты проекта"
 CREATE TABLE open_project.r_e_projects_e_results (
   id SERIAL,
@@ -161,92 +118,7 @@ SELECT id, object_name AS "objectName" FROM open_project.e_remarks_objects ORDER
 INSERT INTO open_project.e_remarks_objects (object_name) VALUES ({objectName}) RETURNING id;
 -- "История изменения условных наименований ОПГ"
 INSERT INTO open_project.e_remarks_objects (object_name) VALUES ('История изменения условных наименований ОПГ') RETURNING id;
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Справочник "Тип результата" #tested #created: work-dev
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE dict.result_type (
-  id SERIAL,
-  parent_id INTEGER,
-  type_name VARCHAR(300) NOT NULL,
-    is_deleted CHAR(1) NOT NULL DEFAULT 'N',
-      PRIMARY KEY (id),
-      UNIQUE (type_name),
-      FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)
-);
--- #tested #created: work-dev
-COMMENT ON TABLE dict.result_type IS 'Справочник - Тип результата';
-COMMENT ON COLUMN dict.result_type.id IS 'Идентификатор типа результата';
-COMMENT ON COLUMN dict.result_type.parent_id IS 'Идентификатор родительского типа результата';
-COMMENT ON COLUMN dict.result_type.type_name IS 'Наименование типа результата';
-COMMENT ON COLUMN dict.result_type.is_deleted IS 'Состояние записи';
--- Извлечь все типы требований
-SELECT id, parent_id AS "parentID", type_name AS "typeName", is_deleted AS "isDeleted" FROM dict.result_type ORDER BY id;
--- Извлечь тип требования по идентификатору
-SELECT id, parent_id AS "parentID", type_name AS "typeName", is_deleted AS "isDeleted" FROM dict.result_type WHERE id = {id};
--- Извлечь существующие типы требований
-SELECT id, parent_id AS "parentID", type_name AS "typeName" FROM dict.result_type WHERE is_deleted = 'N' ORDER BY id;
--- Извлечь существующий тип требования по идентификатору типа требования
-SELECT id, parent_id AS "parentID", type_name AS "typeName" FROM dict.result_type WHERE is_deleted = 'N' AND id = {id};
--- Извлечь несуществующие типы требований
-SELECT id, parent_id AS "parentID", type_name AS "typeName" FROM dict.result_type WHERE is_deleted = 'Y' ORDER BY id;
--- Извлечь несуществующий тип требования по идентификатору типа требования
-SELECT id, parent_id AS "parentID", type_name AS "typeName" FROM dict.result_type WHERE is_deleted = 'Y' AND id = {id};
--- Втавить тип требования
-INSERT INTO dict.result_type (parent_id, type_name) VALUES ({parentID}, {typeName}) RETURNING id;
--- Обновить тип требования
-UPDATE dict.result_type SET parent_id = {parentID}, type_name = {typeName} WHERE id = {id} RETURNING id;
--- Удалить тип требования
-UPDATE dict.result_type SET is_deleted = 'Y' WHERE id = {id} RETURNING id;
--- Восстановить удаленный тип требования
-UPDATE dict.result_type SET is_deleted = 'N' WHERE id = {id} RETURNING id;
--- Результаты проекта
--- "Информационная система"
-INSERT INTO dict.result_type (type_name) VALUES ('Информационная система'); -- 1
--- "Проектаная документация"
-INSERT INTO dict.result_type (type_name) VALUES ('Проектная документация');
--- "Другое"
-INSERT INTO dict.result_type (type_name) VALUES ('Другое');
--- "Виды обеспечений информационной системы"
-INSERT INTO dict.result_type (parent_id, type_name) VALUES (1, 'Аппаратное обеспечение'); -- 2
--- На каком аппаратном обеспечении должна работать информационная система?
-INSERT INTO dict.result_type (parent_id, type_name) VALUES (1, 'Программное обеспечение'); -- 3
--- На каком системном программном обеспечении должна работать информационная система и какое программное обеспечение необходимо разработать?
-INSERT INTO dict.result_type (parent_id, type_name) VALUES (1, 'Правовое обеспечение'); -- 4
--- Что обеспечивает юридически работу информационной системы?
-INSERT INTO dict.result_type (parent_id, type_name) VALUES (1, 'Методическое обеспечение'); -- 5
--- Какими методическими материалами необходимо обеспечить кадровое обеспечение информационной системы?
--- "Методическое обеспечение"
-INSERT INTO dict.result_type (parent_id, type_name) VALUES (5, 'Руководство администратора'); -- 6
-INSERT INTO dict.result_type (parent_id, type_name) VALUES (5, 'Руководство пользователя'); -- 7
---
-INSERT INTO dict.result_type (type_name) VALUES ('Информационное обеспечение');
--- Какая информация и в каком виде необходима для обеспечения работы информационной системы?
-INSERT INTO dict.result_type (type_name) VALUES ('Лингвистическое обеспечение');
--- Какие языки должна поддерживать информационная система?
-INSERT INTO dict.result_type (type_name) VALUES ('Кадровое обеспечение');
--- Кто должен иметь возможность работать в информационной системе?
-INSERT INTO dict.result_type (type_name) VALUES ('Организационное обеспечение');
--- Что должно сделать руководство для обеспечения работы кадрового обеспечения в информационной системе?
 
-INSERT INTO dict.result_type (type_name) VALUES ('Проектная документация');
--- Проектная документация
-INSERT INTO dict.result_type (type_name) VALUES ('Концепция');
-INSERT INTO dict.result_type (type_name) VALUES ('Технико-экономическое обоснование');
-INSERT INTO dict.result_type (type_name) VALUES ('Техно-рабочий проект');
-INSERT INTO dict.result_type (type_name) VALUES ('Техническая спецификация');
-INSERT INTO dict.result_type (type_name) VALUES ('Техническое задание');
-INSERT INTO dict.result_type (type_name) VALUES ('Программа и методика испытаний');
-INSERT INTO dict.result_type (type_name) VALUES ('Спецификация требований к ПО');
-INSERT INTO dict.result_type (type_name) VALUES ('Описание программы');
--- Справочник "Виды обеспечений ИС"
--- "Аппаратное обеспечение"
--- "Программное обеспечение"
--- "Правовое обеспечение"
--- "Методическое обеспечение"
--- "Информационное обеспечение"
--- "Лингвистическое обеспечение"
--- "Кадровое обеспечение"
--- "Организационное обеспечение"
 
 CREATE TABLE open_project.e_requirements (
   id SERIAL,

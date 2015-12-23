@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('app')
-  .factory('UserModel', function ($http) {
+  .factory('UserModel', function ($http, $state) {
     var User = {},
     session,
     roles = [],
@@ -48,6 +48,8 @@
         }).then(function (response) {
           if (response.status === 201) {
             session = response.data;
+          } else {
+            $state.go('login');
           }
         }, function (response) {
           console.info(user);

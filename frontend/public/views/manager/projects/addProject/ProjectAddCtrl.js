@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('app')
-  .controller('ProjectAddCtrl', function ($http, $mdDialog, UserModel) {
+  .controller('ProjectAddCtrl', function ($http, $mdDialog, UserModel, PersonsModel, ProjectsModel) {
 
     var vm = this,
     _url = '/api/projects/',
@@ -11,8 +11,8 @@
     projectAddForm = {},
     project = {},
     companies = [],
-    persons = [],
     session = UserModel.getSession();
+    vm.persons = PersonsModel.getPersons();
 
     vm.loadCustomers = loadCustomers;
     function loadCustomers() {
@@ -26,25 +26,9 @@
       });
     };
 
-    vm.loadProjectManagers = loadProjectManagers;
-    function loadProjectManagers() {
-      $http({
-        method: 'GET',
-        url: _personsUrl,
-        headers: {
-          'session-id': session
-        }
-      }).then(function (response) {
-        if (response.status === 200) {
-          vm.persons = response.data;
-        }
-      });
-    };
-
     vm.projectAddForm = projectAddForm,
     vm.project = project,
     vm.companies = companies,
-    vm.persons = persons;
 
     vm.hasError = hasError;
 		function hasError(fieldName){
@@ -56,21 +40,14 @@
 
     vm.submit = submit;
 		function submit(data){
-      console.log(data);
 			vm.projectAddForm.$setSubmitted();
 			if(vm.projectAddForm.$valid){
-				$http({
-          method: 'POST',
-          url: _url,
-          data: data
-        }, function (response) {
-          if (response.status === 201) {
-            data.id = response.data.id;
-          }
-          vm.closeDialog();
-        }, function (response) {
-          console.log(response.status.statusText);
-        });
+				ProjectsModel.createProject(data).then(function (status) {
+          console.log(status);
+				  if (status === 201) {
+				    closeDialog();
+				  }
+				})
 			}
 		};
 

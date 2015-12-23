@@ -14,7 +14,9 @@ CREATE TABLE projects.e_projects (
   manager_id CHAR(12),
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (id),
-      UNIQUE (id, project_formal_name, project_work_name, project_official_name),
+      UNIQUE (project_formal_name),
+      UNIQUE (project_work_name),
+      UNIQUE (project_official_name),
       FOREIGN KEY (customer_id) REFERENCES organizations.e_organizations(id),
       FOREIGN KEY (manager_id) REFERENCES persons.e_persons(id),
       FOREIGN KEY (is_deleted) REFERENCES dict.is_deleted(id)

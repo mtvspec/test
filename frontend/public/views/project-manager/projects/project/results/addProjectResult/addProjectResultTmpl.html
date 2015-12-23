@@ -20,11 +20,6 @@
             </md-option>
           </md-select>
         </md-input-container>
-        <!-- project result name -->
-        <md-input-container>
-          <label>Наименование результата:</label>
-          <input ng-model='vm.result.resultName'>
-        </md-input-container>
         <!-- project result parent id -->
         <md-input-container>
           <label>Родительский результат:</label>
@@ -34,30 +29,28 @@
             </md-option>
           </md-select>
         </md-input-container>
+        <!-- project result name -->
+        <md-input-container>
+          <label>Наименование результата:</label>
+          <input ng-model='vm.result.resultName'>
+        </md-input-container>
         <!-- project result author id  -->
         <md-input-container>
           <label>Источник:</label>
-          <md-select ng-model="vm.result.authorID" md-on-open='vm.loadPersons()'>
-            <md-option ng-repeat="author in vm.persons" value="{{author.id}}">
-              {{author.lastName}} {{author.firstName}} {{author.middleName}}
-            </md-option>
+          <md-select ng-model="vm.result.authorID">
+            <md-optgroup label="Казипэкс">
+              <md-option ng-repeat="author in vm.persons" value="{{author.id}}">
+                {{author.lastName}} {{author.firstName}} {{author.middleName}}
+              </md-option>
+            </md-optgroup>
           </md-select>
         </md-input-container>
         <!-- project result manager id  -->
         <md-input-container>
           <label>Ответственное лицо:</label>
-          <md-select ng-model="vm.result.responsiblePersonID" md-on-open='vm.loadPersons()'>
+          <md-select ng-model="vm.result.responsiblePersonID">
             <md-option ng-repeat="responsiblePerson in vm.persons" value="{{responsiblePerson.id}}">
               {{responsiblePerson.lastName}} {{responsiblePerson.firstName}} {{responsiblePerson.middleName}}
-            </md-option>
-          </md-select>
-        </md-input-container>
-        <!-- project result status id  -->
-        <md-input-container>
-          <label>Статус результата:</label>
-          <md-select ng-model="vm.result.statusID" md-on-open='vm.loadProjectResultStatuses()'>
-            <md-option ng-repeat="status in vm.statuses" value="{{status.id}}">
-              {{status.resultStatusName}}
             </md-option>
           </md-select>
         </md-input-container>

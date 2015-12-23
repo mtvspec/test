@@ -39,7 +39,7 @@
         <!-- person gender -->
         <md-input-container>
           <label>Пол:</label>
-          <md-select ng-model="vm.person.genderID" md-on-open='vm.loadGenders()'>
+          <md-select ng-model="vm.person.genderID">
             <md-option ng-repeat="gender in vm.genders" value="{{gender.id}}">
               {{gender.genderName}}
             </md-option>

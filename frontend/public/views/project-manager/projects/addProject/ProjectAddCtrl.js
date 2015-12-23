@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('app')
-  .controller('ProjectAddCtrl', function ($http, $mdDialog, UserModel) {
+  .controller('ProjectAddCtrl', function ($http, $mdDialog, UserModel, ProjectsModel) {
 
     var vm = this,
     _url = '/api/projects/',

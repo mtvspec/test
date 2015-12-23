@@ -4,6 +4,7 @@
 CREATE TABLE organizations.e_divisions (
   id SERIAL NOT NULL,
   division_name VARCHAR(400) NOT NULL,
+  parent_division_id INTEGER,
     is_deleted CHAR(1) NOT NULL DEFAULT 'N',
       PRIMARY KEY (id),
       UNIQUE (division_name),

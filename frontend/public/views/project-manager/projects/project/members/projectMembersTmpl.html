@@ -9,9 +9,32 @@
     </div>
   </md-toolbar>
   <md-content class="padding-medium">
-    <div class="">
-      <h1>Участники проекта {{vm.projectID}}</h1>
-    </div>
+    <table class="table">
+      <thead>
+        <th>
+          Фамилия
+        </th>
+        <th>
+          Имя
+        </th>
+        <th>
+          Отчество
+        </th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="person in vm.persons">
+          <td>
+            {{person.lastName}}
+          </td>
+          <td>
+            {{person.firstName}}
+          </td>
+          <td>
+            {{person.middleName}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </md-content>
   <md-dialog-actions class="align-center">
     <md-button class='md-primary' ng-click='vm.closeDialog()'>

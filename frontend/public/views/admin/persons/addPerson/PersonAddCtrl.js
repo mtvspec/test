@@ -2,32 +2,16 @@
 	'use strict';
 
 	angular.module('app')
-	.controller('PersonAddCtrl', function ($mdDialog, $http) {
+	.controller('PersonAddCtrl', function ($mdDialog, $http, PersonsModel) {
 
 		var vm = this,
     _url = '/api/persons/',
-    _gendersUrl = '/api/dict/genders',
     personAddForm = {},
-    person = {},
-    genders = [];
+    person = {};
+    vm.genders = PersonsModel.getGenders();
 
     vm.personAddForm = personAddForm,
-    vm.person = person,
-    vm.genders = genders;
-
-    vm.loadGenders = loadGenders;
-    function loadGenders() {
-      $http({
-        method: 'GET',
-        url: _gendersUrl
-      }).then(function (response) {
-        if (response.status === 200) {
-          vm.genders = response.data;
-        }
-      }, function (response) {
-        console.error(response.status.statusText);
-      });
-    };
+    vm.person = person;
 
     vm.hasError = hasError;
 		function hasError(fieldName){
@@ -41,20 +25,11 @@
 		function submit(data){
 			vm.personAddForm.$setSubmitted();
 			if(vm.personAddForm.$valid){
-				$http({
-          method: 'POST',
-          url: _url,
-          data: data
-        }).then(function (response) {
-          if (response.status === 201) {
-            console.log('Created');
-            data.id = response.data.id;
-            vm.closeDialog();
-          }
-        }, function (response) {
-          console.error(response.status.statusText);
-          vm.closeDialog();
-        });
+				PersonsModel.createPerson(data).then(function (status) {
+				  if (status === 201) {
+				    closeDialog();
+				  }
+				})
 			}
 		};
 
